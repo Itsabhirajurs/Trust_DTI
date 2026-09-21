@@ -1,0 +1,18 @@
+# environment
+.venv/
+__pycache__/
+*.pyc
+
+# data — never commit raw pulls, they're multi-GB and not yours to redistribute
+data/raw/*
+data/interim/*
+data/processed/*
+!data/raw/.gitkeep
+!data/interim/.gitkeep
+!data/processed/.gitkeep
+
+# secrets, if any API keys come later
+.env
+
+# notebook checkpoints
+.ipynb_checkpoints/
