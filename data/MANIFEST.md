@@ -24,5 +24,5 @@ Never overwrite a raw file in place; a new release gets a new filename and a new
 | File | Built by | Rows |
 |---|---|---|
 | `interim/bindingdb_202609_human_single_chain.parquet` | `python -m src.ingest.bindingdb_extract` | 2,343,392 |
-| `interim/chembl37_human_sp_activities.parquet` | `python -m src.ingest.chembl_extract` | _pending_ |
-| `interim/chembl37_human_sp_targets.parquet` | `python -m src.ingest.chembl_extract` | _pending_ |
+| `interim/chembl37_human_sp_activities.parquet` | `python -m src.ingest.chembl_extract` | 8,299,186 |
+| `interim/chembl37_human_sp_targets.parquet` | `python -m src.ingest.chembl_extract` | 5,869 targets |

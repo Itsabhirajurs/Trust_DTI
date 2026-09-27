@@ -65,3 +65,43 @@ Versions are pinned as constants in `src/config.py`.
 
 **Why.** Latest releases available on 2026-09-27. EBI publishes SHA-256 (not MD5) checksums; BindingDB publishes MD5.
 Each file is verified against its publisher's own checksum.
+
+## D-006 · 2026-09-27 · Target-family assignment method (Week 1 profiling)
+
+**Decision.** Family = ChEMBL `protein_classification` walked from each component's class links up to level 1
+(15 classes, e.g. Enzyme, Membrane receptor) and level 2 (e.g. Kinase, Family A GPCR). If a component's links
+disagree at a level it is labelled `Multiple` (42 components at L1), never an arbitrary pick. A component with
+an L1 but no L2 node gets `"<L1> (no L2)"`. Code: `src/ingest/families.py`, unit-tested.
+
+**Why.** Deterministic and auditable. Stratified reporting (Weeks 6–7) needs one family per protein without hiding ambiguity.
+
+## D-007 · 2026-09-27 · Censored relation operators
+
+**Decision.** Censored = `standard_relation ∈ {>, <, >=, <=, >>, <<}`. `~` (approximate) and NULL are not censored.
+No pipeline step filters on `pchembl_value IS NOT NULL`. Enforced by `tests/test_chembl_extract_data.py`.
+
+**Evidence.** ChEMBL 37 human single-protein data has 810,994 censored rows, **all** with null pChEMBL.
+`>>` (69 rows) and `<<` (1) exist and were initially missed. For imatinib the pChEMBL filter keeps 833 of 4,878 rows.
+
+## D-008 · 2026-09-27 · Overlap methodology for ChEMBL ↔ BindingDB
+
+**Decision.** Overlap is keyed on (InChIKey, UniProt accession), never SMILES, and reported three ways. The
+decision-relevant figure is *independent vs independent*: ChEMBL minus src_id 37 (BindingDB patents) versus
+BindingDB minus rows curated from ChEMBL.
+
+**Evidence.** Naive shared pairs 872,761 vs independent 66,145 (≈13× inflation). 52% of BindingDB human
+single-chain rows are ChEMBL-sourced.
+
+**Status of the integration question itself:** *recommendation only* (ChEMBL-only for Network 1 v1; revisit
+BindingDB's ~353k recent patent pairs for the temporal split). Pending owner review at the W1 gate; not locked.
+
+## D-009 · 2026-09-27 · Working rule: "inconclusive" is not "inactive"
+
+**Decision.** In all Week 1 estimates, `activity_comment` values "inconclusive" (1.73M rows), "not determined",
+"nd" and "na" are **not** counted as measured-inactive. The final three-state label rules are a Week 2 decision; this
+entry only prevents the most damaging conflation (Briefing §3.3) from creeping in beforehand.
+
+## D-010 · 2026-09-27 · Slow full-database test excluded by default
+
+**Decision.** `pytest` runs fast unit and data tests by default (~2 s). The full 24.5M-row count check is marked
+`slow` (~1 h on the laptop) and runs with `pytest -m slow` before any data-release bump.

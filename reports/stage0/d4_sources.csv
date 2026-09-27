@@ -1,0 +1,27 @@
+act_src_id,rows,pairs,with_pchembl,missing_doc_year,src_short_name,src_description
+7,2962782,2576779,781081,2962782,PUBCHEM_BIOASSAY,PubChem BioAssays
+1,2324270,1528504,1080958,17,LITERATURE,Scientific Literature
+37,2235193,566960,655402,0,BINDINGDB,BindingDB Patent Bioactivity Data
+16,167612,73200,0,167612,GSK_PKIS,GSK Published Kinase Inhibitor Set
+15,155038,77519,5225,155038,DRUGMATRIX,DrugMatrix
+38,107119,67626,44887,0,PATENT,SureChEMBL Patent Bioactivity Data
+54,79454,62109,3186,0,DONATED_PROBES,SGC Frankfurt - Donated Chemical Probes
+48,69402,69402,4829,0,TUM_PROTEOMIC_KUSTER,Kuster Lab Chemical Proteomics Drug Profiling
+55,52194,34889,1679,0,EUBOPEN_CGL,EUbOPEN Chemogenomic Library
+72,49576,25758,11155,0,LIT_CHEM_PROBES,Chemical Probe data from Scientific Literature
+65,22724,13810,4054,0,LIT_EUBOPEN_CGL,EUbOPEN Chemogenomic Library Literature Data
+33,18436,18074,5,0,GATES_LIBRARY,Gates Foundation Compound Collection
+61,17834,17604,0,0,KI_EUBOPEN,Karolinska Institute dNTPase SAMHD1 screening
+32,14035,13446,436,14035,ST_JUDE_LEISH,St. Jude Children’s Research Hospital Leishmania Screening
+59,11680,5600,150,0,HDAC6,Fraunhofer Institute HDAC6 screening
+18,3914,2063,622,0,TP_TRANSPORTER,TP-search Transporter Database
+21,2738,2738,2269,2738,SUPPLEMENTARY,Deposited Supplementary Bioactivity Data
+30,1959,283,1031,1959,K4DD,Kinetics for Drug Discovery (K4DD)
+71,1118,1024,32,0,ASAP,AI-driven Structure-enabled Antiviral Platform (ASAP)
+34,800,800,0,800,MMV_PBOX,Medicines for Malaria Venture (MMV) Pathogen Box
+17,800,400,0,800,MMV_MBOX,Medicines for Malaria Venture (MMV) Malaria Box
+14,267,138,95,267,DNDI,Drugs for Neglected Diseases Initiative (DNDi)
+58,96,91,53,0,RESOLUTE,Research Empowerment on Solute Carriers (RESOLUTE)
+28,84,24,0,84,FDA_APPROVAL,FDA approval pharmacokinetics/metabolism 
+52,59,57,58,0,SARS_COV_2,SARS-CoV-2 Screening Data
+23,2,2,0,2,OSM,Open Source Malaria Screening

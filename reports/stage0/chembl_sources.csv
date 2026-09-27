@@ -1,0 +1,68 @@
+src_id,src_short_name,src_description
+0,UNDEFINED,Undefined
+1,LITERATURE,Scientific Literature
+2,GSK_TCMDC,GSK Malaria Screening
+3,NOVARTIS,Novartis Malaria Screening
+4,ST_JUDE,St. Jude Children’s Research Hospital Malaria Screening
+5,SANGER,Sanger Institute Genomics of Drug Sensitivity in Cancer
+6,PDBE,PDBe Ligands (DEPRECATED)
+7,PUBCHEM_BIOASSAY,PubChem BioAssays
+8,CANDIDATES,Clinical Candidate Compounds
+9,FDA_ORANGE_BOOK,FDA Orange Book Drugs
+10,GRAC,Guide to Receptors and Channels (DEPRECATED)
+11,TG_GATES,Open TG-GATEs
+12,FDA_NEW_DRUGS,FDA Novel Drugs and Biotherapeutics
+13,USAN,United States Adopted Names (USAN)
+14,DNDI,Drugs for Neglected Diseases Initiative (DNDi)
+15,DRUGMATRIX,DrugMatrix
+16,GSK_PKIS,GSK Published Kinase Inhibitor Set
+17,MMV_MBOX,Medicines for Malaria Venture (MMV) Malaria Box
+18,TP_TRANSPORTER,TP-search Transporter Database
+19,HARVARD,Harvard University Malaria Screening
+20,WHO_TDR,WHO Tropical Disease Research (TDR) Malaria Screening
+21,SUPPLEMENTARY,Deposited Supplementary Bioactivity Data
+22,GSK_TB,GSK Tuberculosis Screening
+23,OSM,Open Source Malaria Screening
+24,MILLIPORE,Millipore Kinase Screening (DEPRECATED - MERGED WITH SRC_ID = 1)
+25,EXT. PROJECT CPDS,External Project Compounds
+26,ATLAS,Gene Expression Atlas Compounds (EMBL-EBI)
+27,ASTRAZENECA,AstraZeneca DMPK/physicochemical
+28,FDA_APPROVAL,FDA approval pharmacokinetics/metabolism 
+29,GSK_TCAKS,GSK Kinetoplastid Screening
+30,K4DD,Kinetics for Drug Discovery (K4DD)
+31,METABOLISM,Curated Drug Metabolism Pathways
+32,ST_JUDE_LEISH,St. Jude Children’s Research Hospital Leishmania Screening
+33,GATES_LIBRARY,Gates Foundation Compound Collection
+34,MMV_PBOX,Medicines for Malaria Venture (MMV) Pathogen Box
+35,HECATOS,Hepatic and Cardiac Toxicity Systems modelling (HeCaToS) Compounds
+36,WITHDRAWN,Withdrawn Drugs
+37,BINDINGDB,BindingDB Patent Bioactivity Data
+38,PATENT,SureChEMBL Patent Bioactivity Data
+39,DRUG_PK,Curated Drug Pharmacokinetic Data
+40,COADD,CO-ADD Antimicrobial Screening
+41,ATC,WHO Anatomical Therapeutic Chemical (ATC) Classification of Drugs
+42,BNF,British National Formulary (BNF)
+43,PKIS2,GSK Published Kinase Inhibitor Set 2
+48,TUM_PROTEOMIC_KUSTER,Kuster Lab Chemical Proteomics Drug Profiling
+49,HESI,HESI Cardiac Safety Committee Myocyte Subteam dataset
+51,WINZ_PLASMO,Winzeler Lab Plasmodium Screening
+52,SARS_COV_2,SARS-CoV-2 Screening Data
+53,PRODRUG_ACTIVE,Active Ingredient of a Prodrug
+54,DONATED_PROBES,SGC Frankfurt - Donated Chemical Probes
+55,EUBOPEN_CGL,EUbOPEN Chemogenomic Library
+56,SALVENSIS_LSHTM,London School of Hygiene and Tropical Medicine and Salvensis Schistosomiasis screening
+57,CARE,IMI-CARE SARS-CoV-2 Data
+58,RESOLUTE,Research Empowerment on Solute Carriers (RESOLUTE)
+59,HDAC6,Fraunhofer Institute HDAC6 screening
+60,MMV_MALARIA_HGL,MMV Malaria Hit Generation Library
+61,KI_EUBOPEN,Karolinska Institute dNTPase SAMHD1 screening
+63,INN,International Nonproprietary Names (INN) for Pharmaceutical Substances
+64,CSD23,Cardiff University Schistosomiasis
+65,LIT_EUBOPEN_CGL,EUbOPEN Chemogenomic Library Literature Data
+66,EMA,European Medicines Agency (EMA)
+67,DUNDEE_T_CRUZI,University of Dundee T. Cruzi
+68,EU-OPENSCREEN,EU-OPENSCREEN
+69,ZIMM_BT_12_23,EMBL Heidelberg Gut Microbiome Host Interactions
+70,ABER_NTD,Aberystwyth University Schistosomiasis
+71,ASAP,AI-driven Structure-enabled Antiviral Platform (ASAP)
+72,LIT_CHEM_PROBES,Chemical Probe data from Scientific Literature

@@ -168,8 +168,8 @@ Every retrieved item becomes a structured record — drug, protein, disease, evi
 
 ### 3.1 Primary sources
 
-- **ChEMBL** — release version: *(record exact version once downloaded — see Part 8 log for current status)*. Primary bioactivity source.
-- **BindingDB** — complementary binding evidence. Integration decision (full merge vs. ChEMBL-only for now) depends on the Week 1 Day 3 overlap analysis.
+- **ChEMBL** — release version: **ChEMBL 37** (prepared 2026-05-01; SQLite; SHA-256 verified 2026-09-27 — see `data/MANIFEST.md`). Primary bioactivity source.
+- **BindingDB** — release **202609** (MD5 verified). Complementary binding evidence. Week 1 D3 found ChEMBL and BindingDB import from each other (see `docs/stage0_report.md` §6); recommendation pending review: ChEMBL-only for Network 1 v1.
 - **UniProt** — canonical protein identifiers and sequences.
 - **Open Targets / DISGENET** — curated protein–disease association (Network 2 only, Week 8).
 
@@ -445,6 +445,31 @@ Prepare short, honest answers to these. Every one has already been reasoned thro
 - Bulk ChEMBL SQLite download attempted via direct FTP/HTTPS link — failed repeatedly (`ConnectionRefusedError`, network-level block, likely local network/firewall issue, not an EBI outage). Attempted via `chembl_downloader` package on a different network — was progressing successfully as of last check (~1% complete, ETA ~2.5 hours) before this session's context ended. **Status of that download at the start of the next session is unknown — check `data/raw/` for `chembl_37_sqlite.tar.gz` or the `chembl_downloader` cache location, and verify integrity with `tar -tzf` before trusting it.**
 - Discovered and noted: filtering ChEMBL activity queries on `pchembl_value__isnull=False` silently excludes many censored (`>`, `<` relation) measurements, since pChEMBL is often left null for inexact potency values. This is now documented in Part 3.4 above — apply this awareness to any future filtering logic in the ingestion pipeline.
 - Still open from Day 1: full schema note (`docs/chembl_schema_notes.md`) not yet written up as a standalone file; BindingDB not yet touched (Day 3 task); the censored-relation example from the *raw, unfiltered* activity query for imatinib had not yet been directly inspected by row at the point this session ended — confirm this explicitly before marking Day 1 complete.
+
+### 2026-09-27 — Week 1 completed to gate (Claude Code session 1)
+
+- **Status before:** W1 D1 partial. The ChEMBL tarball on disk was truncated (265 MB of 5.76 GB). The repo lived in OneDrive, and the local and remote histories had diverged.
+- **Decisions confirmed by the owner:** universal scope (all human single-protein targets, *not* kinome-only; supersedes the Project Bible), Briefing/Master Plan schedule is authoritative, Week 1 started 2026-09-21, heavy compute on Colab/Kaggle/HPC, free open-weight LLM for W9, push directly to `main`. Recorded as `DECISIONS.md` D-001–D-005.
+- **Done:**
+  - Moved the working repo to `C:\Users\91701\code\Trust_DTI`; the OneDrive copy is kept untouched as backup.
+  - Built a curated env (`requirements.in` + pinned `requirements.txt`).
+  - Resumed the ChEMBL 37 download, verified by SHA-256, and extracted it (activities 24,527,044 = release notes). Downloaded BindingDB 202609, MD5 verified.
+  - Wrote `data/MANIFEST.md` and `docs/chembl_schema_notes.md`.
+  - Closed D1: the imatinib censored row is shown in both the web client and SQLite, and a `!= '='` bug in the notebook was fixed.
+  - D2–D5 scripts are in `src/ingest/` with outputs in `reports/stage0/`, and the report is in `docs/stage0_report.md`. Tests: 9 fast plus 1 slow, all passing.
+  - A from-scratch re-run reproduced all 16 CSV/JSON outputs byte-for-byte.
+- **Found:**
+  - 5,738 proteins, 1.56M compounds, 5.06M pairs. Extreme skew: the top 10% of proteins hold 88% of pairs.
+  - ChEMBL ↔ BindingDB are mutually imported; the naive overlap is inflated about 13×.
+  - PubChem qHTS drives a pChEMBL spike at about 4.5 and **confounds per-family potency distributions** (oxidoreductase median 4.82 overall vs 6.36 without PubChem). This bears directly on §3.5.
+  - "Potency" is the largest endpoint. `>>` and `<<` operators exist. 1.73M "inconclusive" rows must not become INACTIVE.
+  - About 1.04M pairs look measured-inactive, so the PU fallback may not be needed.
+  - 40% of rows lack doc_year, which matters for the temporal split.
+- **Changed vs plan:**
+  - EBI publishes SHA-256, not MD5, so the checksum type was adjusted.
+  - Kinetic endpoints and %-inhibition surfaced as needing an explicit endpoint policy.
+  - `DECISIONS.md` D-006–D-010 added.
+- **Open for Week 2:** see `docs/stage0_report.md` §7 (nine issues). Owner review of the W1 gate is needed, and in particular the BindingDB recommendation (D-008). The Master Plan also wants the teammate to run the pipeline on their own machine.
 
 ---
 

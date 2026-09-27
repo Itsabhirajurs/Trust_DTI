@@ -1,0 +1,35 @@
+{
+  "headline": {
+    "activity_rows": 8299186,
+    "distinct_compounds_molregno": 1559417,
+    "distinct_compounds_inchikey": 1557251,
+    "compounds_missing_inchikey": 2166,
+    "distinct_targets_tid": 5738,
+    "distinct_proteins_accession": 5738,
+    "pairs_any_activity": 5064882,
+    "pairs_with_pchembl": 1943313,
+    "pairs_with_exact_value": 2502902,
+    "rows_censored_relation": 811064,
+    "rows_censored_with_null_pchembl": 811064,
+    "approved_drugs_max_phase_4": 2685
+  },
+  "skew": {
+    "proteins_median_partners": 9.0,
+    "proteins_with_lt10_partners": 2883,
+    "proteins_with_ge100_partners": 1761,
+    "top10pct_proteins_share_of_pairs": 0.8792,
+    "compounds_median_partners": 1.0,
+    "compounds_with_1_partner": 805297
+  },
+  "inactive_estimate": {
+    "rows_comment_inactive_or_not_active": 798181,
+    "rows_comment_lt50pct_at_10uM_no_curve": 149108,
+    "rows_comment_inactive_like": 947289,
+    "rows_comment_inconclusive_NOT_counted": 1729103,
+    "rows_censored_ge_10uM": 344287,
+    "rows_either": 1193163,
+    "pairs_either": 1044237,
+    "pairs_either_conf9": 559078,
+    "note": "Week 1 estimate only; the precise measured-inactive count and rule set is a Week 2 task."
+  }
+}

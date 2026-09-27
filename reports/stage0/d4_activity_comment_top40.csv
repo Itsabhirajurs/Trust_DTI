@@ -1,0 +1,41 @@
+activity_comment,rows
+,2603682
+inconclusive,1729103
+inactive,638483
+active,537293
+not active,159683
+inhibition < 50% @ 10 um and thus dose-reponse curve not measured,149108
+"summarised ac50 (mean value for measurements with a relation sign ""=""; largest value for measurements with relation sign "">"")",111785
+not determined,62201
+antagonist %inhib (mean),12829
+dose-dependent effect,10169
+% of control,9525
+agonist %max (mean),7141
+% of inhibition,3791
+na,3506
+unspecified,3406
+not evaluated,2824
+antagonist,1948
+interpretation: specific binding,1767
+nd,1500
+"data is reported as i50 but values are consistent with % inhibition, changed for chembl32 at suggestion of bz",1230
+tde,1121
+slightly active,1039
+note: corresponding ic50 reported as active,703
+agonist,698
+no data,565
+substrate [+],547
+uncertain,539
+% binding,439
+dde,426
+inhibitor [+],355
+nd(insoluble),302
+is not a substrate [-],238
+% of engagement,231
+% activity,191
+partial agonist,170
+substrate [],146
+% of activity,134
+transporter substrate,118
+not determined(insoluble),111
+not tested,105

@@ -1,0 +1,4 @@
+comparison,compounds_both,compounds_chembl_only,compounds_bdb_only,compounds_both_connectivity14,compounds_bdb_only_connectivity14,proteins_both,proteins_chembl_only,proteins_bdb_only,pairs_both,pairs_chembl_only,pairs_bdb_only
+A_naive_all_vs_all,547113,1010138,458939,811857,187998,3189,2548,167,872761,4181809,754419
+B_chembl_minus_bdbsrc_vs_bdb_all,343027,826616,663025,513016,486839,3175,2546,181,591662,3927774,1035518
+C_independent_vs_independent,56656,1112987,486489,77530,460903,1674,4047,140,66145,4453291,705983

@@ -1,0 +1,8 @@
+{
+  "chembl_version": "ChEMBL_37",
+  "targets": 5869,
+  "targets_with_multiple_components": 0,
+  "components_with_conflicting_l1": 42,
+  "activity_rows": 8299186,
+  "activities_table_total_rows": 24527044
+}

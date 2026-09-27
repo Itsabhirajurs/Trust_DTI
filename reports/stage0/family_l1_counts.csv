@@ -1,0 +1,17 @@
+family_l1,proteins,compounds,pairs,activity_rows
+Enzyme,2396,1008432,2546363,4462551
+Membrane receptor,455,393805,718858,1294839
+Epigenetic regulator,171,293752,526599,703754
+Unclassified protein,1658,264119,441257,549312
+Transcription factor,184,225527,328642,500600
+Ion channel,185,85598,105561,235480
+Transporter,168,68521,100492,154406
+Other membrane protein,14,99939,100043,105000
+Other cytosolic protein,191,86026,90153,145849
+Multiple,39,48140,48487,50492
+Secreted protein,120,41177,42307,61591
+Other nuclear protein,47,9352,9439,22410
+Auxiliary transport protein,19,2148,2978,7451
+Adhesion,26,1162,1820,2440
+Structural protein,48,880,959,1798
+Surface antigen,17,918,924,1213

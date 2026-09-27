@@ -1,0 +1,15 @@
+{
+  "chembl_bindingdb_src_ids": [
+    37
+  ],
+  "chembl_rows_from_bindingdb_src": 2230614,
+  "chembl_rows_total_keyed": 8280744,
+  "bdb_rows_from_chembl": 1214244,
+  "bdb_rows_total_keyed": 2343182,
+  "potency_agreement_independent": {
+    "overlapping_exact_pairs": 40988,
+    "median_abs_diff_log_units": 0.0,
+    "share_within_0.5_log": 0.8853566897628574,
+    "share_within_1.0_log": 0.9562066946423343
+  }
+}

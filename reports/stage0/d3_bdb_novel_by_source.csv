@@ -1,0 +1,9 @@
+bdb_curation_source,rows,pairs,pairs_not_in_chembl,proteins_not_in_chembl
+US Patent,985790,656145,353021,69
+PubChem,69137,57412,35980,10
+Curated from the literature by BindingDB,53428,47590,25964,30
+PDSP Ki,13159,7302,5172,18
+WIPO,3890,3127,3068,0
+D3R,2791,2157,2075,0
+CSAR,650,581,525,0
+"Taylor Research Group, UCSD",93,93,92,0
