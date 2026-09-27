@@ -10,7 +10,8 @@ import re
 import numpy as np
 import pandas as pd
 
-CENSORED_RELATIONS = {">", "<", ">=", "<="}
+# ">>" / "<<" occur in ChEMBL 37 (69 and 1 rows on human single-protein targets) — still censored bounds.
+CENSORED_RELATIONS = {">", "<", ">=", "<=", ">>", "<<"}
 
 _VALUE_RE = re.compile(r"^\s*(>=|<=|>|<|~|=)?\s*([0-9]*\.?[0-9]+(?:[eE][-+]?[0-9]+)?)\s*$")
 

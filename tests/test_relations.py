@@ -21,8 +21,8 @@ def test_split_relation_keeps_censored_values():
 
 
 def test_is_censored():
-    rel = pd.Series([">", "<", ">=", "<=", "=", "~", None], dtype="string")
-    assert is_censored(rel).tolist() == [True, True, True, True, False, False, False]
+    rel = pd.Series([">", "<", ">=", "<=", ">>", "<<", "=", "~", None], dtype="string")
+    assert is_censored(rel).tolist() == [True] * 6 + [False, False, False]
 
 
 def test_nm_to_p():
