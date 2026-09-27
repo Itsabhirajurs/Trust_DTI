@@ -1,0 +1,31 @@
+<!doctype html><html><head><meta charset="utf-8">
+<meta name="size" content="1500x395"><meta name="out" content="week03_data_pipeline/W3_01_code_workflow.png">
+<link rel="stylesheet" href="style.css">
+<style>
+ .s { width: 205px; } .s h3 { font-size: 13.5px; }
+ .s .cmd { font-family: Consolas, monospace; font-size: 11px; color: var(--blue); margin: 3px 0 5px; word-break: break-all; }
+ .s .out { font-size: 11.5px; color: var(--ink); margin-top: 5px; font-weight: 600; }
+ .chk { margin-top: 16px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+</style></head><body>
+<h1>Data pipeline built so far (code in <span class="mono" style="font-size:18px">src/ingest/</span>)</h1>
+<div class="sub">Every step is a script that re-runs from scratch. Raw data stays out of Git; small results are committed to <span class="mono">reports/stage0/</span>.</div>
+<div class="row">
+ <div class="box s blue"><h3>1 · Download</h3><p>ChEMBL 37 SQLite (5.8 GB) and BindingDB 202609 TSV (0.6 GB). Resumed after a failed attempt.</p><div class="out">2 archives</div></div>
+ <div class="arrow">→</div>
+ <div class="box s"><h3>2 · Verify</h3><p>Publisher checksums (SHA-256 / MD5). Row count vs release notes.</p><div class="cmd">data/MANIFEST.md</div><div class="out">✓ both match · 24,527,044 rows</div></div>
+ <div class="arrow">→</div>
+ <div class="box s"><h3>3 · Extract</h3><div class="cmd">chembl_extract.py<br>bindingdb_extract.py</div><p>Human single-protein only. No other filter. Censored values kept.</p><div class="out">8.30M ChEMBL rows<br>2.34M BindingDB rows</div></div>
+ <div class="arrow">→</div>
+ <div class="box s"><h3>4 · Profile</h3><div class="cmd">profile_chembl.py<br>families.py</div><p>Counts by family, source, endpoint, quality, missingness. Plots.</p><div class="out">5,738 proteins · 5.06M pairs</div></div>
+ <div class="arrow">→</div>
+ <div class="box s"><h3>5 · Cross-check</h3><div class="cmd">profile_overlap.py<br>profile_source_confounding.py</div><p>ChEMBL vs BindingDB overlap; PubChem effect on potency.</p><div class="out">13× overlap inflation found</div></div>
+ <div class="arrow">→</div>
+ <div class="box s green"><h3>6 · Report</h3><div class="cmd">docs/stage0_report.md<br>DECISIONS.md</div><p>Stage 0 report, 9 open issues, decision log.</p><div class="out">W1 gate ready for review</div></div>
+</div>
+<div class="chk">
+ <div class="box"><h3>Tests (pytest)</h3><p>9 fast + 1 slow, all passing. Include "censored rows survive extraction" and family mapping.</p></div>
+ <div class="box"><h3>Reproducibility</h3><p>Deleted outputs, re-ran extract + profile from the raw DB: all 16 result files byte-identical (SHA-256).</p></div>
+ <div class="box"><h3>Provenance</h3><p>Pinned data versions in <span class="mono">src/config.py</span>; pinned packages in <span class="mono">requirements.txt</span>; every choice dated in <span class="mono">DECISIONS.md</span>.</p></div>
+ <div class="box"><h3>Git</h3><p>Small, described commits pushed to <span class="mono">main</span>: github.com/Itsabhirajurs/Trust_DTI</p></div>
+</div>
+</body></html>

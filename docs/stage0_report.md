@@ -93,6 +93,7 @@ which could strengthen the temporal test set.
 1. **Family-vs-source confounding of potency.** 80% of pChEMBL values in the 4.25–5.0 spike are PubChem qHTS.
    Oxidoreductase median pChEMBL is 4.82 overall but 6.36 without PubChem (Kinase 7.09 → 7.25; GPCR-A 6.86 → 7.12).
    Per-family thresholds (Briefing §3.5) must control for source/endpoint, or they will encode HTS artifacts as biology.
+   Full per-family table: `reports/stage0/pchembl_source_confounding.csv` (7 families shift by more than 1 log unit).
 2. **Which endpoints count?** "Potency" (qHTS) is the largest endpoint but is single-series HTS data.
    Decide IC50/Ki/Kd/EC50-only versus including Potency/AC50, and exclude kinetics (k_on/k_off) and %-inhibition from thresholding.
 3. **Measured-inactive rules.** Settle which comment and censored patterns count as INACTIVE, at what concentration,

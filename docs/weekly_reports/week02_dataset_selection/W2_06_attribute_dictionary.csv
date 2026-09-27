@@ -1,0 +1,22 @@
+table,attribute,meaning,example,why_it_matters_for_TrustDTI
+activities,activity_id,Unique ID of one measurement,884645,Traceability: every number in the project can be traced back to one ChEMBL row
+activities,molregno,Internal compound ID (joins to molecule tables),—,Links a measurement to its drug/compound
+activities,assay_id,Experiment the measurement came from,—,Links to assay type and confidence score
+activities,standard_type,What was measured,IC50; Ki; Kd; EC50; Potency; Inhibition,Only some endpoints are comparable potencies; kinetics (k_on/k_off) and % inhibition are not
+activities,standard_relation,Operator on the value,= ; > ; < ; >= ; <= ; >> ; <<,'>' or '<' marks a censored bound (e.g. > 30000 nM = no activity up to 30 µM); must never be treated as exact
+activities,standard_value,Normalised numeric value,30000,Raw potency; meaningful only together with relation and units
+activities,standard_units,Unit after normalisation,nM,Thresholds are only valid on consistent units
+activities,pchembl_value,-log10(molar potency); only for exact values,7.0 (= 100 nM),Comparable potency scale; NULL for every censored row so it cannot be used as a filter
+activities,activity_comment,Free-text outcome,Not Active; inactive; inconclusive,Main source of measured-inactive labels; 'inconclusive' must stay UNTESTED
+activities,data_validity_comment,Curator warning,Outside typical range; Potential transcription error,Flags values to review before aggregation
+activities,potential_duplicate,Flag for a possibly repeated value,0 / 1,Avoids double counting the same measurement
+activities,src_id,Who deposited the record,1 literature; 7 PubChem; 37 BindingDB,Source strongly affects potency distributions and overlaps with BindingDB
+assays,assay_type,Kind of experiment,B binding; F functional; A ADMET,Binding vs functional readouts are not interchangeable
+assays,confidence_score,How precisely the target is assigned (0-9),9 = single protein assigned directly,Target certainty; only 8 and 9 occur for single-protein targets
+target_dictionary,target_type,Kind of target,SINGLE PROTEIN,Scope filter (with organism)
+target_dictionary,organism,Species of the target,Homo sapiens,Scope filter: human only
+component_sequences,accession,UniProt protein ID,P36888 (FLT3),Cross-database protein key; sequence feeds ESM-2
+protein_classification,pref_name / class_level,Protein family tree,Enzyme > Kinase,Every result is reported per family
+compound_structures,standard_inchi_key,Standard InChIKey of the compound,KTUFNOKKBVMGRW-UHFFFAOYSA-N (imatinib),Cross-database compound key (SMILES text differs between databases)
+molecule_dictionary,max_phase,Highest clinical phase,4 = approved drug,Identifies drugs that could be repurposed
+docs,year,Publication year of the source,2012,Needed for the time-based split; missing for 40% of rows

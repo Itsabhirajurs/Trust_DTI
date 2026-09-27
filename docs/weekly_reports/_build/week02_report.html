@@ -1,0 +1,61 @@
+<!doctype html><html><head><meta charset="utf-8">
+<meta name="pdf" content="week02_dataset_selection/Week02_Dataset_Selection_Report.pdf">
+<title>TrustDTI Week 2 Report</title><link rel="stylesheet" href="print.css"></head><body>
+
+<div class="head"><div class="k">TrustDTI · Weekly progress report</div>
+<h1>Week 2: Dataset selection, review and planning</h1>
+<div class="meta">Project: Uncertainty-aware drug–protein interaction network with evidence-guided drug repurposing · Repo: github.com/Itsabhirajurs/Trust_DTI</div></div>
+
+<div class="grid3">
+ <div><b>Done</b>Scope fixed with the team; data sources selected; ChEMBL schema and key attributes understood; two data rules set; plan locked.</div>
+ <div><b>Key decision</b>Universal scope: all human single-protein targets, reported per protein family. ChEMBL 37 is the primary source.</div>
+ <div><b>Next</b>Code the data pipeline: verify, extract and profile both databases, then publish a Stage 0 data report.</div>
+</div>
+
+<h2><span class="n">1</span>What TrustDTI is, in two sentences</h2>
+<p>TrustDTI predicts whether an existing drug is likely to bind a human protein, attaches a <b>calibrated confidence</b> to each prediction, and looks up (never predicts) whether that protein is linked to a disease. It then uses both signals to decide what literature to search: supporting evidence when the model is confident, <b>counter-evidence</b> when it is not.</p>
+<figure><img src="../week02_dataset_selection/W2_01_system_pipeline.png"><figcaption>Figure 1. Whole system. This week covers the "Data" stage and its planning.</figcaption></figure>
+
+<h2><span class="n">2</span>Dataset selection</h2>
+<p>We needed openly licensed, curated drug–protein measurements with enough detail to judge quality: units, censoring, assay type and origin. <b>ChEMBL 37</b> meets all four and is the primary source. <b>BindingDB</b> is kept as a cross-check. UniProt supplies protein identity, and the disease and literature sources come in later weeks.</p>
+<figure><img src="../week02_dataset_selection/W2_02_data_source_selection.png"><figcaption>Figure 2. Each source, its role in the project and the reason for choosing it.</figcaption></figure>
+
+<div class="box"><h3>Scope decision (DECISIONS.md D-001)</h3>
+All human single-protein targets, reported per protein family, rather than kinases only. <b>Gained:</b> a general, repurposing-relevant network. <b>Given up:</b> the kinome's density and cleaner cross-protein comparisons. <b>Mitigation:</b> every result is stratified by protein family, and a minimum-data rule per protein is set next.</div>
+
+<h2><span class="n">3</span>Understanding the data</h2>
+<p>A single ChEMBL measurement only becomes useful once it is joined to its assay, target, protein and family. We mapped the 11 tables involved and the keys that connect them.</p>
+<figure><img src="../week02_dataset_selection/W2_03_chembl_schema_join_path.png"><figcaption>Figure 3. Join path from one measurement to its drug, protein and protein family.</figcaption></figure>
+
+<table>
+ <tr><th>Attribute</th><th>Meaning</th><th>Why it matters</th></tr>
+ <tr><td><code>standard_type</code></td><td>What was measured (IC50, Ki, Kd, EC50, Potency…)</td><td>Only some endpoints are comparable potencies</td></tr>
+ <tr><td><code>standard_relation</code></td><td>Operator on the value (=, &gt;, &lt;)</td><td>"&gt;" means a lower bound, not an exact value</td></tr>
+ <tr><td><code>standard_value / units</code></td><td>Normalised value, e.g. 30000 nM</td><td>Meaningful only with relation and units</td></tr>
+ <tr><td><code>pchembl_value</code></td><td>−log10 molar potency (7 = 100 nM)</td><td>Comparable scale; empty for censored values</td></tr>
+ <tr><td><code>activity_comment</code></td><td>Free-text outcome ("Not Active", "inconclusive")</td><td>Main source of measured-inactive labels</td></tr>
+ <tr><td><code>confidence_score</code></td><td>How exactly the target is assigned (0–9)</td><td>Target certainty filter</td></tr>
+ <tr><td><code>src_id</code></td><td>Who deposited the record</td><td>Source affects potency and overlaps</td></tr>
+ <tr><td><code>accession / InChIKey</code></td><td>UniProt protein ID / compound key</td><td>Joining across databases (not SMILES)</td></tr>
+ <tr><td><code>docs.year</code></td><td>Publication year</td><td>Needed for the time-based split</td></tr>
+</table>
+<p style="font-size:9pt;color:#52514e">Full dictionary (21 fields, with examples): <code>W2_06_attribute_dictionary.csv</code>.</p>
+
+<h2><span class="n">4</span>Two rules that protect the whole project</h2>
+<figure><img src="../week02_dataset_selection/W2_04_labels_and_censored_data.png"><figcaption>Figure 4. Three-state labels, and why censored values must be kept. Numbers are from real ChEMBL rows for imatinib.</figcaption></figure>
+
+<h2><span class="n">5</span>Plan</h2>
+<figure><img src="../week02_dataset_selection/W2_05_project_roadmap.png"><figcaption>Figure 5. Roadmap in project weeks. Calibration, the router and the central experiment are protected first if time runs short.</figcaption></figure>
+<table>
+ <tr><th>Decision (dated in DECISIONS.md)</th><th>What we chose</th></tr>
+ <tr><td>D-001 Scope</td><td>All human single-protein targets, reported per family</td></tr>
+ <tr><td>D-002 Schedule</td><td>10 build weeks + 2 reserved buffer weeks, with a gate at the end of each phase</td></tr>
+ <tr><td>D-003 Compute</td><td>No local GPU: embeddings on Colab/Kaggle/HPC; free open-weight LLM for the evidence stage</td></tr>
+ <tr><td>D-005 Data versions</td><td>ChEMBL 37 and BindingDB 202609, each checksum-verified</td></tr>
+</table>
+<div class="box warn"><h3>Challenges this week</h3>
+The ChEMBL bulk download (5.8 GB) failed repeatedly and left a corrupt partial file. We fixed it by resuming on another network and accepting the file only after its checksum matched. Our planning documents also disagreed on scope and schedule; the team settled both and recorded the outcome in DECISIONS.md.</div>
+<div class="box"><h3>Next week</h3>Verify and extract both databases; count proteins, compounds and pairs per family; check sources, quality and missing values; measure ChEMBL–BindingDB overlap; publish the Stage 0 data report with an open-issue list.</div>
+
+<div class="foot">Supporting files in this folder: W2_01–W2_05 (figures), W2_06_attribute_dictionary.csv, references.md, WEEK02_FORM_ENTRIES.md. Figures are built from source by docs/weekly_reports/_build/.</div>
+</body></html>

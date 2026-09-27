@@ -1,0 +1,38 @@
+<!doctype html><html><head><meta charset="utf-8">
+<meta name="size" content="1500x410"><meta name="out" content="week02_dataset_selection/W2_03_chembl_schema_join_path.png">
+<link rel="stylesheet" href="style.css">
+<style>
+ .t { width: 210px; } .t h3 { font-family: Consolas, monospace; font-size: 13.5px; }
+ .t .k { font-family: Consolas, monospace; font-size: 11.5px; color: var(--ink2); line-height: 1.45; }
+ .k b { color: var(--blue); font-weight: 600; }
+ .lbl { font-size: 11px; color: var(--muted); text-align: center; }
+ .col { display: flex; flex-direction: column; gap: 10px; }
+</style></head><body>
+<h1>ChEMBL: how one measurement links to a drug, a protein and a family</h1>
+<div class="sub">The 11 tables used and their join keys (verified against the local ChEMBL 37 database). Blue = join key.</div>
+<div class="row" style="align-items:center">
+ <div class="col">
+  <div class="box t"><h3>molecule_dictionary</h3><div class="k"><b>molregno</b> · chembl_id · max_phase<br>(4 = approved drug)</div></div>
+  <div class="box t"><h3>compound_structures</h3><div class="k"><b>molregno</b> · standard_inchi_key<br>(cross-database compound key)</div></div>
+ </div>
+ <div class="arrow">⟵</div>
+ <div class="col">
+  <div class="box t orange" style="width:250px"><h3>activities</h3><div class="k">one measurement<br><b>activity_id</b> · <b>assay_id</b> · <b>molregno</b> · <b>doc_id</b> · <b>src_id</b><br>standard_type (IC50, Ki…)<br>standard_relation (=, &gt;, &lt;)<br>standard_value · standard_units<br>pchembl_value · activity_comment</div></div>
+  <div class="row" style="gap:10px">
+   <div class="box t" style="width:120px"><h3>docs</h3><div class="k"><b>doc_id</b> · year</div></div>
+   <div class="box t" style="width:120px"><h3>source</h3><div class="k"><b>src_id</b> · name</div></div>
+  </div>
+ </div>
+ <div class="arrow">⟶</div>
+ <div class="box t"><h3>assays</h3><div class="k"><b>assay_id</b> · <b>tid</b><br>assay_type (B/F/A)<br>confidence_score (0–9)</div></div>
+ <div class="arrow">⟶</div>
+ <div class="box t blue"><h3>target_dictionary</h3><div class="k"><b>tid</b> · chembl_id<br>target_type = SINGLE PROTEIN<br>organism = Homo sapiens<br><span style="color:var(--orange)">← scope filter</span></div></div>
+ <div class="arrow">⟶</div>
+ <div class="col">
+  <div class="box t"><h3>target_components</h3><div class="k"><b>tid</b> · <b>component_id</b></div></div>
+  <div class="box t"><h3>component_sequences</h3><div class="k"><b>component_id</b> · accession (UniProt) · sequence</div></div>
+  <div class="box t"><h3>component_class → protein_classification</h3><div class="k"><b>protein_class_id</b> · parent_id · class_level<br>walk up → family L1 / L2</div></div>
+ </div>
+</div>
+<div class="foot">Full notes: docs/chembl_schema_notes.md. Tables not needed yet (e.g. drug_indication, mechanism) are out of scope until later weeks.</div>
+</body></html>

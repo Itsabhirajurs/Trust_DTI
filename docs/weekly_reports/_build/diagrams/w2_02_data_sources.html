@@ -1,0 +1,15 @@
+<!doctype html><html><head><meta charset="utf-8">
+<meta name="size" content="1400x510"><meta name="out" content="week02_dataset_selection/W2_02_data_source_selection.png">
+<link rel="stylesheet" href="style.css"></head><body>
+<h1>Dataset selection: what each source is for</h1>
+<div class="sub">Scope: every human single-protein target (universal, reported per protein family). Decided by the team; see DECISIONS.md D-001.</div>
+<table>
+ <tr><th style="width:17%">Source (version)</th><th style="width:27%">What it contains</th><th style="width:26%">Role in TrustDTI</th><th style="width:10%">Used in (project week)</th><th>Decision / why</th></tr>
+ <tr><td><b>ChEMBL 37</b><br><span class="mono">SQLite, 5.8 GB → 30 GB</span></td><td>24.5M curated bioactivity measurements, 2.9M compounds, 18.5k targets, from papers, patents and screening centres.</td><td><b>Primary source.</b> Drug–protein measurements that build Network 1 and train the model.</td><td>W1–W7</td><td><span class="tag done">Selected</span> Largest curated, openly licensed source. Records units, censoring, assay confidence and origin for every value.</td></tr>
+ <tr><td><b>BindingDB 202609</b><br><span class="mono">TSV, 0.6 GB → 9 GB</span></td><td>3.2M binding measurements (Ki, IC50, Kd, EC50) from literature, patents, PubChem.</td><td>Cross-check and possible extra coverage.</td><td>W1 check</td><td><span class="tag next">Review</span> Profiling showed it largely copies ChEMBL (and vice versa). Recommendation: ChEMBL-only for v1.</td></tr>
+ <tr><td><b>UniProt</b><br><span class="mono">Swiss-Prot 2025_03 via ChEMBL</span></td><td>Canonical protein IDs (accessions) and amino-acid sequences.</td><td>Protein identity key across databases; sequences for ESM-2 embeddings.</td><td>W3–W4</td><td><span class="tag done">Selected</span> Standard protein identifier; already linked inside ChEMBL.</td></tr>
+ <tr><td><b>Open Targets / DisGeNET</b></td><td>Curated gene/protein–disease associations with evidence scores.</td><td>Disease anchor (Network 2): looked up, never predicted.</td><td>W8</td><td><span class="tag later">Planned</span> Curated and auditable. Keeps the disease link independent of the model.</td></tr>
+ <tr><td><b>PubMed / PubTator</b><br><span class="mono">NCBI E-utilities</span></td><td>Biomedical abstracts with pre-tagged drugs, genes and diseases.</td><td>Literature evidence for the retrieval agent.</td><td>W9</td><td><span class="tag later">Planned</span> Free API with entity annotations, so no custom NER is needed.</td></tr>
+</table>
+<div class="foot">Identifiers used for joining: compounds by InChIKey (not SMILES, whose text differs between databases); proteins by UniProt accession.</div>
+</body></html>

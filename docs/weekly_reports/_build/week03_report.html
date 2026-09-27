@@ -1,0 +1,61 @@
+<!doctype html><html><head><meta charset="utf-8">
+<meta name="pdf" content="week03_data_pipeline/Week03_Data_Pipeline_Report.pdf">
+<title>TrustDTI Week 3 Report</title><link rel="stylesheet" href="print.css"></head><body>
+
+<div class="head"><div class="k">TrustDTI · Weekly progress report</div>
+<h1>Week 3: Data pipeline and first results</h1>
+<div class="meta">Code: github.com/Itsabhirajurs/Trust_DTI (src/ingest, tests, reports/stage0) · Full data report: docs/stage0_report.md</div></div>
+
+<div class="grid3">
+ <div><b>Built</b>Verified downloads, extraction for both databases, profiling, overlap and source analysis, 10 tests.</div>
+ <div><b>Found</b>5.06M drug–protein pairs on 5,738 proteins. The databases copy each other. Screening data distorts potency per family.</div>
+ <div><b>Next</b>Lock the dataset rules (endpoints, thresholds, inactive labels, minimum data per protein, time split) from these numbers.</div>
+</div>
+
+<h2><span class="n">1</span>What we built</h2>
+<figure><img src="../week03_data_pipeline/W3_01_code_workflow.png"><figcaption>Figure 1. Pipeline steps, the script behind each, and the checks around them.</figcaption></figure>
+<figure><img src="../week03_data_pipeline/W3_02_headline_numbers.png"><figcaption>Figure 2. The dataset at a glance (ChEMBL 37, human single-protein targets).</figcaption></figure>
+
+<h2 class="pb"><span class="n">2</span>What the data showed</h2>
+<p><b>Uneven coverage.</b> Enzymes dominate, and data is concentrated on a few proteins: the top 10% of proteins hold 88% of all pairs, while half have fewer than 10 partners. This affects how we split data for "new protein" testing.</p>
+<figure><img src="../week03_data_pipeline/W3_03_family_counts.png"><figcaption>Figure 3. Pairs and proteins per family. 1,658 proteins (29%) have no family classification but only sparse data.</figcaption></figure>
+<p><b>Mixed origins.</b> A third of records are PubChem screening results, which have no publication year and so cannot be used in a time-based split.</p>
+<figure><img src="../week03_data_pipeline/W3_04_data_sources.png"><figcaption>Figure 4. Records by source.</figcaption></figure>
+
+<h2 class="pb"><span class="n">3</span>Two findings that change the plan</h2>
+<p><b>(a) The second database is mostly a copy.</b> 52% of BindingDB's human records come from ChEMBL, and ChEMBL imports BindingDB's patent data. Counted naively the overlap looks large; on independent records only it is 13× smaller. BindingDB would add about 8% new pairs, mostly patents (likely newer than ChEMBL 37, which is still to be checked). <b>Recommendation:</b> use ChEMBL only for the first network, and check whether those patents could strengthen the time-based test.</p>
+<figure><img src="../week03_data_pipeline/W3_05_overlap_naive_vs_independent.png"><figcaption>Figure 5. Shared drug–protein pairs, naive vs independent.</figcaption></figure>
+<p><b>(b) Screening data distorts family potency.</b> 80% of the low-potency spike at pChEMBL ≈ 4.5 comes from PubChem screens. For oxidoreductases the median moves from 4.8 to 6.4 when screens are excluded. A per-family activity threshold must therefore control for data source, or it will treat screening artefacts as biology.</p>
+<figure><img src="../week03_data_pipeline/W3_06_pubchem_confounding.png"><figcaption>Figure 6. Median potency per family, with and without PubChem screening data.</figcaption></figure>
+
+<h2 class="pb"><span class="n">4</span>Trial and error</h2>
+<figure><img src="../week03_data_pipeline/W3_09_trial_and_error_log.png"><figcaption>Figure 7. Problems found while building, how each was caught, and what changed.</figcaption></figure>
+
+<h2><span class="n">5</span>Quality checks</h2>
+<ul>
+ <li><b>Checksums:</b> ChEMBL SHA-256 and BindingDB MD5 both match the publishers' values. The database row count (24,527,044) matches the release notes.</li>
+ <li><b>Tests:</b> 10 automated tests, all passing. They cover censored-value parsing, the family mapping, "censored rows survive extraction" (checked against a direct SQL count) and a full-database row check.</li>
+ <li><b>Reproducibility:</b> we deleted the outputs and re-ran extraction and profiling from the raw database. All 16 result files came out byte-identical.</li>
+</ul>
+
+<h2><span class="n">6</span>Open questions for next week</h2>
+<ol>
+ <li>Which endpoints count: IC50/Ki/Kd/EC50 only, or also screening "Potency" (2.69M rows)?</li>
+ <li>Activity thresholds per family that control for data source (finding b).</li>
+ <li>Rules for measured-inactive labels (~1.04M candidate pairs); "inconclusive" stays UNTESTED.</li>
+ <li>Time-split cutoff, given that 40% of rows have no year.</li>
+ <li>Minimum data per protein for a meaningful "new protein" test (2,883 proteins have &lt;10 partners).</li>
+ <li>Confidence floor (only 8 or 9 occur); handling of duplicates and curator-flagged values; BindingDB decision.</li>
+</ol>
+
+<h2><span class="n">7</span>How to reproduce</h2>
+<pre>pip install -r requirements.txt
+python -m src.ingest.chembl_extract        # needs data/raw/chembl_37 (see data/MANIFEST.md)
+python -m src.ingest.bindingdb_extract
+python -m src.ingest.profile_chembl
+python -m src.ingest.profile_overlap
+python -m src.ingest.profile_source_confounding
+pytest                                     # fast tests;  pytest -m slow  for the full-database check</pre>
+
+<div class="foot">Supporting files in this folder: W3_01–W3_09 (figures; W3_07 interaction skew and W3_08 potency distribution are in the folder only), references.md, WEEK03_FORM_ENTRIES.md. Figures are built from committed data by docs/weekly_reports/_build/.</div>
+</body></html>

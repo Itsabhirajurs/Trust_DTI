@@ -1,0 +1,23 @@
+<!doctype html><html><head><meta charset="utf-8">
+<meta name="size" content="1400x370"><meta name="out" content="week03_data_pipeline/W3_02_headline_numbers.png">
+<link rel="stylesheet" href="style.css">
+<style>
+ .tiles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+ .tile { border: 1.5px solid var(--line); border-radius: 10px; padding: 14px 16px; }
+ .n { font-size: 34px; font-weight: 800; letter-spacing: -.02em; }
+ .l { font-size: 13px; color: var(--ink2); margin-top: 2px; }
+ .d { font-size: 12px; color: var(--muted); margin-top: 6px; line-height: 1.35; }
+</style></head><body>
+<h1>What the data looks like: ChEMBL 37, human single-protein targets</h1>
+<div class="sub">Extracted from 24.5M measurements in the full database. Source: reports/stage0/chembl_profile_summary.json</div>
+<div class="tiles">
+ <div class="tile"><div class="n">8.30M</div><div class="l">activity measurements</div><div class="d">34% of all ChEMBL records</div></div>
+ <div class="tile"><div class="n">5,738</div><div class="l">human proteins</div><div class="d">29% have no family classification</div></div>
+ <div class="tile"><div class="n">1.56M</div><div class="l">compounds</div><div class="d">2,685 approved drugs among them</div></div>
+ <div class="tile"><div class="n">5.06M</div><div class="l">drug–protein pairs</div><div class="d">38% have a standard potency (pChEMBL)</div></div>
+ <div class="tile" style="border-color:var(--orange)"><div class="n" style="color:var(--orange)">88%</div><div class="l">of pairs sit on the top 10% of proteins</div><div class="d">median protein has only 9 partners</div></div>
+ <div class="tile" style="border-color:var(--orange)"><div class="n" style="color:var(--orange)">811k</div><div class="l">censored values (&gt;, &lt;)</div><div class="d">all have no pChEMBL: kept on purpose</div></div>
+ <div class="tile" style="border-color:var(--orange)"><div class="n" style="color:var(--orange)">40%</div><div class="l">records with no publication year</div><div class="d">limits the time-based split</div></div>
+ <div class="tile" style="border-color:var(--green)"><div class="n" style="color:var(--green)">~1.04M</div><div class="l">pairs look measured-inactive</div><div class="d">estimate; exact rules decided next</div></div>
+</div>
+</body></html>

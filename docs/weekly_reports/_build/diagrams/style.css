@@ -1,0 +1,32 @@
+/* Shared style for report diagrams (rendered to PNG by render.py). Light, print-friendly. */
+:root {
+  --ink: #0b0b0b; --ink2: #52514e; --muted: #8a8984; --line: #d9d8d2; --surface: #ffffff; --panel: #f6f6f3;
+  --blue: #2a78d6; --blue-bg: #eaf2fc; --orange: #eb6834; --orange-bg: #fdefe9; --green: #008300; --green-bg: #e8f4e8;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: var(--surface); color: var(--ink); font-family: "Segoe UI", Arial, sans-serif; font-size: 15px; }
+body { padding: 28px 32px; }
+h1 { font-size: 22px; margin-bottom: 4px; }
+.sub { color: var(--ink2); font-size: 13px; margin-bottom: 18px; }
+.foot { color: var(--muted); font-size: 11.5px; margin-top: 14px; }
+.row { display: flex; align-items: stretch; gap: 0; }
+.box { border: 1.5px solid var(--line); border-radius: 8px; padding: 10px 12px; background: var(--surface); }
+.box h3 { font-size: 14px; margin-bottom: 4px; }
+.box p, .box li { font-size: 12.5px; color: var(--ink2); line-height: 1.35; }
+.box ul { padding-left: 16px; }
+.blue { border-color: var(--blue); background: var(--blue-bg); }
+.orange { border-color: var(--orange); background: var(--orange-bg); }
+.green { border-color: var(--green); background: var(--green-bg); }
+.panel { background: var(--panel); border-radius: 10px; padding: 12px 14px; }
+.arrow { display: flex; align-items: center; justify-content: center; color: var(--ink2); font-size: 22px; min-width: 30px; }
+.darrow { text-align: center; color: var(--ink2); font-size: 22px; line-height: 26px; }
+.tag { display: inline-block; font-size: 10.5px; font-weight: 600; padding: 1px 7px; border-radius: 10px; margin-top: 5px; }
+.tag.done { background: var(--green-bg); color: var(--green); border: 1px solid var(--green); }
+.tag.next { background: var(--blue-bg); color: var(--blue); border: 1px solid var(--blue); }
+.tag.later { background: var(--panel); color: var(--ink2); border: 1px solid var(--line); }
+table { border-collapse: collapse; width: 100%; }
+th, td { border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; padding: 8px 10px; font-size: 13px; }
+th { color: var(--ink2); font-size: 12px; text-transform: uppercase; letter-spacing: .03em; background: var(--panel); }
+td b { color: var(--ink); }
+code { font-family: Consolas, monospace; font-size: 12px; background: var(--panel); padding: 0 4px; border-radius: 3px; }
+.mono { font-family: Consolas, monospace; font-size: 12px; }

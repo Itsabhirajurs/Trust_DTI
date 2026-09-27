@@ -1,0 +1,39 @@
+<!doctype html><html><head><meta charset="utf-8">
+<meta name="size" content="1400x515"><meta name="out" content="week02_dataset_selection/W2_04_labels_and_censored_data.png">
+<link rel="stylesheet" href="style.css">
+<style>
+ .three { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 18px; }
+ .big { font-size: 20px; font-weight: 800; margin-bottom: 4px; }
+ .bar { height: 26px; border-radius: 4px; display: flex; align-items: center; padding-left: 8px; font-size: 12px; color: #fff; font-weight: 600; }
+ .two { display: grid; grid-template-columns: 1.1fr 1fr; gap: 14px; }
+</style></head><body>
+<h1>Two data rules that protect the whole project</h1>
+<div class="sub">Both prevent silent errors that would make a drug–protein model look better (or worse) than it really is.</div>
+
+<h3 style="font-size:15px;margin-bottom:8px">Rule 1: every drug–protein pair has exactly one of three states</h3>
+<div class="three">
+ <div class="box green"><div class="big" style="color:var(--green)">ACTIVE</div><p>A measurement exists <b>and</b> shows meaningful activity (threshold set from real data in week 2 of the project plan).</p></div>
+ <div class="box orange"><div class="big" style="color:var(--orange)">INACTIVE</div><p>A measurement exists <b>and</b> shows no meaningful activity under the tested conditions, e.g. "not active", IC50 &gt; 10 µM.</p></div>
+ <div class="box"><div class="big" style="color:var(--ink2)">UNTESTED</div><p>No measurement, or an unusable one ("inconclusive", "not determined"). <b>Never converted to INACTIVE</b>: most drug–protein pairs were simply never tested.</p></div>
+</div>
+
+<div class="two">
+ <div class="box"><h3>Rule 2: censored values are not exact values</h3>
+  <p style="margin:6px 0 10px">Real row, ChEMBL activity <span class="mono">884645</span>: imatinib vs FLT3, IC50 <b>&gt; 30,000 nM</b>.<br>
+  It means "no activity found up to 30 µM" (a lower bound), <b>not</b> "potency = 30 µM".</p>
+  <p style="margin-bottom:6px">Imatinib activity rows in ChEMBL:</p>
+  <div class="bar" style="width:100%;background:var(--blue)">All rows: 4,878 (100%)</div>
+  <div style="height:6px"></div>
+  <div style="display:flex;align-items:center;gap:8px"><div class="bar" style="width:17%;background:var(--orange)">833</div><span style="font-size:12px;color:var(--ink2)">kept by the pChEMBL filter (17%)</span></div>
+  <p style="margin-top:6px">A common shortcut (keep only rows with a pChEMBL value) keeps 17% and drops <b>all 1,335 censored rows</b>, which are exactly the "inactive" evidence we need.</p>
+ </div>
+ <div class="box blue"><h3>What this means for the pipeline</h3><ul style="margin-top:6px">
+  <li>Keep every relation: <span class="mono">=  &gt;  &lt;  &gt;=  &lt;=  &gt;&gt;  &lt;&lt;</span></li>
+  <li>Never filter on <span class="mono">pchembl_value IS NOT NULL</span></li>
+  <li>"inconclusive" (1.73M rows) is UNTESTED, not INACTIVE</li>
+  <li>Enforced by automated tests (<span class="mono">tests/test_chembl_extract_data.py</span>)</li>
+  <li>Stated openly as a positive-unlabelled problem if negatives turn out scarce</li>
+ </ul></div>
+</div>
+<div class="foot">Sources: CLAUDE_CODE_BRIEFING.md §3.3–3.4; notebook 01_chembl_first_look.ipynb; docs/chembl_schema_notes.md.</div>
+</body></html>

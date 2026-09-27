@@ -1,0 +1,17 @@
+<!doctype html><html><head><meta charset="utf-8">
+<meta name="size" content="1400x535"><meta name="out" content="week03_data_pipeline/W3_09_trial_and_error_log.png">
+<link rel="stylesheet" href="style.css"></head><body>
+<h1>Trial and error: what went wrong, how we caught it, what we changed</h1>
+<div class="sub">Each of these would have silently changed a result if it had not been checked.</div>
+<table>
+ <tr><th style="width:22%">Problem</th><th style="width:30%">How it was caught</th><th style="width:30%">Fix</th><th>Lesson</th></tr>
+ <tr><td><b>ChEMBL download failed</b>; a 265 MB partial file of 5.8 GB looked usable</td><td><span class="mono">gzip: unexpected end of file</span> on inspection</td><td>Resumed with <span class="mono">curl -C -</span>; accepted only after the SHA-256 matched EBI's published value</td><td>Trust checksums, not file names or sizes</td></tr>
+ <tr><td><b>Repo inside OneDrive</b>, with a 30 GB database about to sync</td><td>Environment review before starting</td><td>Moved the working copy to <span class="mono">C:\Users\91701\code</span>; OneDrive copy kept as backup</td><td>Keep big data out of synced folders</td></tr>
+ <tr><td><b>BindingDB: 5 rows "missing"</b> after parsing 9 GB</td><td>Reconciled line count (3,237,052) with rows read (3,237,047)</td><td>Found 5 blank lines + 1 corrupt NUL line in the publisher's file; confirmed no data lost</td><td>Always reconcile counts end to end</td></tr>
+ <tr><td><b>Notebook over-counted censored rows</b></td><td>Relation counts didn't add up (859 blank relations)</td><td>Replaced <span class="mono">!= '='</span> with an explicit operator list</td><td>Missing ≠ "not equal"</td></tr>
+ <tr><td><b>Unexpected operators</b> <span class="mono">&gt;&gt;</span> and <span class="mono">&lt;&lt;</span> (70 rows)</td><td>Full relation table in profiling</td><td>Added to the censored set; unit test updated</td><td>Profile before assuming a field's values</td></tr>
+ <tr><td><b>ChEMBL–BindingDB overlap looked huge</b> (873k shared pairs)</td><td>BindingDB's source column: 52% of its rows come <i>from</i> ChEMBL</td><td>Measured overlap on independent records only: 66k (13× smaller)</td><td>Check where "second sources" got their data</td></tr>
+ <tr><td><b>Family potency looked very different</b> (oxidoreductase median 4.8)</td><td>A spike at pChEMBL ≈ 4.5 in the histogram</td><td>80% of the spike is PubChem screening; without it the median is 6.4. Flagged for threshold design</td><td>Separate data-source effects from biology</td></tr>
+ <tr><td><b>A test took 58 minutes</b></td><td>Timed test run</td><td>Marked the full-database test <span class="mono">slow</span>; the default suite runs in 2 s</td><td>Keep the everyday test loop fast</td></tr>
+</table>
+</body></html>

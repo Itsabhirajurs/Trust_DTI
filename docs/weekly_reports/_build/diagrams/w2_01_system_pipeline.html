@@ -1,0 +1,56 @@
+<!doctype html><html><head><meta charset="utf-8">
+<meta name="size" content="1500x520"><meta name="out" content="week02_dataset_selection/W2_01_system_pipeline.png">
+<link rel="stylesheet" href="style.css">
+<style>
+ .stage { width: 175px; }
+ .grid2 { display: grid; grid-template-columns: 1fr; gap: 18px; }
+ .lane-title { font-size: 13px; font-weight: 700; color: var(--ink2); text-transform: uppercase; letter-spacing: .04em; margin-bottom: 8px; }
+ .policies { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 6px; }
+ .pol { font-size: 11.5px; border-radius: 6px; padding: 5px 7px; text-align: center; font-weight: 600; }
+</style></head><body>
+<h1>TrustDTI: end-to-end system</h1>
+<div class="sub">One trained model, a calibrated confidence for every prediction, curated disease links, and evidence retrieval that adapts to the model's uncertainty.</div>
+
+<div class="grid2">
+ <div class="panel">
+  <div class="lane-title">Offline: built once, cached (project weeks 1–8)</div>
+  <div class="row">
+   <div class="box stage blue"><h3>1 · Data</h3><p>ChEMBL 37 (+ BindingDB check). Human single-protein targets.</p><span class="tag done">W1 done</span></div>
+   <div class="arrow">→</div>
+   <div class="box stage"><h3>2 · Network 1</h3><p>Compound–protein pairs. Labels ACTIVE / INACTIVE / UNTESTED. 4 splits.</p><span class="tag next">W2–3</span></div>
+   <div class="arrow">→</div>
+   <div class="box stage"><h3>3 · Embeddings</h3><p>ChemBERTa (drugs) + ESM-2 (proteins). Frozen, cached once.</p><span class="tag later">W4</span></div>
+   <div class="arrow">→</div>
+   <div class="box stage"><h3>4 · Fusion head</h3><p>Small MLP: the <b>only</b> trained part. Outputs interaction probability.</p><span class="tag later">W5</span></div>
+   <div class="arrow">→</div>
+   <div class="box stage"><h3>5 · Evaluation</h3><p>Random / new-scaffold / new-protein / time splits, per family.</p><span class="tag later">W6</span></div>
+   <div class="arrow">→</div>
+   <div class="box stage"><h3>6 · Conformal</h3><p>Probability → set {1} confident, {0,1} unsure, {0} confident-no.</p><span class="tag later">W7</span></div>
+   <div class="arrow">→</div>
+   <div class="box stage"><h3>7 · Network 2</h3><p>+ curated protein–disease links (Open Targets / DisGeNET). Looked up, never predicted.</p><span class="tag later">W8</span></div>
+  </div>
+ </div>
+
+ <div class="panel">
+  <div class="lane-title">Online: per query, in seconds (project weeks 8–10)</div>
+  <div class="row">
+   <div class="box stage"><h3>Query</h3><p>Drug → targets → diseases<br>or disease → proteins → drugs</p></div>
+   <div class="arrow">→</div>
+   <div class="box orange" style="width:390px"><h3>Dual-signal router (plain, tested code, not an LLM)</h3>
+     <p>confidence state × disease-link strength → one policy</p>
+     <div class="policies">
+       <div class="pol" style="background:var(--green-bg);color:var(--green)">CONFIRM<br><span style="font-weight:400">confident + strong link</span></div>
+       <div class="pol" style="background:var(--orange-bg);color:var(--orange)">CHALLENGE<br><span style="font-weight:400">unsure + strong link</span></div>
+       <div class="pol" style="background:var(--panel);color:var(--ink2)">STOP<br><span style="font-weight:400">confident-no</span></div>
+     </div></div>
+   <div class="arrow">→</div>
+   <div class="box stage"><h3>Evidence search</h3><p>Mechanistic · Disease context · Counter-evidence · Safety</p></div>
+   <div class="arrow">→</div>
+   <div class="box stage"><h3>Extraction</h3><p>Each passage → record: SUPPORT / CONTRADICT / UNKNOWN + citation</p></div>
+   <div class="arrow">→</div>
+   <div class="box stage blue"><h3>Report</h3><p>Prediction + calibrated confidence + disease link + cited evidence</p></div>
+  </div>
+ </div>
+</div>
+<div class="foot">Research question: does uncertainty-adaptive evidence retrieval beat a fixed retrieval policy on the same candidates? (Tested in project week 9.) Source: CLAUDE_CODE_BRIEFING.md Part 2.</div>
+</body></html>

@@ -1,0 +1,31 @@
+<!doctype html><html><head><meta charset="utf-8">
+<meta name="size" content="1500x500"><meta name="out" content="week02_dataset_selection/W2_05_project_roadmap.png">
+<link rel="stylesheet" href="style.css">
+<style>
+ .g { display: grid; grid-template-columns: 260px repeat(12, 1fr); gap: 3px 3px; align-items: center; }
+ .h { font-size: 11.5px; color: var(--ink2); text-align: center; font-weight: 600; }
+ .ph { font-size: 13px; font-weight: 600; }
+ .ph span { display: block; font-size: 11px; font-weight: 400; color: var(--ink2); }
+ .b { height: 30px; border-radius: 5px; font-size: 11px; display: flex; align-items: center; justify-content: center; font-weight: 600; }
+ .done { background: var(--green); color: #fff; } .now { background: var(--blue); color: #fff; } .plan { background: var(--blue-bg); color: var(--blue); border: 1px solid var(--blue); }
+ .core { background: var(--orange-bg); color: var(--orange); border: 1px solid var(--orange); } .buf { background: var(--panel); color: var(--ink2); border: 1px dashed var(--muted); }
+ .legend { display: flex; gap: 18px; margin-top: 14px; font-size: 12px; color: var(--ink2); }
+ .legend i { display: inline-block; width: 14px; height: 14px; border-radius: 3px; vertical-align: -2px; margin-right: 5px; }
+</style></head><body>
+<h1>Project roadmap: 10 build weeks + 2 reserved buffer weeks</h1>
+<div class="sub">Each phase ends in a gate that must pass (or be waived in writing) before the next starts. Weeks are <b>project</b> weeks (project week 1 began 21 Sep 2026).</div>
+<div class="g">
+ <div></div><div class="h">W1</div><div class="h">W2</div><div class="h">W3</div><div class="h">W4</div><div class="h">W5</div><div class="h">W6</div><div class="h">W7</div><div class="h">W8</div><div class="h">W9</div><div class="h">W10</div><div class="h">W11</div><div class="h">W12</div>
+ <div class="ph">Data foundation<span>profile both DBs, lock scope &amp; labels</span></div><div class="b done">done ✓</div><div class="b now">next</div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+ <div class="ph">Network 1<span>clean network, 4 splits, leakage check</span></div><div></div><div></div><div class="b plan">build</div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+ <div class="ph">Representation + model<span>embeddings, baselines, fusion head</span></div><div></div><div></div><div></div><div class="b plan" style="grid-column: span 2">embed → train</div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+ <div class="ph">Honest evaluation<span>4 splits × protein family</span></div><div></div><div></div><div></div><div></div><div></div><div class="b plan">evaluate</div><div></div><div></div><div></div><div></div><div></div><div></div>
+ <div class="ph">Calibrated uncertainty<span>conformal prediction sets</span></div><div></div><div></div><div></div><div></div><div></div><div></div><div class="b core">protect</div><div></div><div></div><div></div><div></div><div></div>
+ <div class="ph">Network 2 + router<span>disease links, 6 sealed test cases</span></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div class="b core">protect</div><div></div><div></div><div></div><div></div>
+ <div class="ph">Evidence system + experiment<span>fixed vs adaptive retrieval</span></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div class="b core">protect</div><div></div><div></div><div></div>
+ <div class="ph">Delivery<span>Streamlit app, report, defence</span></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div class="b plan">deliver</div><div></div><div></div>
+ <div class="ph">Buffer<span>absorb delays; no new scope</span></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div class="b buf" style="grid-column: span 2">reserved</div>
+</div>
+<div class="legend"><span><i class="done"></i>done</span><span><i class="now"></i>next</span><span><i class="plan"></i>planned</span><span><i class="core"></i>core contribution: protect first if time runs short</span><span><i class="buf"></i>buffer</span></div>
+<div class="foot">Source: TrustDTI Master Plan / CLAUDE_CODE_BRIEFING.md Part 5 (authoritative schedule, DECISIONS.md D-002).</div>
+</body></html>
