@@ -1,0 +1,11 @@
+{
+  "rows_total": 3237047,
+  "rows_human": 2478809,
+  "rows_human_single_chain": 2343392,
+  "ki_unparsed_nonblank": 0,
+  "ic50_unparsed_nonblank": 0,
+  "kd_unparsed_nonblank": 0,
+  "ec50_unparsed_nonblank": 0,
+  "missing_uniprot": 0,
+  "missing_inchikey": 210
+}
