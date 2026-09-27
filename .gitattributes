@@ -1,0 +1,5 @@
+# Normalise line endings so committed CSV/JSON reports hash identically on every OS
+* text=auto eol=lf
+*.png binary
+*.parquet binary
+*.ipynb text eol=lf
