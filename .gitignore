@@ -16,3 +16,6 @@ data/processed/*
 
 # notebook checkpoints
 .ipynb_checkpoints/
+
+# editor settings (personal)
+.vscode/

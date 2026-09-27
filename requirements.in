@@ -1,0 +1,12 @@
+# Direct dependencies only (human-edited). requirements.txt is the pinned freeze of these.
+# Week 1 — data profiling
+pandas
+numpy
+pyarrow
+matplotlib
+rdkit
+chembl_webresource_client
+requests
+tqdm
+jupyter
+pytest
