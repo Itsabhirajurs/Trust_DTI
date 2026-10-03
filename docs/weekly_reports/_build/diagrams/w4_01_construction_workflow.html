@@ -1,0 +1,28 @@
+<!doctype html><html><head><meta charset="utf-8">
+<meta name="size" content="1500x420"><meta name="out" content="week04_network1/W4_01_construction_workflow.png">
+<link rel="stylesheet" href="style.css">
+<style>
+ .s { width: 200px; } .s h3 { font-size: 13.5px; }
+ .s .cmd { font-family: Consolas, monospace; font-size: 10.5px; color: var(--blue); margin: 3px 0 5px; word-break: break-all; }
+ .s .out { font-size: 11.5px; color: var(--ink); margin-top: 5px; font-weight: 600; }
+ .chk { margin-top: 16px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+</style></head><body>
+<h1>How Network 1 is built: 8.3M messy records &rarr; one clean labelled table</h1>
+<div class="sub">Stage 2 of the pipeline. Every step is a committed, re-runnable script in <span class="mono">src/network/</span>. The rules each step applies were locked in Week 2 from real data (DECISIONS.md D-011 to D-019).</div>
+<div class="row">
+ <div class="box s blue"><h3>1 &middot; Standardise</h3><div class="cmd">standardize_compounds.py</div><p>RDKit: strip salts, neutralise, canonical parent InChIKey + Bemis&ndash;Murcko scaffold for every compound. Scaffold computed <b>before</b> splitting.</p><div class="out">1,559,417 compounds &middot; 1 unparseable</div></div>
+ <div class="arrow">&rarr;</div>
+ <div class="box s"><h3>2 &middot; Label</h3><div class="cmd">build_network1.py</div><p>Collapse salt forms by parent InChIKey; per pair take median potency from dose-response affinities; apply the 3-state rule.</p><div class="out">ACTIVE / INACTIVE / GRAY(excl)</div></div>
+ <div class="arrow">&rarr;</div>
+ <div class="box s"><h3>3 &middot; Filter</h3><p>Keep proteins with &ge;10 labelled pairs, so every protein has enough data to evaluate (D-015).</p><div class="out">modelling universe fixed</div></div>
+ <div class="arrow">&rarr;</div>
+ <div class="box s"><h3>4 &middot; Split</h3><p>Four train/calib/test splits: random, drug-cold (by scaffold), target-cold (by protein), temporal (pre-2020 vs 2020+).</p><div class="out">4 leakage-safe splits</div></div>
+ <div class="arrow">&rarr;</div>
+ <div class="box s green"><h3>5 &middot; Check &amp; save</h3><p>Automated leakage check must pass, then save the versioned table + manifest.</p><div class="cmd">data/processed/network1_v1.parquet</div></div>
+</div>
+<div class="chk">
+ <div class="box"><h3>Why standardise first</h3><p>Salt forms of one drug must merge into one compound, and scaffolds must exist before splitting or the drug-cold split would leak structural analogues across train/test.</p></div>
+ <div class="box"><h3>Why 4 different splits</h3><p>Each asks a harder question: interpolate (random) &rarr; unseen chemistry (drug-cold) &rarr; unseen protein (target-cold, the real test) &rarr; future data (temporal).</p></div>
+ <div class="box"><h3>Why a leakage check in code</h3><p>If one scaffold or protein landed on both sides, every later accuracy number would be inflated and nothing downstream would reveal it. The build fails rather than ship a leak.</p></div>
+</div>
+</body></html>

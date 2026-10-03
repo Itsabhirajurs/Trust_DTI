@@ -1,52 +1,51 @@
 # STATUS: where we are right now
 
-*Last updated: 2026-10-03. Rewrite this file at the end of every session. It must always describe the present, not the history (history goes in `PROJECT_LOG.md`).*
+*Last updated: 2026-10-04. Rewrite this file at the end of every session. It must describe the present (history goes in `PROJECT_LOG.md`).*
 
 ## One-line state
-Project Week 1 (data profiling) is **finished and waiting for the owner's review**. Stage 1 of the pipeline (Data) is built and verified; Stage 2 (Network 1) is explained but **not coded**. The owner is currently learning the pipeline one stage at a time, with Stage 3 (Embeddings) explained next.
+**Stages 1 (Data) and 2 (Network 1) are built and verified.** Network 1 = 1,905,586 labelled drug–protein pairs (748,430 ACTIVE / 1,157,156 INACTIVE) over 2,312 proteins and 1,006,840 compounds, with four leakage-checked splits. Next is **Stage 3 (Embeddings)**, which needs a Kaggle GPU. The owner is learning the project one stage at a time (Stages 1–4 explained).
 
-## Calendar check
-- Project Week 1 started 2026-09-21. Today (2026-10-03) falls in calendar project Week 2 (28 Sep – 4 Oct).
-- Week 1 work was completed in one long session on 2026-09-27. **Project Week 2 work (locking scope) has not started**, because the owner chose to learn first. This is a small slip against the plan. The two buffer weeks absorb it, but the owner should decide whether to adjust dates.
-- Do not confuse **course report weeks** with **project weeks**. Course Week 2 and Week 3 reports (`docs/weekly_reports/`) both describe project Week 1.
+## Calendar
+- Project Week 1 started 2026-09-21. Course reports submitted so far: 2, 3, and now 4.
+- This session (2026-10-03/04) completed **project Week 2** (lock scope, D-011–D-019) and **project Week 3** (build Network 1). We are roughly on-plan now; the earlier learning time was absorbed.
+- Course report 4 is prepared in `docs/weekly_reports/week04_network1/`.
 
 ## Done
-- Scope decided (all human single-protein targets, per-family reporting), schedule fixed, compute plan fixed: `DECISIONS.md` D-001 to D-005.
-- ChEMBL 37 and BindingDB 202609 downloaded and checksum-verified; ChEMBL extracted (30.5 GB): `data/MANIFEST.md`.
-- Extraction, profiling, overlap and source-confounding scripts in `src/ingest/`; results in `reports/stage0/`; report in `docs/stage0_report.md`.
-- 10 tests (9 fast, 1 slow). A from-scratch re-run reproduced all 16 result files byte-for-byte.
-- Weekly reports for course Weeks 2 and 3 prepared (`docs/weekly_reports/`).
-- Teaching material: two interactive pages (`docs/interactive/`) and stage notes for Stages 1 and 2 (`docs/stages/`).
-- This memory system (`AGENTS.md`, `STATUS.md`, `PROJECT_LOG.md`, `PROJECT_GUIDE.md`).
+- **Stage 1 (Data):** ChEMBL 37 + BindingDB verified, extracted, profiled; `docs/stage0_report.md`, `reports/stage0/`.
+- **Week 2 scope lock:** `src/ingest/analyze_scope_week2.py` → `reports/week2/`; decisions D-011–D-019.
+- **Stage 2 (Network 1):** `src/network/standardize_compounds.py` (1.56M compounds, RDKit) + `build_network1.py`
+  → `data/processed/network1_v1.parquet`, manifest `reports/week2/network1_v1_manifest.json`. Leakage check PASSED.
+- Teaching: Stages 1–4 explained; notes in `docs/stages/` (Stages 1–2 written). Two interactive pages in `docs/interactive/`.
+- Memory system: `AGENTS.md`, this file, `PROJECT_LOG.md`, `PROJECT_GUIDE.md`.
+- Course reports for Weeks 2, 3, 4 in `docs/weekly_reports/`.
 
 ## Next actions (in order)
-1. **Teaching:** explain Stage 3 (Embeddings) when the owner says "next". Save it as `docs/stages/stage03_embeddings.md`.
-2. **Owner review of the Stage 0 report** (`docs/stage0_report.md`). Approve or reject the recommendation to build Network 1 from ChEMBL only (`DECISIONS.md` D-008).
-3. **Teammate runs the pipeline on their own machine.** This is the one unchecked item on the Week 1 gate.
-4. **Project Week 2:** settle the open decisions below and freeze them in `DECISIONS.md`.
-5. **Project Week 3:** build Network 1 (Stage 2) from those decisions.
+1. **Teaching:** explain Stage 3 details when asked (ChemBERTa/ESM-2 mechanics); save `docs/stages/stage03_embeddings.md`.
+2. **Stage 3 build (project Week 4):** write the Kaggle embedding notebook — ChemBERTa for the 1,006,840 compounds, ESM-2 for the 2,312 proteins (frozen); cache vectors keyed by InChIKey / accession; truncate giant proteins (max 34,350 residues).
+3. Build classical baselines (logistic regression, XGBoost on fingerprints) as the floor for Stage 4.
+4. **Owner tasks:** review DECISIONS.md D-011–D-019 (reversible if you disagree); teammate runs the pipeline; set up Kaggle.
+5. **Stage 4 (project Week 5):** train the fusion head over the cached embeddings using the splits in `network1_v1.parquet`.
 
-## Open decisions (Week 2 must settle these; do not guess them)
-| # | Decision | Why it is open |
+## Open decisions (most of Week 2 now locked)
+Resolved this session: endpoints (D-011), thresholds (D-012), negatives/PU (D-013), compound identity (D-014),
+min-data (D-015), temporal cutoff (D-016), BindingDB (D-017), hygiene (D-018), splits (D-019).
+Remaining / pending:
+| # | Decision | State |
 |---|---|---|
-| 1 | Activity thresholds, and whether per family | PubChem screening data shifts median potency by more than 1 log unit in 5 families, so thresholds must control for data source |
-| 2 | Which endpoints count (IC50/Ki/Kd/EC50 only, or also "Potency")? | "Potency" (2.69M rows) is mostly single-series screening data; kinetics and %-inhibition are not affinities |
-| 3 | Precise measured-inactive rule | ~1.04M candidate inactive pairs; "inconclusive" (1.73M rows) stays UNTESTED |
-| 4 | Minimum data per protein | 2,883 of 5,738 proteins have fewer than 10 partners; a protein-cold split needs enough usable proteins |
-| 5 | Temporal-split cutoff | 40% of rows have no publication year (all PubChem, PKIS, DrugMatrix) |
-| 6 | Merge stereoisomer/isotope variants into parent compounds? | 53,559 InChIKey skeletons are shared by more than one compound ID; leakage risk (`reports/stage0/stage2_probe_output.txt`) |
-| 7 | BindingDB: ChEMBL-only for v1? | Recommended, not yet approved (D-008) |
-| 8 | Confidence floor (8 vs 9), `potential_duplicate` rows, validity-flagged rows | Minor, but must be written down before aggregation |
+| — | Owner sign-off on D-011–D-019 | Pending review (defaults chosen from evidence; reversible) |
+| — | ESM-2 checkpoint size (35M vs 150M vs 650M) | Decide at Stage 3 from Kaggle GPU memory/time |
+| — | ChemBERTa variant + pooling (CLS vs mean) | Decide at Stage 3 |
+| — | Gene-symbol mapping for proteins (needed by Week 8) | Deferred to Network 2 |
 
 ## Gotchas
-- **Python 3.12 only** in `.venv`. If the IDE picks another interpreter, point it at `.venv\Scripts\python.exe`.
-- Scripts import `src.*`, so run them from the repo root with `python -m ...`. A script outside the repo needs `PYTHONPATH=.`.
-- The full-database test takes about 1 hour. It is excluded by default.
-- Do not edit or commit anything under `data/raw/` or `data/interim/`.
-- Git line endings are normalised to LF (`.gitattributes`), so Windows may show harmless CRLF warnings.
+- **Python 3.12 only** in `.venv`. Scripts import `src.*`; run from repo root with `python -m ...`.
+- **Memory:** building over the 8.3M-row extract needs care — drop the free-text comment column early and use category dtypes (see `build_network1.py`). The naive version was OOM-killed on 16 GB.
+- `data/raw`, `data/interim`, `data/processed` are gitignored. `network1_v1.parquet` and `compounds_standardized.parquet` regenerate from the scripts.
+- The ~1 h full-database test is excluded by default (`pytest -m slow`).
 
-## Key numbers (ChEMBL 37, human single-protein)
-8,299,186 activity rows · 5,738 proteins · 1,559,417 compounds · 5,064,882 drug–protein pairs · 810,994 censored rows (all without pChEMBL) · 28% of pairs have more than one record · 40% of rows lack a year. Source: `reports/stage0/`.
+## Key numbers
+ChEMBL 37 scope: 8.3M rows, 5,738 proteins, 1.56M compounds. Network 1: 1,905,586 pairs, 748,430 ACTIVE /
+1,157,156 INACTIVE, 2,312 proteins, 1,006,840 compounds, 333,583 scaffold groups. Sources: `reports/stage0/`, `reports/week2/`.
 
 ## Where things are
-Start with `README.md`. Full project detail: `docs/PROJECT_GUIDE.md`. History: `docs/PROJECT_LOG.md`. Decisions: `DECISIONS.md`. Stage-by-stage teaching notes: `docs/stages/`.
+`README.md` → front door. `docs/PROJECT_GUIDE.md` → full detail. `docs/PROJECT_LOG.md` → history. `DECISIONS.md` → decisions. `docs/stages/` → per-stage teaching.

@@ -1,0 +1,51 @@
+standard_type,rows,bucket
+Potency,2691363,qHTS
+IC50,1738577,affinity_dose_response
+k_off,685738,kinetics
+kon,685714,kinetics
+Ki,633567,affinity_dose_response
+Inhibition,619292,percent_or_single_point
+EC50,214270,affinity_dose_response
+AC50,211173,qHTS
+Activity,204891,percent_or_single_point
+Kd,181811,affinity_dose_response
+Residual Activity,70152,percent_or_single_point
+% Control,50220,percent_or_single_point
+Emax,30837,other
+FC,24742,other
+Delta Tm,18141,other
+Percent Effect,17952,percent_or_single_point
+Efficacy,15185,other
+Ratio,13655,other
+Delta TM,12937,other
+%Inhib (Mean),12829,percent_or_single_point
+% of control,10155,percent_or_single_point
+%Max (Mean),7141,percent_or_single_point
+Ratio IC50,6552,other
+Intrinsic activity,6176,percent_or_single_point
+Imax,5421,other
+ED50,4647,other
+%max,4638,percent_or_single_point
+Kb,4135,other
+K,4125,other
+% of inhibition,3928,percent_or_single_point
+RBA,3715,other
+Drug metabolism,3702,other
+Km,3437,other
+Kinact,3005,other
+INH,2990,other
+pKb,2673,other
+% Ctrl,2499,percent_or_single_point
+Residual activity,2139,percent_or_single_point
+Ke,2076,other
+GI50,2001,other
+Vmax,1833,other
+pIC50,1823,other
+Ka,1659,other
+max activation,1642,other
+T1/2,1593,other
+KA,1472,other
+TIME,1259,other
+% inhibition,1230,percent_or_single_point
+pEC50,1200,other
+TDI,1143,other

@@ -1,0 +1,17 @@
+<!doctype html><html><head><meta charset="utf-8">
+<meta name="size" content="1400x470"><meta name="out" content="week04_network1/W4_06_week2_decisions.png">
+<link rel="stylesheet" href="style.css"></head><body>
+<h1>Week 2 scope decisions &mdash; locked from real evidence, not guessed</h1>
+<div class="sub">Each was decided by running an analysis on all 8.3M records, then recording the choice, the reason and the numbers in DECISIONS.md. These define exactly what Network 1 contains.</div>
+<table>
+ <tr><th style="width:9%">ID</th><th style="width:30%">Decision</th><th>Evidence that drove it</th></tr>
+ <tr><td><b>D-011</b></td><td>Label only from dose-response affinities (IC50/Ki/Kd/EC50); qHTS as inactive evidence only</td><td>Dose-response = 2.77M rows; restricting to them removes the PubChem distortion (median pChEMBL 6.85 &rarr; 6.91 without PubChem)</td></tr>
+ <tr><td><b>D-012</b></td><td>ACTIVE &ge; 6.5, INACTIVE &le; 5.0, gray band excluded</td><td>Gives 754k ACTIVE + 1.16M INACTIVE; the 1.5-log gray buffer keeps labels clean for calibration</td></tr>
+ <tr><td><b>D-013</b></td><td>No positive-unlabelled fallback needed</td><td>1.16M real measured negatives exist (762k from "not active" comments)</td></tr>
+ <tr><td><b>D-014</b></td><td>Compound identity = salt-stripped parent InChIKey; don't merge stereo/isotope variants</td><td>Scaffold grouping already stops those leaking; merging would conflate molecules with different activity</td></tr>
+ <tr><td><b>D-015</b></td><td>Keep proteins with &ge;10 labelled pairs</td><td>2,313 proteins (2,008 with both classes), loses only ~2k of 1.91M pairs</td></tr>
+ <tr><td><b>D-016</b></td><td>Temporal split at year 2020</td><td>861k train / 396k test (31.5% test) among dated pairs</td></tr>
+ <tr><td><b>D-017</b></td><td>ChEMBL-only for Network 1 v1</td><td>BindingDB mostly duplicates ChEMBL (Week 1 finding)</td></tr>
+ <tr><td><b>D-018, D-019</b></td><td>Median aggregation + keep disagreement; four leakage-safe splits, seed 42</td><td>23% of repeat-measured pairs disagree by &ge;1 log unit, so spread is kept and flagged</td></tr>
+</table>
+</body></html>

@@ -1,0 +1,62 @@
+<!doctype html><html><head><meta charset="utf-8">
+<meta name="pdf" content="week04_network1/Week04_Network1_Report.pdf">
+<title>TrustDTI Week 4 Report</title><link rel="stylesheet" href="print.css"></head><body>
+
+<div class="head"><div class="k">TrustDTI · Weekly progress report</div>
+<h1>Week 4: Scope locked, Network 1 built</h1>
+<div class="meta">Repo: github.com/Itsabhirajurs/Trust_DTI · Decisions: DECISIONS.md D-011–D-019 · Table: data/processed/network1_v1.parquet</div></div>
+
+<div class="grid3">
+ <div><b>Done</b>Locked the Week 2 scope rules from real data (9 decisions), then built Network 1: the clean, labelled, leakage-checked drug–protein table with four train/test splits.</div>
+ <div><b>Key result</b>748k active and 1.16M inactive pairs (1.91M total) over 2,312 proteins and 1.01M compounds; all four splits pass the automated leakage check.</div>
+ <div><b>Next</b>Stage 3 — embed compounds (ChemBERTa) and proteins (ESM-2) on a Kaggle GPU, cache the vectors, and build classical baselines.</div>
+</div>
+
+<h2><span class="n">1</span>Where we are in the plan</h2>
+<p>Stage 1 (Data) finished in the previous reporting period. This week completed <b>project Week 2</b> (lock the dataset rules) and <b>project Week 3</b> (build Network 1) — Stages 1 and 2 of the pipeline are now done. The model itself (Stages 3–4) is next and needs a GPU, which is why it is scheduled on Kaggle.</p>
+<figure><img src="../week04_network1/W4_01_construction_workflow.png"><figcaption>Figure 1. The five steps that turn 8.3M raw measurements into one clean labelled table. Each is a committed script in src/network/.</figcaption></figure>
+
+<h2><span class="n">2</span>Locking the scope from evidence (project Week 2)</h2>
+<p>Before building anything, we had to decide what the data actually means: which measurements to trust, where the line between "active" and "inactive" sits, and how to split the data fairly. We made each decision by running an analysis on all 8.3M records, then recording the choice and the numbers behind it. The analysis script is <span class="mono">src/ingest/analyze_scope_week2.py</span>; the decisions are DECISIONS.md D-011 to D-019.</p>
+<figure><img src="../week04_network1/W4_06_week2_decisions.png"><figcaption>Figure 2. The nine scope decisions and the evidence that drove each one.</figcaption></figure>
+<p>The single most useful finding: restricting labelling to <b>dose-response affinity</b> measurements (IC50/Ki/Kd/EC50) nearly removes the PubChem screening distortion found in Week 1 — the median potency barely moves when PubChem is excluded (6.85 → 6.91), so we did not need complicated per-family corrections. We also confirmed we have abundant real negatives (1.16M measured-inactive pairs), so the positive-unlabelled fallback is not needed.</p>
+
+<h2 class="pb"><span class="n">3</span>How each pair gets its label</h2>
+<figure><img src="../week04_network1/W4_02_label_logic.png"><figcaption>Figure 3. The labelling rule, applied to the median potency of each pair's dose-response measurements. The ambiguous 5.0–6.5 band is excluded to keep labels clean; "untested" is never turned into "inactive".</figcaption></figure>
+
+<h2><span class="n">4</span>What Network 1 contains</h2>
+<figure><img src="../week04_network1/W4_03_label_counts.png"><figcaption>Figure 4. The finished table: labelled drug–protein pairs, with compound, protein and scaffold counts.</figcaption></figure>
+<table>
+ <tr><th>Column</th><th>What it holds</th></tr>
+ <tr><td><code>pik, accession</code></td><td>The compound (salt-stripped parent InChIKey) and protein (UniProt) — the pair's identity</td></tr>
+ <tr><td><code>label</code></td><td>ACTIVE or INACTIVE</td></tr>
+ <tr><td><code>median_p, iqr, high_disagreement</code></td><td>Aggregated potency, its spread, and a flag where repeats disagree by ≥1 log unit</td></tr>
+ <tr><td><code>scaffold, scaffold_group</code></td><td>The compound's core ring system, used for the drug-cold split</td></tr>
+ <tr><td><code>year</code></td><td>Earliest measurement year, used for the temporal split</td></tr>
+ <tr><td><code>split_random / drugcold / targetcold / temporal</code></td><td>train / calib / test assignment for each of the four splits</td></tr>
+ <tr><td><code>provenance</code></td><td>"measured" — so predicted edges (added later) can never be confused with measured ones</td></tr>
+</table>
+
+<h2 class="pb"><span class="n">5</span>The four splits and the leakage check</h2>
+<figure><img src="../week04_network1/W4_04_splits_explained.png"><figcaption>Figure 5. Each split holds out something different and answers a harder question than the last.</figcaption></figure>
+<figure><img src="../week04_network1/W4_05_split_distributions.png"><figcaption>Figure 6. How the labelled pairs divide into train / calibration / test for each split. The build fails unless the leakage check passes.</figcaption></figure>
+<p>The leakage check is code that <b>fails the build</b> if any scaffold appears in both the drug-cold train and test sets, or any protein in both the target-cold sets, or if the temporal calibration data leaks past the 2020 cutoff. For this build it <b>passed</b>.</p>
+
+<h2><span class="n">6</span>Roadblocks this week</h2>
+<ul>
+ <li><b>No local GPU</b> (confirmed): Stage 3 embeddings (1.56M compounds, ~5,700 proteins) can't run on the laptop, so they are scheduled on a Kaggle GPU. Not a blocker for Network 1.</li>
+ <li><b>Memory limits:</b> the first Network 1 build was silently killed by the OS — holding all 8.3M rows with their free-text comment column plus Python set operations exceeded 16 GB RAM. Fixed by dropping the text column early, using category types, and replacing Python sets with vectorised pandas joins. Build memory dropped from 2.3 GB (killed) to 1.6 GB.</li>
+ <li>Two further build bugs caught and fixed: a read-only-array shuffle, and a non-serialisable missing-value key in the manifest.</li>
+ <li><b>Measurement disagreement:</b> 23% of repeat-measured pairs disagree by ≥1 log unit, so we aggregate by median and flag high-disagreement pairs rather than trusting any single value.</li>
+</ul>
+
+<h2><span class="n">7</span>Next week (Stage 3)</h2>
+<ul>
+ <li>Embed every Network 1 compound with ChemBERTa and every protein with ESM-2 (frozen, on Kaggle GPU); cache the vectors keyed by identifier.</li>
+ <li>Handle the giant proteins (longest is 34,350 residues vs ESM-2's ~1,024 limit) by truncation.</li>
+ <li>Build classical fingerprint baselines (logistic regression, XGBoost) — the floor the Stage 4 model must beat.</li>
+ <li>Sanity-check that similar compounds and same-family proteins cluster in the vector space.</li>
+</ul>
+
+<div class="foot">Supporting files: W4_01–W4_06 (figures), references.md, WEEK04_FORM_ENTRIES.md. All figures regenerate from committed data. Reproduce the table: python -m src.network.standardize_compounds then python -m src.network.build_network1.</div>
+</body></html>

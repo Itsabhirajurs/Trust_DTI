@@ -1,0 +1,14 @@
+<!doctype html><html><head><meta charset="utf-8">
+<meta name="size" content="1400x430"><meta name="out" content="week04_network1/W4_04_splits_explained.png">
+<link rel="stylesheet" href="style.css"></head><body>
+<h1>The four train / test splits, and the question each one answers</h1>
+<div class="sub">Every split also carves a small <b>calibration</b> slice from its own training data, kept for the Week 7 uncertainty step. A leakage check confirms nothing held out for testing also appears in training.</div>
+<table>
+ <tr><th style="width:15%">Split</th><th style="width:26%">What is held out for testing</th><th style="width:30%">Question it answers</th><th>Why it matters</th></tr>
+ <tr><td><b>Random</b></td><td>A random 15% of pairs</td><td>Can the model interpolate within chemistry and biology it has already seen?</td><td>The easiest test &mdash; a sanity floor. Good scores here alone prove little.</td></tr>
+ <tr><td><b>Drug-cold</b></td><td>Whole <b>scaffolds</b> (core ring systems)</td><td>Does it work on chemical structures it has never seen?</td><td>Grouping by scaffold stops near-identical molecules leaking across the split.</td></tr>
+ <tr><td><b>Target-cold</b> <span class="tag next">primary</span></td><td>Whole <b>proteins</b></td><td>Does it work on a protein it has never seen in training?</td><td>This is what real drug repurposing actually is &mdash; so it is the headline test.</td></tr>
+ <tr><td><b>Temporal</b></td><td>Everything measured in <b>2020 or later</b></td><td>Does it work on data from the future, trained only on the past?</td><td>The closest thing to a genuine prospective test. Limited by the 40% of records with no date.</td></tr>
+</table>
+<div class="foot">Fixed random seed 42, recorded in the manifest, so the exact same splits regenerate on any machine. Rules: DECISIONS.md D-019.</div>
+</body></html>

@@ -1,0 +1,45 @@
+<!doctype html><html><head><meta charset="utf-8">
+<meta name="size" content="1400x560"><meta name="out" content="week04_network1/W4_02_label_logic.png">
+<link rel="stylesheet" href="style.css">
+<style>
+ .scale { position: relative; height: 92px; margin: 28px 0 10px; border-radius: 10px; overflow: hidden; border: 1px solid var(--line); display: flex; }
+ .seg { display: flex; align-items: center; justify-content: center; flex-direction: column; color: #fff; font-weight: 700; font-size: 15px; }
+ .seg small { font-weight: 400; font-size: 11px; opacity: .9; margin-top: 2px; }
+ .ticks { display: flex; justify-content: space-between; font-family: Consolas, monospace; font-size: 11px; color: var(--ink2); margin-top: 4px; }
+ .two { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 22px; }
+ .endpoint-row { font-size: 12.5px; margin: 5px 0; }
+ .pill { display:inline-block; font-family: Consolas, monospace; font-size: 11px; padding: 1px 7px; border-radius: 10px; margin-right:4px; }
+</style></head><body>
+<h1>How each drug&ndash;protein pair gets its label</h1>
+<div class="sub">The rule locked in Week 2 (DECISIONS.md D-011, D-012), applied to the median potency of a pair's dose-response affinity measurements. Potency is pChEMBL = &minus;log<sub>10</sub>(molar): higher = stronger drug.</div>
+
+<div class="scale">
+ <div class="seg" style="width:33%;background:var(--brick)">INACTIVE<small>pChEMBL &le; 5.0 &nbsp;(&ge; 10 &micro;M, weak)</small></div>
+ <div class="seg" style="width:25%;background:#9aa0a6">GRAY &mdash; excluded<small>5.0 &ndash; 6.5 (ambiguous)</small></div>
+ <div class="seg" style="width:42%;background:var(--green)">ACTIVE<small>pChEMBL &ge; 6.5 &nbsp;(&le; 300 nM, strong)</small></div>
+</div>
+<div class="ticks"><span>pChEMBL 3</span><span>5.0</span><span>6.5</span><span>pChEMBL 10</span></div>
+
+<div class="two">
+ <div class="box">
+  <h3>Which measurements count (D-011)</h3>
+  <div class="endpoint-row"><span class="pill" style="background:var(--green-bg);color:var(--green)">USED</span> Affinity dose-response: IC50, Ki, Kd, EC50 (2.77M rows)</div>
+  <div class="endpoint-row"><span class="pill" style="background:var(--orange-bg);color:var(--orange)">INACTIVE only</span> qHTS screens (Potency, AC50) at &ge;10&micro;M no-activity</div>
+  <div class="endpoint-row"><span class="pill" style="background:var(--panel);color:var(--ink2)">EXCLUDED</span> Kinetics (kon/koff, 1.37M) &mdash; not an affinity</div>
+  <div class="endpoint-row"><span class="pill" style="background:var(--panel);color:var(--ink2)">EXCLUDED</span> %-inhibition / single-point (1.02M) &mdash; too crude</div>
+  <p style="margin-top:8px;font-size:12px;color:var(--ink2)">Restricting to dose-response affinities nearly removes the PubChem distortion found in Week 1 (median pChEMBL 6.85 &rarr; 6.91 without PubChem).</p>
+ </div>
+ <div class="box">
+  <h3>Also INACTIVE without an exact value</h3>
+  <p style="font-size:12.5px">A pair with no exact affinity is still INACTIVE if it has any of:</p>
+  <ul style="font-size:12.5px;color:var(--ink2)">
+   <li>a censored affinity <span class="mono">&gt;</span> 10&micro;M (assay stopped, no activity)</li>
+   <li>a "not active" / "no activity" lab comment</li>
+   <li>a qHTS screen at &ge;10&micro;M with no activity</li>
+  </ul>
+  <p style="font-size:12.5px;color:var(--ink2)">This is why censored rows were protected in Week 1 &mdash; they are most of our negative evidence.</p>
+  <p style="font-size:12.5px;margin-top:8px"><b>UNTESTED</b> (no usable measurement, or "inconclusive") is never turned into INACTIVE and is not put in the table.</p>
+ </div>
+</div>
+<div class="foot">Evidence: reports/week2/C_threshold_grid.csv, week2_scope_summary.json.</div>
+</body></html>

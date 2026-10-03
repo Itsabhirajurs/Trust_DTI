@@ -19,3 +19,6 @@ data/processed/*
 
 # editor settings (personal)
 .vscode/
+
+# transient run logs
+reports/week2/*.log

@@ -19,6 +19,25 @@ The older running log in `CLAUDE_CODE_BRIEFING.md` Part 8 stays as history. New 
 
 ---
 
+## 2026-10-04 · Week 2 scope locked; Network 1 (Stage 2) built
+**Where:** Claude Code (desktop) · **Stage / project week:** Stage 2 / project Weeks 2–3
+**Done:**
+- Locked the Week 2 scope from evidence: `src/ingest/analyze_scope_week2.py` over all 8.3M rows → `reports/week2/`. Decisions D-011–D-019 in `DECISIONS.md` (endpoints, thresholds, inactive rule, compound identity, min-data, temporal cutoff, BindingDB, hygiene, splits).
+- Standardised 1,559,417 compounds with RDKit (`src/network/standardize_compounds.py`): 1 unparseable, 50,339 salts/mixtures stripped, 478,250 distinct scaffolds.
+- Built Network 1 (`src/network/build_network1.py` → `data/processed/network1_v1.parquet`): 1,905,586 labelled pairs (748,430 ACTIVE / 1,157,156 INACTIVE), 2,312 proteins, 1,006,840 compounds, 333,583 scaffold groups. Four splits (random, drug-cold, target-cold, temporal 2020) each with a calibration slice.
+- **Leakage check PASSED** (all train/test/calib overlaps 0; temporal calib ≤2019, test ≥2020). Manifest: `reports/week2/network1_v1_manifest.json`.
+- Prepared course report 4 (`docs/weekly_reports/week04_network1/`): PDF, 6 figures, form entries, references.
+**Found:**
+- Restricting labels to dose-response affinities (2.77M rows) nearly removes the PubChem distortion (median pChEMBL 6.85 → 6.91 without PubChem), so no per-family threshold correction was needed.
+- Abundant real negatives (1.16M measured-inactive pairs, 762k from "not active" comments) → PU fallback not needed (D-013).
+- 18,078 pairs have repeated measurements disagreeing by ≥1 log unit (flagged, not averaged away).
+**Changed vs plan:** none in substance. Chose Kaggle over Colab for the Stage 3 GPU batch (more generous free quota, persistent datasets).
+**Roadblocks (engineering):** first Network 1 build was OS-killed (OOM) — fixed by dropping the free-text column early, category dtypes, and vectorised joins instead of Python sets (2.3 GB → 1.6 GB). Also fixed a read-only-array shuffle and a non-serialisable NA manifest key.
+**Decisions:** D-011 to D-019.
+**Commits:** see this session's commit.
+**Open / next:** owner sign-off on D-011–D-019; Stage 3 embeddings on Kaggle; classical baselines.
+**For the owner to understand:** Network 1 is one clean row per drug–protein pair with a label and a leakage-safe split assignment. The labelling rule and the splits are what make every later result trustworthy.
+
 ## 2026-10-03 · Memory system for AI assistants; Stage 2 groundwork
 **Where:** Claude Code (desktop) · **Stage / project week:** teaching Stage 2; calendar project Week 2
 **Done:**

@@ -1,0 +1,13 @@
+{
+  "compounds_in": 1559417,
+  "status_counts": {
+    "ok": 1557250,
+    "empty_smiles": 2166,
+    "unparseable": 1
+  },
+  "had_multi_fragment": 50339,
+  "distinct_parent_inchikey": 1550520,
+  "distinct_inchikey_block": 1480225,
+  "distinct_scaffold_nonempty": 478250,
+  "acyclic_empty_scaffold": 9253
+}

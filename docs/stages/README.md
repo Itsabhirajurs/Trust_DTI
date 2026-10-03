@@ -5,7 +5,7 @@ One file per pipeline stage, written when the stage is explained to the owner. E
 | # | Stage | Status | Note |
 |---|---|---|---|
 | 1 | Data | done, verified | [stage01_data.md](stage01_data.md) |
-| 2 | Network 1 | explained, not coded | [stage02_network1.md](stage02_network1.md) |
+| 2 | Network 1 | BUILT (data/processed/network1_v1.parquet) | [stage02_network1.md](stage02_network1.md) |
 | 3 | Embeddings (ChemBERTa, ESM-2) | planned | not yet written (next to explain) |
 | 4 | Fusion head | planned | not yet written |
 | 5 | Evaluation | planned | not yet written |
