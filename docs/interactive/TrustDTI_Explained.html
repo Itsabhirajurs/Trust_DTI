@@ -1,0 +1,896 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>TrustDTI Explained</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ================= DESIGN PLAN =================
+   Subject: a scientific-editorial "explainer chapter" — the reader is meant to
+   read, poke at live widgets to test their own understanding, and come away
+   able to teach it. Treatment = calm reading room (like a well-typeset paper
+   with interactive figures), not a marketing landing page.
+   Layout concept: a single long scroll of "chapters", each full-bleed band
+   alternating paper / raised paper, with a slim sticky contents rail on desktop
+   that collapses to a horizontal scroller on phone.
+   Color: three signal hues carry real meaning throughout (teal=confident/
+   confirm, amber=uncertain/challenge, brick=stop/contradict) — not decoration,
+   they are the same three states the router itself uses.
+   Type: Fraunces (display, editorial warmth) / IBM Plex Sans (body, technical
+   clarity) / IBM Plex Mono (data, file paths, numbers).
+================================================== */
+:root{
+  --bg:#F1F3EE; --bg-raised:#FFFFFF; --bg-sunk:#E7EBE2;
+  --ink:#171B16; --ink-soft:#4A5148; --ink-faint:#818B7E;
+  --line:#D7DCD0; --line-soft:#E4E8DE;
+  --accent:#0C7A82; --accent-ink:#075359; --accent-soft:#DCEEEE;
+  --amber:#AD7A0C; --amber-soft:#F3E7CB;
+  --brick:#A03B29; --brick-soft:#F2DED9;
+  --shadow:0 1px 2px rgba(20,26,18,.05),0 10px 28px -8px rgba(20,26,18,.14);
+  --radius:16px; --radius-sm:10px;
+  --font-d:'Fraunces',Georgia,serif; --font-b:'IBM Plex Sans',system-ui,-apple-system,sans-serif; --font-m:'IBM Plex Mono',ui-monospace,Consolas,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#14170F; --bg-raised:#1B1F16; --bg-sunk:#0F120B;
+    --ink:#EDF0E7; --ink-soft:#B7BEAE; --ink-faint:#7E8676;
+    --line:#333A2A; --line-soft:#262C1E;
+    --accent:#3FBCC4; --accent-ink:#BFEFF1; --accent-soft:#1B3538;
+    --amber:#E3AC3F; --amber-soft:#3A2E14;
+    --brick:#E17D67; --brick-soft:#3B211B;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px -8px rgba(0,0,0,.5);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#14170F; --bg-raised:#1B1F16; --bg-sunk:#0F120B;
+  --ink:#EDF0E7; --ink-soft:#B7BEAE; --ink-faint:#7E8676;
+  --line:#333A2A; --line-soft:#262C1E;
+  --accent:#3FBCC4; --accent-ink:#BFEFF1; --accent-soft:#1B3538;
+  --amber:#E3AC3F; --amber-soft:#3A2E14;
+  --brick:#E17D67; --brick-soft:#3B211B;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px -8px rgba(0,0,0,.5);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font-b);line-height:1.6;font-size:16px;-webkit-font-smoothing:antialiased}
+img,svg{max-width:100%}
+h1,h2,h3,h4{font-family:var(--font-d);font-weight:600;line-height:1.12;margin:0 0 .5rem;text-wrap:balance;color:var(--ink)}
+p{margin:0 0 1rem;max-width:64ch}
+.wrap{max-width:1080px;margin:0 auto;padding-inline:20px}
+@media(min-width:640px){.wrap{padding-inline:32px}}
+section{padding-block:56px}
+@media(min-width:800px){section{padding-block:88px}}
+.eyebrow{font-family:var(--font-m);font-size:.72rem;letter-spacing:.11em;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:.6rem;display:flex;align-items:center;gap:.5em}
+.eyebrow .num{color:var(--ink-faint)}
+.lede{font-size:1.15rem;color:var(--ink-soft);max-width:58ch}
+code,.mono{font-family:var(--font-m);font-size:.88em;background:var(--bg-sunk);border:1px solid var(--line-soft);border-radius:5px;padding:.05em .4em}
+
+/* ---- top nav ---- */
+.topnav{position:sticky;top:env(safe-area-inset-top,0px);z-index:40;background:color-mix(in srgb, var(--bg) 88%, transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.topnav-in{max-width:1080px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;gap:18px}
+@media(min-width:640px){.topnav-in{padding:12px 32px}}
+.brand{font-family:var(--font-d);font-weight:700;font-size:1.05rem;white-space:nowrap;color:var(--ink);text-decoration:none;display:flex;align-items:baseline;gap:.4em}
+.brand b{color:var(--accent)}
+.navlinks{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none}
+.navlinks::-webkit-scrollbar{display:none}
+.navlinks a{font-family:var(--font-m);font-size:.74rem;letter-spacing:.03em;color:var(--ink-faint);text-decoration:none;white-space:nowrap;padding:6px 10px;border-radius:999px;transition:.15s}
+.navlinks a:hover{color:var(--ink);background:var(--bg-sunk)}
+.themebtn{margin-left:auto;flex:0 0 auto;width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:var(--bg-raised);color:var(--ink);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px}
+
+/* ---- hero ---- */
+.hero{padding-block:64px 40px}
+@media(min-width:800px){.hero{padding-block:96px 56px}}
+.hero h1{font-size:clamp(2.1rem,5.6vw,3.6rem);max-width:16ch}
+.hero .lede{margin-top:18px;font-size:1.28rem}
+.hero-tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:26px}
+.tag{font-family:var(--font-m);font-size:.72rem;border:1px solid var(--line);border-radius:999px;padding:5px 12px;color:var(--ink-soft)}
+.hero-scene{margin-top:44px;border:1px solid var(--line);border-radius:var(--radius);background:var(--bg-raised);box-shadow:var(--shadow);overflow:hidden}
+
+/* ---- generic cards / grid ---- */
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:1fr}
+@media(min-width:700px){.g2{grid-template-columns:1fr 1fr}}
+.g3{grid-template-columns:1fr}
+@media(min-width:640px){.g3{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:960px){.g3{grid-template-columns:repeat(3,1fr)}}
+.g4{grid-template-columns:repeat(2,1fr)}
+@media(min-width:800px){.g4{grid-template-columns:repeat(4,1fr)}}
+.card{background:var(--bg-raised);border:1px solid var(--line);border-radius:var(--radius);padding:22px;box-shadow:var(--shadow)}
+.card h3{font-size:1.08rem;margin-bottom:.4rem}
+.card p{font-size:.94rem;color:var(--ink-soft);margin-bottom:0}
+.card p+p{margin-top:.6em}
+
+/* ---- section band alt ---- */
+.band-raised{background:var(--bg-raised);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.band-sunk{background:var(--bg-sunk)}
+
+/* ---- problem section ---- */
+.compare{display:grid;grid-template-columns:1fr;gap:14px;margin-top:28px}
+@media(min-width:700px){.compare{grid-template-columns:1fr auto 1fr;align-items:stretch}}
+.compare .vs{align-self:center;font-family:var(--font-m);color:var(--ink-faint);font-size:.8rem;text-align:center}
+.compare .card{display:flex;flex-direction:column;gap:8px}
+.compare .card .k{font-family:var(--font-m);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;font-weight:600}
+.compare .bad{border-color:var(--brick)}
+.compare .bad .k{color:var(--brick)}
+.compare .good{border-color:var(--accent)}
+.compare .good .k{color:var(--accent)}
+.compare ul{margin:0;padding-left:1.15em;font-size:.92rem;color:var(--ink-soft)}
+.compare li{margin-bottom:.45em}
+
+/* ---- novelty accordion ---- */
+.acc{border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;background:var(--bg-raised);box-shadow:var(--shadow)}
+.acc-item+.acc-item{border-top:1px solid var(--line)}
+.acc-btn{width:100%;text-align:left;background:none;border:0;padding:16px 20px;font-family:var(--font-b);font-size:.98rem;font-weight:600;color:var(--ink);cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:14px}
+.acc-btn .status{font-family:var(--font-m);font-size:.66rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-faint);border:1px solid var(--line);border-radius:999px;padding:3px 9px;flex:0 0 auto}
+.acc-btn .chev{transition:transform .2s;color:var(--ink-faint);flex:0 0 auto}
+.acc-item.open .chev{transform:rotate(45deg)}
+.acc-panel{max-height:0;overflow:hidden;transition:max-height .28s ease}
+.acc-panel-in{padding:0 20px 18px;color:var(--ink-soft);font-size:.93rem}
+.claim-box{margin-top:16px;background:var(--accent-soft);border:1.5px solid var(--accent);border-radius:var(--radius);padding:22px}
+.claim-box .eyebrow{color:var(--accent-ink)}
+.claim-box p{color:var(--ink);margin-bottom:0;max-width:none;font-size:1.02rem}
+
+/* ---- dial demo ---- */
+.dial-demo{background:var(--bg-raised);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:24px 20px 28px;margin-top:28px}
+@media(min-width:640px){.dial-demo{padding:32px 40px 36px}}
+.dial-row{display:flex;align-items:center;gap:16px;font-family:var(--font-m);font-size:.78rem;color:var(--ink-faint)}
+input[type=range]{-webkit-appearance:none;appearance:none;flex:1;height:6px;border-radius:99px;background:linear-gradient(90deg,var(--brick),var(--amber) 50%,var(--accent));outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:var(--bg-raised);border:3px solid var(--ink);cursor:grab;box-shadow:0 2px 6px rgba(0,0,0,.25)}
+input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:var(--bg-raised);border:3px solid var(--ink);cursor:grab}
+.dial-readout{margin-top:22px;border-radius:var(--radius-sm);padding:20px;transition:background .25s,border-color .25s;border:1.5px solid var(--line)}
+.dial-readout h4{font-size:1.15rem;margin-bottom:.3rem}
+.dial-readout .sub{font-family:var(--font-m);font-size:.72rem;letter-spacing:.05em;text-transform:uppercase;opacity:.75;margin-bottom:.5rem}
+.dial-readout p{color:var(--ink-soft);margin-bottom:0;font-size:.95rem;max-width:none}
+
+/* ---- network compare ---- */
+.net-flip{perspective:1400px;height:290px}
+.net-flip-in{position:relative;width:100%;height:100%;transition:transform .5s;transform-style:preserve-3d;cursor:pointer}
+.net-flip.flipped .net-flip-in{transform:rotateY(180deg)}
+.net-face{position:absolute;inset:0;backface-visibility:hidden;border-radius:var(--radius);border:1.5px solid var(--line);padding:20px;background:var(--bg-raised);box-shadow:var(--shadow);display:flex;flex-direction:column}
+.net-face.back{transform:rotateY(180deg)}
+.net-face h4{font-size:1.02rem}
+.net-face .tap{margin-top:auto;font-family:var(--font-m);font-size:.68rem;color:var(--ink-faint);text-transform:uppercase;letter-spacing:.06em}
+.trap-box{margin-top:18px;background:var(--brick-soft);border:1.5px solid var(--brick);border-radius:var(--radius);padding:18px 20px}
+.trap-box .eyebrow{color:var(--brick)}
+.trap-box p{color:var(--ink);margin-bottom:0}
+
+/* ---- architecture diagram ---- */
+.arch-lane{margin-top:20px}
+.arch-lane-title{font-family:var(--font-m);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:10px;display:flex;align-items:center;gap:10px}
+.arch-lane-title::after{content:"";flex:1;height:1px;background:var(--line)}
+.arch-row{display:flex;gap:10px;overflow-x:auto;padding-bottom:8px;scroll-snap-type:x proximity}
+.arch-stage{flex:0 0 auto;width:168px;scroll-snap-align:start;border:1.5px solid var(--line);border-radius:var(--radius-sm);background:var(--bg-raised);padding:13px 14px;cursor:pointer;transition:.15s;position:relative}
+.arch-stage:hover{border-color:var(--accent)}
+.arch-stage.active{border-color:var(--accent);background:var(--accent-soft)}
+.arch-stage .n{font-family:var(--font-m);font-size:.68rem;color:var(--accent);font-weight:600}
+.arch-stage h5{font-size:.88rem;margin:.2em 0 .3em;font-family:var(--font-b);font-weight:600}
+.arch-stage p{font-size:.76rem;color:var(--ink-faint);margin:0;max-width:none}
+.arch-detail{margin-top:16px;border:1.5px solid var(--accent);background:var(--accent-soft);border-radius:var(--radius);padding:20px 22px;min-height:110px}
+.arch-detail .eyebrow{color:var(--accent-ink)}
+.arch-detail p{color:var(--ink);max-width:none;margin-bottom:.4em;font-size:.95rem}
+.arch-detail .status{display:inline-block;font-family:var(--font-m);font-size:.68rem;text-transform:uppercase;letter-spacing:.06em;padding:3px 10px;border-radius:999px;margin-top:6px}
+
+/* ---- router grid ---- */
+.router-wrap{display:grid;grid-template-columns:1fr;gap:24px;margin-top:24px}
+@media(min-width:860px){.router-wrap{grid-template-columns:1.1fr 1fr}}
+.router-grid{display:grid;grid-template-columns:auto repeat(3,1fr);gap:6px;font-family:var(--font-m);font-size:.74rem}
+.router-grid .hd{color:var(--ink-faint);text-align:center;padding:6px 2px;font-size:.66rem;text-transform:uppercase;letter-spacing:.04em}
+.router-grid .rowhd{color:var(--ink-faint);display:flex;align-items:center;justify-content:flex-end;padding-right:8px;text-align:right;font-size:.66rem;text-transform:uppercase;letter-spacing:.04em;max-width:82px}
+.router-cell{border:1.5px solid var(--line);border-radius:8px;padding:10px 6px;text-align:center;cursor:pointer;transition:.12s;background:var(--bg-raised)}
+.router-cell:hover{border-color:var(--ink-faint)}
+.router-cell.sel{border-color:var(--ink);box-shadow:0 0 0 2px var(--ink) inset}
+.router-cell b{display:block;font-size:.72rem;font-weight:600}
+.router-readout{border:1.5px solid var(--line);border-radius:var(--radius);padding:20px;background:var(--bg-raised);box-shadow:var(--shadow)}
+.router-readout h4{font-size:1.1rem}
+.router-readout .policy-pill{display:inline-block;font-family:var(--font-m);font-size:.72rem;font-weight:600;padding:4px 12px;border-radius:999px;margin-bottom:10px;text-transform:uppercase;letter-spacing:.04em}
+.router-readout p{font-size:.92rem;color:var(--ink-soft)}
+.router-readout .why{font-size:.82rem;color:var(--ink-faint);border-top:1px dashed var(--line);margin-top:12px;padding-top:12px}
+
+/* ---- evidence quiz ---- */
+.quiz-card{border:1.5px solid var(--line);border-radius:var(--radius);padding:22px;background:var(--bg-raised);box-shadow:var(--shadow);margin-top:24px}
+.quiz-card .scenario{font-size:1rem;margin-bottom:16px}
+.quiz-opts{display:flex;gap:10px;flex-wrap:wrap}
+.quiz-opt{font-family:var(--font-m);font-size:.8rem;font-weight:600;border:1.5px solid var(--line);background:var(--bg);border-radius:999px;padding:8px 16px;cursor:pointer;transition:.12s}
+.quiz-opt:hover{border-color:var(--ink-faint)}
+.quiz-fb{margin-top:16px;padding:14px 16px;border-radius:var(--radius-sm);font-size:.88rem;display:none}
+.quiz-fb.show{display:block}
+.quiz-fb.right{background:var(--accent-soft);border:1.5px solid var(--accent);color:var(--ink)}
+.quiz-fb.wrong{background:var(--brick-soft);border:1.5px solid var(--brick);color:var(--ink)}
+.quiz-next{font-family:var(--font-m);font-size:.74rem;color:var(--accent);background:none;border:1px solid var(--accent);border-radius:999px;padding:6px 14px;margin-top:14px;cursor:pointer;display:none}
+.quiz-next.show{display:inline-block}
+
+/* ---- data rules ---- */
+.state3{display:grid;grid-template-columns:1fr;gap:12px;margin-top:20px}
+@media(min-width:700px){.state3{grid-template-columns:repeat(3,1fr)}}
+.state3 .card{border-top:4px solid var(--line)}
+.state3 .card.active{border-top-color:var(--accent)}
+.state3 .card.inactive{border-top-color:var(--brick)}
+.state3 .card.untested{border-top-color:var(--ink-faint)}
+.state3 .k{font-family:var(--font-m);font-weight:700;font-size:1.05rem;letter-spacing:.02em}
+.state3 .active .k{color:var(--accent-ink)}
+.state3 .inactive .k{color:var(--brick)}
+.censor-demo{margin-top:18px;border:1.5px solid var(--line);border-radius:var(--radius);padding:22px;background:var(--bg-raised);box-shadow:var(--shadow)}
+.censor-row{font-family:var(--font-m);font-size:.86rem;background:var(--bg-sunk);border-radius:8px;padding:12px 16px;margin:10px 0;display:flex;flex-wrap:wrap;gap:6px 14px}
+.censor-row b{color:var(--brick)}
+.bar-track{height:30px;background:var(--bg-sunk);border-radius:6px;overflow:hidden;display:flex;align-items:center;margin:6px 0}
+.bar-fill{height:100%;display:flex;align-items:center;padding-left:10px;font-family:var(--font-m);font-size:.76rem;color:#fff;font-weight:600;white-space:nowrap;transition:width 1s cubic-bezier(.2,.8,.2,1)}
+
+/* ---- sacred rules ---- */
+.seal-wrap{display:grid;grid-template-columns:1fr;gap:16px;margin-top:24px}
+@media(min-width:700px){.seal-wrap{grid-template-columns:1fr 1fr}}
+.seal-card{border:1.5px dashed var(--line);border-radius:var(--radius);padding:24px;background:var(--bg-raised)}
+.seal-card h4{display:flex;align-items:center;gap:10px}
+.seal-icon{width:34px;height:34px;border-radius:50%;background:var(--bg-sunk);display:flex;align-items:center;justify-content:center;flex:0 0 auto;font-size:16px}
+
+/* ---- roadmap ---- */
+.road{margin-top:28px;position:relative}
+.road-track{position:relative;overflow-x:auto;padding:6px 4px 18px}
+.road-line{display:flex;gap:0;min-width:920px;position:relative;padding-top:8px}
+.road-line::before{content:"";position:absolute;left:0;right:0;top:34px;height:2px;background:var(--line)}
+.road-seg{flex:1;position:relative;padding-top:0;min-width:78px}
+.road-dot{width:14px;height:14px;border-radius:50%;background:var(--bg-raised);border:2.5px solid var(--ink-faint);margin:28px auto 10px;position:relative;z-index:1}
+.road-seg.done .road-dot{background:var(--accent);border-color:var(--accent)}
+.road-seg.now .road-dot{background:var(--amber);border-color:var(--amber);box-shadow:0 0 0 5px var(--amber-soft)}
+.road-seg .wk{text-align:center;font-family:var(--font-m);font-size:.68rem;color:var(--ink-faint)}
+.road-seg .lbl{text-align:center;font-size:.72rem;font-weight:600;padding:0 4px;min-height:2.4em}
+.road-cards{display:grid;grid-template-columns:1fr;gap:12px;margin-top:22px}
+@media(min-width:700px){.road-cards{grid-template-columns:repeat(3,1fr)}}
+.road-card{border:1.5px solid var(--line);border-radius:var(--radius-sm);padding:16px;background:var(--bg-raised)}
+.road-card .ph{font-family:var(--font-m);font-size:.66rem;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-faint)}
+.road-card h5{font-size:.95rem;margin:.2em 0 .4em}
+.road-card p{font-size:.82rem;color:var(--ink-soft);margin:0}
+
+/* ---- glossary ---- */
+.gloss{display:grid;grid-template-columns:1fr;gap:10px;margin-top:24px}
+@media(min-width:640px){.gloss{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:960px){.gloss{grid-template-columns:repeat(3,1fr)}}
+.flip3d{perspective:1200px;height:132px}
+.flip3d-in{position:relative;width:100%;height:100%;transition:transform .45s;transform-style:preserve-3d;cursor:pointer}
+.flip3d.on .flip3d-in{transform:rotateY(180deg)}
+.flip3d .face{position:absolute;inset:0;backface-visibility:hidden;border:1.5px solid var(--line);border-radius:var(--radius-sm);padding:14px 16px;background:var(--bg-raised);display:flex;flex-direction:column;justify-content:center}
+.flip3d .face.b{transform:rotateY(180deg);background:var(--accent-soft);border-color:var(--accent)}
+.flip3d .face .term{font-family:var(--font-b);font-weight:700;font-size:.96rem}
+.flip3d .face .hint{font-family:var(--font-m);font-size:.66rem;color:var(--ink-faint);margin-top:6px;text-transform:uppercase;letter-spacing:.04em}
+.flip3d .face.b p{font-size:.8rem;color:var(--ink);margin:0;max-width:none}
+
+/* ---- self-check ---- */
+.check-list{margin-top:22px;display:flex;flex-direction:column;gap:2px}
+.check-item{display:flex;align-items:flex-start;gap:12px;padding:13px 16px;border-radius:var(--radius-sm);cursor:pointer;transition:background .12s}
+.check-item:hover{background:var(--bg-sunk)}
+.check-box{width:22px;height:22px;border-radius:6px;border:2px solid var(--line);flex:0 0 auto;margin-top:.1em;display:flex;align-items:center;justify-content:center;transition:.15s}
+.check-item.on .check-box{background:var(--accent);border-color:var(--accent);color:#fff}
+.check-item span.txt{font-size:.94rem;color:var(--ink-soft)}
+.check-item.on span.txt{color:var(--ink-faint);text-decoration:line-through}
+.progress-track{height:8px;background:var(--bg-sunk);border-radius:99px;overflow:hidden;margin-top:18px}
+.progress-fill{height:100%;background:var(--accent);width:0%;transition:width .3s}
+.progress-txt{font-family:var(--font-m);font-size:.72rem;color:var(--ink-faint);margin-top:8px}
+
+footer{padding:48px 0 calc(48px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--line);text-align:center}
+footer p{margin:0 auto;color:var(--ink-faint);font-size:.84rem;max-width:50ch}
+.back-top{display:inline-block;margin-top:16px;font-family:var(--font-m);font-size:.78rem;color:var(--accent);text-decoration:none;border:1px solid var(--accent);border-radius:999px;padding:7px 16px}
+[hidden]{display:none!important}
+::selection{background:var(--accent);color:#fff}
+.small-note{font-size:.82rem;color:var(--ink-faint);margin-top:10px}
+</style>
+
+</head>
+<body>
+<nav class="topnav">
+  <div class="topnav-in">
+    <a class="brand" href="#top">Trust<b>DTI</b></a>
+    <div class="navlinks">
+      <a href="#problem">Problem</a>
+      <a href="#novelty">What's new</a>
+      <a href="#idea">Core idea</a>
+      <a href="#networks">Networks</a>
+      <a href="#architecture">Architecture</a>
+      <a href="#router">Router</a>
+      <a href="#evidence">Evidence</a>
+      <a href="#rules">Data rules</a>
+      <a href="#sacred">Sacred rules</a>
+      <a href="#roadmap">Roadmap</a>
+      <a href="#glossary">Glossary</a>
+      <a href="#check">Self-check</a>
+    </div>
+    <button class="themebtn" id="themeBtn" title="Toggle theme" aria-label="Toggle color theme">◐</button>
+  </div>
+</nav>
+
+<div id="top"></div>
+<section class="hero">
+  <div class="wrap">
+    <div class="eyebrow"><span class="num">TrustDTI</span> · concept &amp; architecture</div>
+    <h1>A drug prediction that knows what it doesn't know — and goes looking for the evidence that would prove it wrong</h1>
+    <p class="lede">This page explains the whole idea end to end: the problem, what's genuinely new about the approach, how the system is put together, and the exact rules that keep it honest. Read it top to bottom once, then use the interactive pieces to test yourself.</p>
+    <div class="hero-tags">
+      <span class="tag">Drug repurposing</span>
+      <span class="tag">Calibrated uncertainty</span>
+      <span class="tag">Evidence-seeking AI agent</span>
+      <span class="tag">12-week research project</span>
+    </div>
+    <div class="hero-scene">
+      <svg viewBox="0 0 900 220" width="100%" style="display:block" role="img" aria-label="Overview: a drug and protein go into a predictor, which outputs a prediction plus a calibrated confidence, which then steers an evidence search toward either supporting or contradicting literature.">
+        <defs>
+          <marker id="arrM" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0L10,5L0,10z" fill="var(--ink-faint)"/>
+          </marker>
+        </defs>
+        <style>
+          .lbl{font-family:'IBM Plex Mono',monospace;font-size:11px;fill:var(--ink-faint)}
+          .lbl2{font-family:'IBM Plex Sans',sans-serif;font-size:13px;font-weight:600;fill:var(--ink)}
+          .flow{stroke:var(--ink-faint);stroke-width:1.4;fill:none;marker-end:url(#arrM)}
+          .box{fill:var(--bg-raised);stroke:var(--line);stroke-width:1.4;rx:10}
+        </style>
+        <rect x="18" y="76" width="118" height="64" class="box"/>
+        <text x="77" y="102" text-anchor="middle" class="lbl2">Drug +</text>
+        <text x="77" y="120" text-anchor="middle" class="lbl2">Protein</text>
+        <line x1="136" y1="108" x2="182" y2="108" class="flow"/>
+        <rect x="184" y="76" width="130" height="64" class="box" stroke="var(--accent)"/>
+        <text x="249" y="100" text-anchor="middle" class="lbl2">Predictor +</text>
+        <text x="249" y="118" text-anchor="middle" class="lbl2">confidence</text>
+        <line x1="314" y1="108" x2="360" y2="108" class="flow"/>
+        <rect x="362" y="40" width="150" height="46" class="box" stroke="var(--accent)"/>
+        <text x="437" y="68" text-anchor="middle" class="lbl2" fill="var(--accent-ink)">confident</text>
+        <rect x="362" y="132" width="150" height="46" class="box" stroke="var(--brick)"/>
+        <text x="437" y="160" text-anchor="middle" class="lbl2" fill="var(--brick)">uncertain</text>
+        <line x1="512" y1="63" x2="558" y2="63" class="flow"/>
+        <line x1="512" y1="155" x2="558" y2="155" class="flow"/>
+        <rect x="560" y="34" width="160" height="58" class="box"/>
+        <text x="640" y="58" text-anchor="middle" class="lbl2">confirm the</text>
+        <text x="640" y="76" text-anchor="middle" class="lbl2">mechanism</text>
+        <rect x="560" y="126" width="160" height="58" class="box"/>
+        <text x="640" y="150" text-anchor="middle" class="lbl2">seek counter-</text>
+        <text x="640" y="168" text-anchor="middle" class="lbl2">evidence</text>
+        <line x1="720" y1="63" x2="762" y2="100" class="flow"/>
+        <line x1="720" y1="155" x2="762" y2="118" class="flow"/>
+        <rect x="764" y="76" width="118" height="64" class="box" stroke="var(--ink)"/>
+        <text x="823" y="102" text-anchor="middle" class="lbl2">Cited</text>
+        <text x="823" y="120" text-anchor="middle" class="lbl2">report</text>
+      </svg>
+    </div>
+    <p class="small-note">The full seven-stage build (offline) and the live-query path (online) are diagrammed in the Architecture section below — this is just the idea in one breath.</p>
+  </div>
+</section>
+
+<section id="problem" class="band-raised">
+  <div class="wrap">
+    <div class="eyebrow"><span class="num">01</span> The problem</div>
+    <h2>Ranking candidates isn't the hard part anymore</h2>
+    <p class="lede">Drug repurposing means finding a new use for a medicine that's already known to be safe in humans — which skips years of safety testing that a brand-new molecule would need. Models that suggest "this drug might hit this protein" are common. The bottleneck is what happens after the list comes out.</p>
+    <div class="compare">
+      <div class="card bad">
+        <div class="k">What a typical predictor gives you</div>
+        <ul>
+          <li>A single confidence number, e.g. <code>0.73</code></li>
+          <li>No signal for whether that number is trustworthy on <em>this particular</em> protein</li>
+          <li>You check the literature yourself — and people naturally search for evidence that <em>confirms</em> what they already suspect</li>
+          <li>The statistically weakest predictions get challenged the least, in practice</li>
+        </ul>
+      </div>
+      <div class="vs">turns<br>into</div>
+      <div class="card good">
+        <div class="k">What TrustDTI gives you</div>
+        <ul>
+          <li>A prediction <strong>plus</strong> a statistically calibrated trust category — not just a raw number</li>
+          <li>A curated (never predicted) check on whether the target protein is genuinely disease-linked</li>
+          <li>An agent that deliberately flips its search strategy: hunts for support when confident, hunts for contradictions when unsure</li>
+          <li>A traceable report — every claim points back to a real citation</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="novelty">
+  <div class="wrap">
+    <div class="eyebrow"><span class="num">02</span> What's actually new here</div>
+    <h2>Said plainly, before anyone else says it</h2>
+    <p class="lede">Being upfront about what's <em>not</em> invented here is what makes the one real claim credible. Tap each row.</p>
+    <div class="acc" id="noveltyAcc">
+      <div class="acc-item">
+        <button class="acc-btn"><span>Drug–protein interaction prediction with neural encoders</span><span class="status">not novel</span><span class="chev">+</span></button>
+        <div class="acc-panel"><div class="acc-panel-in">A very active, crowded research area. Predicting whether a compound binds a protein from its structure/sequence is done by hundreds of published models. TrustDTI's fusion head only needs to be <em>good enough and rigorously validated</em> — it deliberately does not chase state-of-the-art benchmark performance, because the contribution sits downstream of it.</div></div>
+      </div>
+      <div class="acc-item">
+        <button class="acc-btn"><span>Conformal prediction applied to drug–target interaction</span><span class="status">not novel</span><span class="chev">+</span></button>
+        <div class="acc-panel"><div class="acc-panel-in">Wrapping a predictor in split conformal prediction to get a statistically guaranteed confidence set is already published elsewhere for this exact task. TrustDTI uses the technique, it doesn't invent it.</div></div>
+      </div>
+      <div class="acc-item">
+        <button class="acc-btn"><span>Uncertainty-adaptive retrieval in general AI search systems</span><span class="status">not novel</span><span class="chev">+</span></button>
+        <div class="acc-panel"><div class="acc-panel-in">An established subfield of retrieval-augmented generation — systems that search harder or differently when they're unsure. The pattern exists; it's usually applied to a system reasoning about <em>its own</em> confidence in an answer it's about to give.</div></div>
+      </div>
+      <div class="acc-item">
+        <button class="acc-btn"><span>Agentic, evidence-seeking drug-repurposing reasoning</span><span class="status">not novel</span><span class="chev">+</span></button>
+        <div class="acc-panel"><div class="acc-panel-in">Close prior work already exists on AI agents that go gather literature evidence to support a repurposing hypothesis.</div></div>
+      </div>
+    </div>
+    <div class="claim-box">
+      <div class="eyebrow">the one actual claim</div>
+      <p>Nobody has directly tested using an <strong>externally calibrated statistical signal from one system</strong> (a molecular prediction model) to control the <strong>search behaviour of a completely different system</strong> (a literature-retrieval agent) — as opposed to a system reasoning about its own self-confidence. That narrow, specific cross-paradigm bridge is what this project tests. A literature re-audit against the newest work happens in Week 9, before this claim is finalised in writing.</p>
+    </div>
+  </div>
+</section>
+
+<section id="idea" class="band-sunk">
+  <div class="wrap">
+    <div class="eyebrow"><span class="num">03</span> The core idea, live</div>
+    <h2>Drag the slider. Watch the strategy flip.</h2>
+    <p class="lede">This is the single mechanism the entire project is built around. Everything else — the calibration math, the disease database, the agent — exists to make this one flip trustworthy and automatic.</p>
+    <div class="dial-demo">
+      <div class="dial-row">
+        <span>UNCERTAIN</span>
+        <input type="range" id="confSlider" min="0" max="100" value="50">
+        <span>CONFIDENT</span>
+      </div>
+      <div class="dial-readout" id="dialReadout">
+        <div class="sub" id="dialSub">model confidence: 50 / 100</div>
+        <h4 id="dialTitle">Right at the boundary</h4>
+        <p id="dialBody">Move the slider toward either edge to see how the search strategy changes.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="networks">
+  <div class="wrap">
+    <div class="eyebrow"><span class="num">04</span> Two networks — don't mix them up</div>
+    <h2>One is predicted. One is looked up. Never store them the same way.</h2>
+    <p class="lede">TrustDTI builds two related but structurally different objects. The briefing calls confusing them "the trap to avoid" — it would break the entire disease-anchor design at its root. Tap a card to flip it.</p>
+    <div class="grid g2" style="margin-top:24px">
+      <div class="net-flip" id="netFlip1">
+        <div class="net-flip-in">
+          <div class="net-face">
+            <div class="eyebrow" style="color:var(--accent)">Network 1</div>
+            <h4>Compound ↔ Protein</h4>
+            <p style="color:var(--ink-soft);font-size:.9rem">Nodes: compounds and proteins only. One edge type: a measured or <strong>predicted</strong> interaction, carrying a probability and a conformal prediction set. Built in Weeks 1–6; trains the fusion head.</p>
+            <div class="tap">tap to flip →</div>
+          </div>
+          <div class="net-face back" style="background:var(--accent-soft);border-color:var(--accent)">
+            <p style="color:var(--ink)">This is the network the AI model actually learns. Every edge here is something a neural network produced — which is exactly why it needs a calibrated trust score attached, and why it must never be confused with a fact looked up from a database.</p>
+          </div>
+        </div>
+      </div>
+      <div class="net-flip" id="netFlip2">
+        <div class="net-flip-in">
+          <div class="net-face">
+            <div class="eyebrow" style="color:var(--amber)">Network 2</div>
+            <h4>Compound ↔ Protein ↔ Disease</h4>
+            <p style="color:var(--ink-soft);font-size:.9rem">Adds disease nodes and a second, structurally different edge type: a <strong>curated</strong> protein–disease association pulled from Open Targets / DISGENET. Built in Week 8, on top of the finished Network 1.</p>
+            <div class="tap">tap to flip →</div>
+          </div>
+          <div class="net-face back" style="background:var(--amber-soft);border-color:var(--amber)">
+            <p style="color:var(--ink)">This edge is never predicted by any model in this project — it's a fact looked up from a human-curated biology database, with its own evidence score. Keeping it separate keeps the "is this protein disease-relevant" question auditable and independent of anything the AI produced.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="trap-box">
+      <div class="eyebrow">the trap, specifically</div>
+      <p>If predicted compound–protein edges and curated protein–disease edges ever land in one undifferentiated table, the system loses the distinction its whole design depends on. Rule: store them as two separate tables, or two edge types with an explicit <code>provenance</code> column (<code>"predicted"</code> vs <code>"curated"</code>) — from the very first script that touches them.</p>
+    </div>
+  </div>
+</section>
+
+<section id="architecture" class="band-raised">
+  <div class="wrap">
+    <div class="eyebrow"><span class="num">05</span> Full architecture</div>
+    <h2>Built once, then queried forever</h2>
+    <p class="lede">The system has two halves. The offline half is expensive and runs once — profiling data, training one small model, calibrating it. The online half runs per query, in seconds, using only what the offline half already built. Tap any stage.</p>
+
+    <div class="arch-lane">
+      <div class="arch-lane-title">Offline — built once, cached</div>
+      <div class="arch-row" id="archOffline">
+        <div class="arch-stage" data-lane="off" data-i="0"><div class="n">1</div><h5>Data</h5><p>ChEMBL + BindingDB, profiled and filtered</p></div>
+        <div class="arch-stage" data-lane="off" data-i="1"><div class="n">2</div><h5>Network 1</h5><p>Cleaned, 3-state labelled, 4 splits</p></div>
+        <div class="arch-stage" data-lane="off" data-i="2"><div class="n">3</div><h5>Embeddings</h5><p>ChemBERTa + ESM-2, frozen, cached</p></div>
+        <div class="arch-stage" data-lane="off" data-i="3"><div class="n">4</div><h5>Fusion head</h5><p>The one trained component</p></div>
+        <div class="arch-stage" data-lane="off" data-i="4"><div class="n">5</div><h5>Evaluation</h5><p>4 splits, stratified by family</p></div>
+        <div class="arch-stage" data-lane="off" data-i="5"><div class="n">6</div><h5>Conformal calibration</h5><p>Probability → trust category</p></div>
+        <div class="arch-stage" data-lane="off" data-i="6"><div class="n">7</div><h5>Network 2</h5><p>+ curated disease edges</p></div>
+      </div>
+    </div>
+
+    <div class="arch-lane">
+      <div class="arch-lane-title">Online — per query, in seconds</div>
+      <div class="arch-row" id="archOnline">
+        <div class="arch-stage" data-lane="on" data-i="0"><div class="n">A</div><h5>Query</h5><p>Drug→diseases or disease→drugs</p></div>
+        <div class="arch-stage" data-lane="on" data-i="1"><div class="n">B</div><h5>Dual-signal router</h5><p>Deterministic code, not an LLM</p></div>
+        <div class="arch-stage" data-lane="on" data-i="2"><div class="n">C</div><h5>Evidence retrieval</h5><p>Policy-specific literature search</p></div>
+        <div class="arch-stage" data-lane="on" data-i="3"><div class="n">D</div><h5>Structured extraction</h5><p>Passage → typed, cited record</p></div>
+        <div class="arch-stage" data-lane="on" data-i="4"><div class="n">E</div><h5>Grounded synthesis</h5><p>LLM writes from records only</p></div>
+        <div class="arch-stage" data-lane="on" data-i="5"><div class="n">F</div><h5>Report</h5><p>Prediction + confidence + evidence</p></div>
+      </div>
+    </div>
+
+    <div class="arch-detail" id="archDetail">
+      <div class="eyebrow">Tap a stage above</div>
+      <p>Each stage's job, why it exists, and where the project stands on it will appear here.</p>
+    </div>
+  </div>
+</section>
+
+<section id="router" class="band-sunk">
+  <div class="wrap">
+    <div class="eyebrow"><span class="num">06</span> The router — try it yourself</div>
+    <h2>Two signals in, one policy out — and it's just code</h2>
+    <p class="lede">This is the single most consequential decision the whole system makes, and it's deliberately <strong>ordinary, unit-tested code</strong> — never an LLM's judgment call. If a language model chose the policy, the most important step in the system would be unreproducible. Click a cell in the grid to see which of the 7 policies fires.</p>
+    <div class="router-wrap">
+      <div>
+        <div class="router-grid" id="routerGrid">
+          <div class="hd"></div><div class="hd">Strong</div><div class="hd">Moderate</div><div class="hd">Weak / none</div>
+          <div class="rowhd">Confident&nbsp;— active {1}</div>
+          <div class="router-cell" data-r="0" data-c="0">CONFIRM</div>
+          <div class="router-cell" data-r="0" data-c="1">CONTEXTUALISE</div>
+          <div class="router-cell" data-r="0" data-c="2">INVESTIGATE</div>
+          <div class="rowhd">Uncertain {0,1}</div>
+          <div class="router-cell" data-r="1" data-c="0">CHALLENGE</div>
+          <div class="router-cell" data-r="1" data-c="1">CHALLENGE + CONTEXT</div>
+          <div class="router-cell" data-r="1" data-c="2">LOW PRIORITY</div>
+          <div class="rowhd">Confident&nbsp;— inactive {0}</div>
+          <div class="router-cell" data-r="2" data-c="0">STOP</div>
+          <div class="router-cell" data-r="2" data-c="1">STOP</div>
+          <div class="router-cell" data-r="2" data-c="2">STOP</div>
+        </div>
+        <p class="small-note">Rows = what the calibrated model says. Columns = how well-established the protein–disease link is, from the curated database.</p>
+      </div>
+      <div class="router-readout" id="routerReadout">
+        <span class="policy-pill" id="routerPill" style="background:var(--accent-soft);color:var(--accent-ink)">CONFIRM</span>
+        <h4 id="routerTitle">Click any cell</h4>
+        <p id="routerBody">Start with the top-left cell — the model is confident, and the disease link is strong.</p>
+        <div class="why" id="routerWhy"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="evidence" class="band-raised">
+  <div class="wrap">
+    <div class="eyebrow"><span class="num">07</span> Evidence categories &amp; the trickiest rule in the project</div>
+    <h2>Four kinds of evidence, three directions, one dangerous shortcut</h2>
+    <p class="lede">Every category mirrors a step a pharmacologist actually reasons through:</p>
+    <div class="grid g4" style="margin-top:18px">
+      <div class="card"><h3 style="font-size:.95rem">Mechanistic</h3><p>Does the drug actually affect this protein? (binding, inhibition)</p></div>
+      <div class="card"><h3 style="font-size:.95rem">Disease context</h3><p>Does this protein matter for this disease? (pathway, genetics)</p></div>
+      <div class="card"><h3 style="font-size:.95rem">Counter</h3><p>What would make this prediction wrong? (failed assays, contradictions)</p></div>
+      <div class="card"><h3 style="font-size:.95rem">Safety</h3><p>Even if it works — reason not to pursue it? (toxicity, terminated trials)</p></div>
+    </div>
+    <p class="lede" style="margin-top:28px">Every retrieved passage becomes a record with a <strong>direction</strong>: <code>SUPPORT</code>, <code>CONTRADICT</code>, or <code>UNKNOWN</code>. Try the scenario below — it's the single easiest mistake to make in this whole system.</p>
+    <div class="quiz-card">
+      <div class="scenario" id="quizScenario">The agent searches thoroughly for literature on Drug X and Protein Y. It finds <strong>nothing relevant at all</strong> — no supporting studies, no contradicting studies, nothing. What direction should this record get?</div>
+      <div class="quiz-opts" id="quizOpts">
+        <button class="quiz-opt" data-v="wrong">CONTRADICT</button>
+        <button class="quiz-opt" data-v="right">UNKNOWN</button>
+        <button class="quiz-opt" data-v="wrong2">SUPPORT</button>
+      </div>
+      <div class="quiz-fb" id="quizFb"></div>
+      <button class="quiz-next" id="quizNext">Try another →</button>
+    </div>
+  </div>
+</section>
+
+<section id="rules" class="band-sunk">
+  <div class="wrap">
+    <div class="eyebrow"><span class="num">08</span> Two data rules that protect everything downstream</div>
+    <h2>Get these wrong and every later result is quietly poisoned</h2>
+    <p class="lede">These apply the moment raw bioactivity data is touched — long before any model is trained.</p>
+    <div class="state3">
+      <div class="card active"><div class="k">ACTIVE</div><p>A measurement exists <strong>and</strong> shows meaningful activity.</p></div>
+      <div class="card inactive"><div class="k">INACTIVE</div><p>A measurement exists <strong>and</strong> shows no meaningful activity under the tested conditions.</p></div>
+      <div class="card untested"><div class="k">UNTESTED</div><p>No measurement exists. <strong>Never</strong> silently turned into INACTIVE — most possible pairs were simply never tried.</p></div>
+    </div>
+    <p class="lede" style="margin-top:10px">Why this matters: in a sparse network like this, almost every possible drug–protein pair is untested. Treat "never measured" as "measured and negative" and you teach the model that almost nothing binds — destroying precision on exactly the novel candidates the project exists to surface.</p>
+
+    <div class="censor-demo">
+      <div class="eyebrow">Rule 2 — censored ≠ exact</div>
+      <h3 style="font-size:1.1rem">A real row from the actual data</h3>
+      <div class="censor-row">activity_id <b>884645</b> · imatinib vs. FLT3 · standard_type <b>IC50</b> · standard_relation <b>&gt;</b> · standard_value <b>30,000 nM</b></div>
+      <p style="font-size:.92rem;color:var(--ink-soft)">Read literally, that <code>&gt;</code> means: <em>"the test was stopped at 30 micromolar without finding where the drug stops working"</em> — a lower bound, not a precise measurement of exactly 30,000 nM. Treating it as an exact number would be a real error, not a nitpick.</p>
+      <p style="font-size:.92rem;color:var(--ink-soft);margin-top:14px">Here's what happens to imatinib's own activity records if you take the tempting shortcut of keeping only rows that have a clean potency value:</p>
+      <div class="bar-track"><div class="bar-fill" id="barAll" style="width:0%;background:var(--ink-faint)">all rows: 4,878</div></div>
+      <div class="bar-track"><div class="bar-fill" id="barKept" style="width:0%;background:var(--brick)">kept by the shortcut: 833 (17%)</div></div>
+      <p style="font-size:.92rem;color:var(--ink-soft);margin-top:10px">The shortcut throws away <strong>all 1,335 censored rows</strong> — which are exactly the strongest "this doesn't work" evidence available.</p>
+    </div>
+  </div>
+</section>
+
+<section id="sacred" class="band-raised">
+  <div class="wrap">
+    <div class="eyebrow"><span class="num">09</span> The two things that must never quietly change</div>
+    <h2>Everything else in this project is allowed to evolve. These aren't.</h2>
+    <div class="seal-wrap">
+      <div class="seal-card">
+        <h4><span class="seal-icon">◈</span> The research question</h4>
+        <p style="color:var(--ink-soft);font-size:.92rem">"Does conditioning literature-evidence retrieval on calibrated prediction uncertainty (plus a disease-relevance signal) improve evidence precision and counter-evidence recall, compared with a fixed retrieval policy applied to the same candidates?"</p>
+        <p style="color:var(--ink-soft);font-size:.92rem">Written so it can <strong>fail</strong>. If uncertainty-adaptive retrieval doesn't beat the boring fixed policy, that's the finding — reported honestly, never adjusted until it looks better.</p>
+      </div>
+      <div class="seal-card">
+        <h4><span class="seal-icon">🔒</span> The blinding protocol</h4>
+        <p style="color:var(--ink-soft);font-size:.92rem">Six retrospective test cases get frozen into a sealed file in Week 8 and must not be read, referenced, or allowed to influence <em>any</em> decision until a specific unsealing point in Week 9.</p>
+        <p style="color:var(--ink-soft);font-size:.92rem">This is a blinding protocol. Breaking it silently — even peeking — would invalidate the project's central experiment, the same way peeking at exam answers invalidates the exam.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="roadmap" class="band-sunk">
+  <div class="wrap">
+    <div class="eyebrow"><span class="num">10</span> The 12-week journey</div>
+    <h2>10 build weeks, 2 weeks kept in reserve on purpose</h2>
+    <p class="lede">Every phase ends in a gate that must be passed — or explicitly waived in writing with a stated reason — before the next phase begins.</p>
+    <div class="road">
+      <div class="road-track">
+        <div class="road-line" id="roadLine">
+          <div class="road-seg done"><div class="road-dot"></div><div class="wk">W1–2</div><div class="lbl">Data foundation</div></div>
+          <div class="road-seg now"><div class="road-dot"></div><div class="wk">W2</div><div class="lbl">Lock scope &amp; labels</div></div>
+          <div class="road-seg"><div class="road-dot"></div><div class="wk">W3</div><div class="lbl">Network 1</div></div>
+          <div class="road-seg"><div class="road-dot"></div><div class="wk">W4–5</div><div class="lbl">Embeddings + fusion head</div></div>
+          <div class="road-seg"><div class="road-dot"></div><div class="wk">W6</div><div class="lbl">Honest evaluation</div></div>
+          <div class="road-seg"><div class="road-dot"></div><div class="wk">W7</div><div class="lbl">Conformal calibration</div></div>
+          <div class="road-seg"><div class="road-dot"></div><div class="wk">W8</div><div class="lbl">Network 2 + router + seal</div></div>
+          <div class="road-seg"><div class="road-dot"></div><div class="wk">W9</div><div class="lbl">The central experiment</div></div>
+          <div class="road-seg"><div class="road-dot"></div><div class="wk">W10</div><div class="lbl">Delivery</div></div>
+          <div class="road-seg"><div class="road-dot"></div><div class="wk">W11–12</div><div class="lbl">Reserved buffer</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="road-cards">
+      <div class="road-card"><div class="ph">If time runs short — priority 1</div><h5>Protect calibration, router, experiment</h5><p>Weeks 7, 8, and 9 get protected before anything else — even before polishing the predictor.</p></div>
+      <div class="road-card"><div class="ph">If time runs short — priority 2</div><h5>Depth, only if nothing is owed</h5><p>A second ablation, deeper calibration analysis — never new scope.</p></div>
+      <div class="road-card"><div class="ph">The one rule</div><h5>The contribution isn't the predictor</h5><p>It's what happens after the prediction. A modest predictor with rigorous calibration beats an excellent predictor with the evidence layer half-built.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="glossary" class="band-raised">
+  <div class="wrap">
+    <div class="eyebrow"><span class="num">11</span> Glossary</div>
+    <h2>Tap a term to see the plain-English version</h2>
+    <div class="gloss" id="glossGrid"></div>
+  </div>
+</section>
+
+<section id="check" class="band-sunk">
+  <div class="wrap">
+    <div class="eyebrow"><span class="num">12</span> Can you explain this to someone else?</div>
+    <h2>Self-check</h2>
+    <p class="lede">Tick each one only once you could explain it out loud, unaided, to a friend.</p>
+    <div class="check-list" id="checkList"></div>
+    <div class="progress-track"><div class="progress-fill" id="progFill"></div></div>
+    <div class="progress-txt" id="progTxt">0 / 8 mastered</div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p>This page covers the concept and architecture. For the actual end-to-end technical pipeline — every stage, the real dataset numbers, and current build status — see the companion page, <strong>TrustDTI Pipeline</strong>.</p>
+    <a class="back-top" href="#top">↑ Back to top</a>
+  </div>
+</footer>
+
+<script>
+(function(){
+try{var saved=localStorage.getItem('trustdti-theme');if(saved)document.documentElement.setAttribute('data-theme',saved);}catch(e){}
+document.getElementById('themeBtn').addEventListener('click',function(){
+  var cur=document.documentElement.getAttribute('data-theme');
+  var next = cur==='dark' ? 'light' : (cur==='light' ? null : 'dark');
+  if(next){document.documentElement.setAttribute('data-theme',next);}else{document.documentElement.removeAttribute('data-theme');}
+  try{ if(next) localStorage.setItem('trustdti-theme',next); else localStorage.removeItem('trustdti-theme'); }catch(e){}
+});
+
+/* accordion */
+document.querySelectorAll('#noveltyAcc .acc-item').forEach(function(item){
+  var btn=item.querySelector('.acc-btn'), panel=item.querySelector('.acc-panel');
+  btn.addEventListener('click',function(){
+    var open=item.classList.contains('open');
+    document.querySelectorAll('#noveltyAcc .acc-item').forEach(function(i){i.classList.remove('open');i.querySelector('.acc-panel').style.maxHeight=null;});
+    if(!open){item.classList.add('open');panel.style.maxHeight=panel.scrollHeight+'px';}
+  });
+});
+
+/* confidence dial */
+var slider=document.getElementById('confSlider'), readout=document.getElementById('dialReadout'),
+    sub=document.getElementById('dialSub'), title=document.getElementById('dialTitle'), body=document.getElementById('dialBody');
+function updateDial(){
+  var v=parseInt(slider.value,10);
+  sub.textContent='model confidence: '+v+' / 100';
+  var accent=getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
+  var brick=getComputedStyle(document.documentElement).getPropertyValue('--brick').trim();
+  var accentSoft=getComputedStyle(document.documentElement).getPropertyValue('--accent-soft').trim();
+  var brickSoft=getComputedStyle(document.documentElement).getPropertyValue('--brick-soft').trim();
+  var amberSoft=getComputedStyle(document.documentElement).getPropertyValue('--amber-soft').trim();
+  var line=getComputedStyle(document.documentElement).getPropertyValue('--line').trim();
+  if(v>=70){
+    readout.style.background=accentSoft; readout.style.borderColor=accent;
+    title.textContent='Confident → seek CONFIRMATION';
+    body.innerHTML='The model is confident this interaction is real. The agent now searches for <strong>mechanistic</strong> and <strong>disease-context</strong> evidence — the "why might this be right" literature. This is the CONFIRM / CONTEXTUALISE side of the router.';
+  }else if(v<=30){
+    readout.style.background=brickSoft; readout.style.borderColor=brick;
+    title.textContent='Uncertain → seek to FALSIFY';
+    body.innerHTML='The model itself isn\'t sure. Instead of quietly trusting the number, the agent deliberately hunts for <strong>counter-evidence</strong> and <strong>safety flags</strong> first — actively trying to prove its own prediction wrong. This is the CHALLENGE side of the router.';
+  }else{
+    readout.style.background=amberSoft; readout.style.borderColor=line;
+    title.textContent='Right at the boundary';
+    body.innerHTML='Move further toward either edge — the real system uses a statistically calibrated threshold here, not a guess, which is what conformal prediction (Week 7) provides.';
+  }
+}
+slider.addEventListener('input',updateDial); updateDial();
+
+/* network flip cards */
+['netFlip1','netFlip2'].forEach(function(id){
+  document.getElementById(id).addEventListener('click',function(){this.classList.toggle('flipped');});
+});
+
+/* architecture stages */
+var archData={
+  off:[
+    {t:'Data', d:'ChEMBL 37 (24.5M measurements) restricted to human single-protein targets, plus a BindingDB cross-check. Nothing is filtered on potency yet — every measurement, including uncertain ones, is kept.', status:'done', statusLabel:'Week 1 — done, with real numbers'},
+    {t:'Network 1', d:'The raw measurements get cleaned: molecules standardised, proteins mapped to canonical IDs, duplicate measurements aggregated, the three-state label applied, and four different train/test splits carved out (random, new-scaffold, new-protein, time-based).', status:'next', statusLabel:'Week 2–3 — next'},
+    {t:'Embeddings', d:'Every drug becomes a vector via ChemBERTa (a pretrained chemistry language model); every protein becomes a vector via ESM-2 (a pretrained protein language model). Both are frozen — never retrained — and computed once, cached forever.', status:'planned', statusLabel:'Week 4 — planned'},
+    {t:'Fusion head', d:'A small neural network — the *only* component actually trained in this whole project. It takes a drug vector and a protein vector and outputs one probability: how likely is this interaction real?', status:'planned', statusLabel:'Week 5 — planned'},
+    {t:'Evaluation', d:'The fusion head gets tested on all four splits, broken down by protein family, not just pooled together — because performance on a familiar family can hide failure on an unfamiliar one.', status:'planned', statusLabel:'Week 6 — planned'},
+    {t:'Conformal calibration', d:'Turns the raw probability into a statistically guaranteed trust category: confidently-active {1}, genuinely-uncertain {0,1}, or confidently-inactive {0} — with a mathematical coverage guarantee, not just a threshold picked by eye.', status:'planned', statusLabel:'Week 7 — planned, protected'},
+    {t:'Network 2', d:'Network 1\'s predictions get joined to a curated protein–disease lookup (Open Targets / DISGENET), producing an "anchor strength" for every protein — strong, moderate, or weak.', status:'planned', statusLabel:'Week 8 — planned, protected'}
+  ],
+  on:[
+    {t:'Query', d:'A user asks in either direction: "what diseases might this drug help?" (forward) or "what existing drugs might treat this disease?" (reverse).', status:'planned', statusLabel:'Week 8'},
+    {t:'Dual-signal router', d:'Plain, unit-tested code combines the conformal state and the disease-anchor strength into exactly one of 7 policies. Never an LLM decision — see the interactive Router section below.', status:'planned', statusLabel:'Week 8'},
+    {t:'Evidence retrieval', d:'Searches PubMed/PubTator using a query template specific to the chosen policy — e.g. CHALLENGE searches counter-evidence and safety terms first.', status:'planned', statusLabel:'Week 9 — the experiment'},
+    {t:'Structured extraction', d:'Every retrieved passage becomes a typed record: drug, protein, disease, evidence type, direction (SUPPORT / CONTRADICT / UNKNOWN), citation, and the exact source span it came from.', status:'planned', statusLabel:'Week 9'},
+    {t:'Grounded synthesis', d:'A language model writes the final report using *only* those structured records as source material. Any claim that doesn\'t have a matching record gets rejected before it reaches the report.', status:'planned', statusLabel:'Week 9'},
+    {t:'Report', d:'The final output: prediction, calibrated confidence, disease anchor strength, and ranked, fully traceable evidence — every sentence pointing back to a citation.', status:'planned', statusLabel:'Week 10 — delivery'}
+  ]
+};
+function paintStage(lane,i){
+  var d=archData[lane][i];
+  document.querySelectorAll('.arch-stage').forEach(function(s){s.classList.remove('active');});
+  document.querySelector('.arch-stage[data-lane="'+lane+'"][data-i="'+i+'"]').classList.add('active');
+  var det=document.getElementById('archDetail');
+  var colorVar = d.status==='done' ? '--accent' : (d.status==='next' ? '--amber' : '--ink-faint');
+  var bgVar = d.status==='done' ? '--accent-soft' : (d.status==='next' ? '--amber-soft' : '--bg-sunk');
+  det.style.borderColor='var('+colorVar+')';
+  det.style.background='var('+bgVar+')';
+  det.innerHTML='<div class="eyebrow" style="color:var('+colorVar+')">'+(lane==='off'?'Offline · ':'Online · ')+d.t+'</div><p>'+d.d+'</p><span class="status" style="background:var(--bg-raised);border:1px solid var('+colorVar+');color:var('+colorVar+')">'+d.statusLabel+'</span>';
+}
+document.querySelectorAll('.arch-stage').forEach(function(s){
+  s.addEventListener('click',function(){paintStage(this.dataset.lane,this.dataset.i);});
+});
+paintStage('off',0);
+
+/* router grid */
+var routerData={
+  '0-0':{policy:'CONFIRM',color:'--accent',body:'Search for mechanistic evidence (does the drug really hit this target?) and disease-context evidence (does the target really matter for this disease?). Both signals agree — go build the strongest positive case.',why:'Confident-active model + strong curated disease link = the highest-value candidate the system can produce.'},
+  '0-1':{policy:'CONTEXTUALISE',color:'--accent',body:'Search mainly for disease-linkage evidence; mechanism is secondary since the model is already confident about it.',why:'The model is sure, but the disease link is only moderately established — worth understanding better before over-trusting it.'},
+  '0-2':{policy:'INVESTIGATE',color:'--amber',body:'General background search — the curated disease evidence is thin, so there\'s not much to anchor a targeted search to yet.',why:'A confident prediction on a protein the disease databases barely know about. Not wrong — just under-studied. Absence of a database entry isn\'t evidence of irrelevance.'},
+  '1-0':{policy:'CHALLENGE',color:'--brick',body:'Search counter-evidence and safety signals FIRST, before anything else — actively try to disprove the prediction.',why:'The model itself is unsure, but the disease link is strong. This is exactly the case a human researcher would be tempted to wrongly trust — so the system is designed to do the opposite instinct.'},
+  '1-1':{policy:'CHALLENGE + CONTEXT',color:'--brick',body:'Search counter-evidence first, then disease linkage — a lighter version of CHALLENGE.',why:'Uncertain prediction, moderately-linked disease. Still worth actively probing for reasons to doubt it.'},
+  '1-2':{policy:'LOW PRIORITY',color:'--ink-faint',body:'Minimal search — conserve the evidence-gathering budget for higher-value candidates.',why:'Uncertain model, weak disease link. Neither signal gives a strong reason to spend effort here right now.'},
+  '2-0':{policy:'STOP',color:'--ink-faint',body:'No retrieval at all.',why:'The model is confidently saying this interaction does NOT happen. Spending search budget here would return nothing useful, regardless of the disease link.'},
+  '2-1':{policy:'STOP',color:'--ink-faint',body:'No retrieval at all.',why:'Same reasoning as above — confident-inactive always stops the pipeline, no matter the disease column.'},
+  '2-2':{policy:'STOP',color:'--ink-faint',body:'No retrieval at all.',why:'Same reasoning as above — confident-inactive always stops the pipeline, no matter the disease column.'}
+};
+function paintRouter(r,c){
+  document.querySelectorAll('.router-cell').forEach(function(cell){cell.classList.remove('sel');});
+  document.querySelector('.router-cell[data-r="'+r+'"][data-c="'+c+'"]').classList.add('sel');
+  var d=routerData[r+'-'+c];
+  var pill=document.getElementById('routerPill');
+  pill.textContent=d.policy;
+  pill.style.background='var('+d.color+')'; pill.style.color = (d.color==='--ink-faint') ? 'var(--bg-raised)' : '#fff';
+  document.getElementById('routerTitle').textContent=d.policy+' fires';
+  document.getElementById('routerBody').textContent=d.body;
+  document.getElementById('routerWhy').textContent='Why: '+d.why;
+}
+document.querySelectorAll('.router-cell').forEach(function(cell){
+  cell.addEventListener('click',function(){paintRouter(this.dataset.r,this.dataset.c);});
+});
+paintRouter(0,0);
+
+/* evidence quiz — rotate through 3 scenarios */
+var scenarios=[
+  {q:'The agent searches thoroughly for literature on Drug X and Protein Y. It finds <strong>nothing relevant at all</strong> — no supporting studies, no contradicting studies, nothing. What direction should this record get?',
+   opts:[{v:'CONTRADICT',ok:false},{v:'UNKNOWN',ok:true},{v:'SUPPORT',ok:false}],
+   right:'Correct — UNKNOWN. Nobody having studied something is not the same as evidence against it. Silently converting "nothing found" into CONTRADICT could cause a genuinely novel, promising candidate to be wrongly thrown away.',
+   wrong:'Not quite. "Nothing found" must become UNKNOWN, never CONTRADICT — that conflation is called out as a serious, specific failure mode this project is built to avoid.'},
+  {q:'A retrieved paper reports the drug failed to show efficacy in a clinical trial for the predicted target. What direction is this record?',
+   opts:[{v:'UNKNOWN',ok:false},{v:'SUPPORT',ok:false},{v:'CONTRADICT',ok:true}],
+   right:'Correct — CONTRADICT. A failed trial is real, specific evidence against the hypothesis, not an absence of evidence.',
+   wrong:'A specific, negative result from a real study is CONTRADICT, not UNKNOWN — UNKNOWN is reserved for "nothing relevant exists," not "something relevant exists and it disagrees."'},
+  {q:'The model is CONFIDENTLY INACTIVE {0} for a candidate. How much literature should the agent go retrieve for it?',
+   opts:[{v:'A lot — always double-check',ok:false},{v:'None — the router says STOP',ok:true},{v:'Only safety literature',ok:false}],
+   right:'Correct — STOP. Spending retrieval budget on a confidently-negative prediction returns nothing useful; the budget is better spent on genuinely uncertain or confidently-positive candidates.',
+   wrong:'The router\'s rule is STOP for confident-inactive predictions, regardless of the disease-anchor strength — retrieval budget is finite and better spent elsewhere.'}
+];
+var qi=0;
+function loadScenario(){
+  var s=scenarios[qi];
+  document.getElementById('quizScenario').innerHTML=s.q;
+  var opts=document.getElementById('quizOpts'); opts.innerHTML='';
+  s.opts.forEach(function(o){
+    var b=document.createElement('button'); b.className='quiz-opt'; b.textContent=o.v; b.dataset.ok=o.ok;
+    opts.appendChild(b);
+  });
+  document.getElementById('quizFb').className='quiz-fb';
+  document.getElementById('quizNext').className='quiz-next';
+}
+document.getElementById('quizOpts').addEventListener('click',function(e){
+  if(!e.target.classList.contains('quiz-opt'))return;
+  var ok=e.target.dataset.ok==='true';
+  var fb=document.getElementById('quizFb');
+  fb.textContent = ok ? scenarios[qi].right : scenarios[qi].wrong;
+  fb.className='quiz-fb show '+(ok?'right':'wrong');
+  document.getElementById('quizNext').className='quiz-next show';
+  document.querySelectorAll('#quizOpts .quiz-opt').forEach(function(b){b.style.opacity='.55';b.disabled=true;});
+});
+document.getElementById('quizNext').addEventListener('click',function(){ qi=(qi+1)%scenarios.length; loadScenario(); });
+loadScenario();
+
+/* censor bars animate on view */
+var barsAnimated=false;
+function animateBars(){
+  if(barsAnimated)return;
+  var rect=document.getElementById('barAll').getBoundingClientRect();
+  if(rect.top<window.innerHeight*0.85){
+    document.getElementById('barAll').style.width='100%';
+    document.getElementById('barKept').style.width='17%';
+    barsAnimated=true;
+  }
+}
+window.addEventListener('scroll',animateBars); animateBars();
+
+/* glossary */
+var terms=[
+  {t:'Calibrated confidence',h:'not a raw score',d:'A trust measure with a mathematical guarantee behind it (via conformal prediction) — not just a probability the model happens to output.'},
+  {t:'Conformal prediction',h:'the trust layer',d:'A statistical method that wraps any model\'s output into a prediction SET (e.g. {1}, {0,1}, {0}) with a guaranteed coverage rate — it tells you when the model is genuinely unsure.'},
+  {t:'InChIKey',h:'compound ID',d:'A standard, unique fingerprint for a chemical structure — used to match the same drug across different databases, since raw SMILES text can differ between sources.'},
+  {t:'UniProt accession',h:'protein ID',d:'A standard unique ID for a specific protein (e.g. P36888 for FLT3) — the shared key used to match proteins across databases.'},
+  {t:'pChEMBL value',h:'potency, comparably',d:'A standardised potency measure (−log10 of the molar concentration) that lets you compare different assay types on one scale — but it only exists for exact, non-censored measurements.'},
+  {t:'Censored measurement',h:'a bound, not a number',d:'A result like "IC50 > 30,000 nM" — the assay was stopped before finding an exact value. It\'s a lower bound, not a precise measurement, and must never be treated as one.'},
+  {t:'Positive-unlabelled data',h:'the honesty about negatives',d:'A dataset where most "untested" pairs might secretly be either active or inactive — nobody knows, because nobody tested them. The project states this openly rather than pretending untested means negative.'},
+  {t:'Drug-cold / target-cold split',h:'testing generalisation',d:'Test sets built so the model has never seen that exact drug (drug-cold) or that exact protein (target-cold) during training — target-cold is the primary test, since real repurposing usually means an unfamiliar protein.'}
+];
+var gg=document.getElementById('glossGrid');
+terms.forEach(function(term,i){
+  var el=document.createElement('div'); el.className='flip3d'; el.id='fl'+i;
+  el.innerHTML='<div class="flip3d-in"><div class="face"><div class="term">'+term.t+'</div><div class="hint">'+term.h+'</div></div><div class="face b"><p>'+term.d+'</p></div></div>';
+  el.addEventListener('click',function(){this.classList.toggle('on');});
+  gg.appendChild(el);
+});
+
+/* self-check */
+var checks=[
+  'Explain why a raw probability isn\'t enough — what calibrated confidence adds',
+  'Explain the difference between Network 1 and Network 2, and why mixing them is dangerous',
+  'Walk someone through what happens when the model is confident vs. uncertain',
+  'Explain why the router is plain code and not an LLM decision',
+  'Explain the four evidence categories and the UNKNOWN vs CONTRADICT distinction',
+  'Explain the three-state label rule and why UNTESTED never becomes INACTIVE',
+  'Explain the censored-measurement trap with a real example',
+  'Explain the two things in this project that can never quietly change'
+];
+var cl=document.getElementById('checkList');
+checks.forEach(function(c,i){
+  var el=document.createElement('div'); el.className='check-item'; el.id='ck'+i;
+  el.innerHTML='<div class="check-box">✓</div><span class="txt">'+c+'</span>';
+  el.addEventListener('click',function(){this.classList.toggle('on');updateProgress();});
+  cl.appendChild(el);
+});
+function updateProgress(){
+  var on=document.querySelectorAll('.check-item.on').length;
+  document.getElementById('progFill').style.width=(on/checks.length*100)+'%';
+  document.getElementById('progTxt').textContent=on+' / '+checks.length+' mastered';
+  try{localStorage.setItem('trustdti-checks',JSON.stringify(Array.from(document.querySelectorAll('.check-item')).map(function(e){return e.classList.contains('on');})));}catch(e){}
+}
+try{
+  var saved=JSON.parse(localStorage.getItem('trustdti-checks')||'null');
+  if(saved){saved.forEach(function(v,i){if(v)document.getElementById('ck'+i).classList.add('on');});}
+}catch(e){}
+updateProgress();
+})();
+</script>
+
+</body>
+</html>

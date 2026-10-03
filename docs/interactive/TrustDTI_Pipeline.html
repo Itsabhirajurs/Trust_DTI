@@ -1,0 +1,574 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>TrustDTI Pipeline</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ================= DESIGN PLAN =================
+   Subject: the actual engineering system, stage by stage, treated as a
+   control-room monitor wall — a board of instrument panels you inspect,
+   not an article you read. Deliberately single dark theme throughout: an
+   always-on operations display, the same reason a real control room never
+   switches to "light mode". Every color, including the background, is set
+   explicitly for that one committed world (never by omission).
+   Layout concept: a scrollable board of readout panels; a recessed dark
+   base with slightly-raised panels that "glow" faintly at their accent
+   edge, mimicking instrument displays.
+   Color: cyan trace = the system/accent; green/amber/slate = build status
+   (done/next/planned) kept strictly separate from the accent, exactly as
+   the design rules ask; a warm coral marks real problems hit along the way.
+   Type: IBM Plex Mono carries labels and data (blueprint annotation feel);
+   IBM Plex Sans carries explanation; Fraunces appears only on the few big
+   numbers that deserve editorial weight.
+================================================== */
+:root{
+  color-scheme:dark;
+  --bg:#0A0C0F; --bg-raised:#12151A; --bg-sunk:#07080A; --bg-panel:#14181E;
+  --ink:#E7ECEE; --ink-soft:#9FAAB2; --ink-faint:#5B6670;
+  --line:#232A31; --line-bright:#37414B;
+  --accent:#39C7D1; --accent-dim:#1E6E76; --accent-glow:rgba(57,199,209,.14);
+  --done:#4FCB8D; --done-bg:#122620;
+  --next:#E7B23D; --next-bg:#2A2210;
+  --planned:#6B7680; --planned-bg:#181C21;
+  --warn:#E5765C; --warn-bg:#2A1712;
+  --shadow:0 1px 0 rgba(255,255,255,.03) inset,0 12px 28px -10px rgba(0,0,0,.6);
+  --radius:14px; --radius-sm:9px;
+  --font-d:'Fraunces',Georgia,serif; --font-b:'IBM Plex Sans',system-ui,sans-serif; --font-m:'IBM Plex Mono',ui-monospace,Consolas,monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font-b);line-height:1.6;font-size:15.5px;-webkit-font-smoothing:antialiased;background-image:radial-gradient(circle at 15% 0%, rgba(57,199,209,.05), transparent 45%);}
+img,svg{max-width:100%}
+h1,h2,h3,h4{font-family:var(--font-d);font-weight:600;line-height:1.14;margin:0 0 .5rem;text-wrap:balance;color:var(--ink)}
+p{margin:0 0 1rem;max-width:66ch;color:var(--ink-soft)}
+.wrap{max-width:1120px;margin:0 auto;padding-inline:20px}
+@media(min-width:640px){.wrap{padding-inline:32px}}
+section{padding-block:52px}
+@media(min-width:800px){section{padding-block:80px}}
+code,.mono{font-family:var(--font-m)}
+.eyebrow{font-family:var(--font-m);font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:.6rem;display:flex;align-items:center;gap:.5em}
+.eyebrow .num{color:var(--ink-faint)}
+.lede{font-size:1.08rem;color:var(--ink-soft);max-width:62ch}
+::selection{background:var(--accent);color:#04181a}
+[hidden]{display:none!important}
+.small{font-size:.82rem;color:var(--ink-faint)}
+.tabular{font-variant-numeric:tabular-nums}
+
+/* nav */
+.topnav{position:sticky;top:env(safe-area-inset-top,0px);z-index:40;background:color-mix(in srgb, var(--bg) 86%, transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.topnav-in{max-width:1120px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;gap:16px}
+@media(min-width:640px){.topnav-in{padding:12px 32px}}
+.brand{font-family:var(--font-m);font-weight:700;font-size:.92rem;letter-spacing:.02em;white-space:nowrap;color:var(--ink);text-decoration:none;display:flex;align-items:center;gap:8px}
+.brand .dot{width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px var(--accent)}
+.navlinks{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
+.navlinks::-webkit-scrollbar{display:none}
+.navlinks a{font-family:var(--font-m);font-size:.72rem;color:var(--ink-faint);text-decoration:none;white-space:nowrap;padding:6px 10px;border-radius:6px;transition:.15s}
+.navlinks a:hover{color:var(--ink);background:var(--bg-raised)}
+.livepill{margin-left:auto;flex:0 0 auto;font-family:var(--font-m);font-size:.66rem;color:var(--done);border:1px solid var(--done);background:var(--done-bg);border-radius:999px;padding:4px 10px;display:flex;align-items:center;gap:6px;white-space:nowrap}
+.livepill .p{width:6px;height:6px;border-radius:50%;background:var(--done);animation:pulse 1.8s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+@media(prefers-reduced-motion:reduce){.livepill .p{animation:none}}
+
+/* hero */
+.hero{padding-block:56px 36px}
+@media(min-width:800px){.hero{padding-block:84px 48px}}
+.hero h1{font-size:clamp(2rem,5.4vw,3.3rem);max-width:18ch}
+.hero .lede{margin-top:16px;font-size:1.18rem}
+.stat-strip{margin-top:36px;display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+@media(min-width:640px){.stat-strip{grid-template-columns:repeat(4,1fr)}}
+.stat{background:var(--bg-panel);border:1px solid var(--line);border-radius:var(--radius-sm);padding:14px 16px;box-shadow:var(--shadow)}
+.stat b{display:block;font-family:var(--font-d);font-size:1.7rem;font-weight:700;color:var(--accent)}
+.stat span{font-family:var(--font-m);font-size:.68rem;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-faint)}
+
+/* legend */
+.legend-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.leg{display:flex;align-items:center;gap:7px;font-family:var(--font-m);font-size:.72rem;color:var(--ink-soft);border:1px solid var(--line);border-radius:999px;padding:6px 12px;background:var(--bg-panel)}
+.leg i{width:9px;height:9px;border-radius:3px;display:inline-block}
+
+/* section band */
+.band{border-top:1px solid var(--line)}
+h2{font-size:clamp(1.5rem,3.4vw,2.1rem)}
+
+/* pipeline map */
+.map-lane{margin-top:22px}
+.map-lane-title{font-family:var(--font-m);font-size:.72rem;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:12px;display:flex;align-items:center;gap:10px}
+.map-lane-title::after{content:"";flex:1;height:1px;background:var(--line)}
+.map-row{display:flex;gap:10px;overflow-x:auto;padding:4px 4px 12px;scroll-snap-type:x proximity}
+.map-node{flex:0 0 auto;width:176px;scroll-snap-align:start;border:1px solid var(--line);border-radius:var(--radius-sm);background:var(--bg-panel);padding:14px 15px;cursor:pointer;position:relative;transition:.15s;box-shadow:var(--shadow)}
+.map-node:hover{border-color:var(--accent-dim)}
+.map-node.active{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent), 0 0 22px var(--accent-glow)}
+.map-node .idx{font-family:var(--font-m);font-size:.66rem;color:var(--accent)}
+.map-node h5{font-family:var(--font-b);font-weight:700;font-size:.9rem;margin:.25em 0 .35em}
+.map-node p{font-size:.75rem;color:var(--ink-faint);margin:0;max-width:none}
+.badge{position:absolute;top:10px;right:10px;font-family:var(--font-m);font-size:.58rem;text-transform:uppercase;letter-spacing:.04em;padding:2px 7px;border-radius:99px;font-weight:600}
+.badge.done{color:var(--done);background:var(--done-bg);border:1px solid var(--done)}
+.badge.next{color:var(--next);background:var(--next-bg);border:1px solid var(--next)}
+.badge.planned{color:var(--planned);background:var(--planned-bg);border:1px solid var(--line-bright)}
+.map-detail{margin-top:18px;border:1px solid var(--accent);background:linear-gradient(180deg,var(--accent-glow),transparent 60%),var(--bg-panel);border-radius:var(--radius);padding:22px 24px;min-height:140px}
+.map-detail .eyebrow{color:var(--accent)}
+.map-detail h4{font-size:1.15rem}
+.map-detail p{color:var(--ink-soft);max-width:none}
+.map-detail .metaline{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.chip{font-family:var(--font-m);font-size:.68rem;color:var(--ink-soft);border:1px solid var(--line-bright);border-radius:6px;padding:4px 9px;background:var(--bg-raised)}
+
+/* data deep-dive */
+.tile-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:24px}
+@media(min-width:700px){.tile-grid{grid-template-columns:repeat(4,1fr)}}
+.tile{background:var(--bg-panel);border:1px solid var(--line);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow)}
+.tile b{display:block;font-family:var(--font-d);font-size:1.9rem;color:var(--ink);font-weight:700}
+.tile.warn b{color:var(--warn)} .tile.ok b{color:var(--done)}
+.tile span{display:block;font-family:var(--font-m);font-size:.72rem;color:var(--ink-soft);margin-top:2px}
+.tile em{display:block;font-style:normal;font-size:.72rem;color:var(--ink-faint);margin-top:6px}
+
+.card{background:var(--bg-panel);border:1px solid var(--line);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
+.card h3{font-size:1.02rem}
+.card p{font-size:.88rem}
+
+/* source table */
+.dtable{width:100%;border-collapse:collapse;margin-top:16px;font-size:.84rem}
+.dtable th{font-family:var(--font-m);font-size:.66rem;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-faint);text-align:left;padding:8px 10px;border-bottom:1px solid var(--line-bright)}
+.dtable td{padding:9px 10px;border-bottom:1px solid var(--line);color:var(--ink-soft)}
+.dtable td.n{font-family:var(--font-m);color:var(--ink);text-align:right}
+.dtable tr:last-child td{border-bottom:none}
+.twrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--radius);background:var(--bg-panel)}
+.twrap .dtable{margin-top:0}
+.twrap .dtable th:first-child,.twrap .dtable td:first-child{padding-left:16px}
+
+/* bar chart (family) */
+.barchart{margin-top:18px;display:flex;flex-direction:column;gap:9px}
+.bar-row{display:grid;grid-template-columns:148px 1fr 78px;align-items:center;gap:10px;font-size:.8rem}
+.bar-row .lb{font-family:var(--font-m);color:var(--ink-soft);text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar-row .tr{height:20px;background:var(--bg-sunk);border-radius:4px;overflow:hidden;border:1px solid var(--line)}
+.bar-row .fl{height:100%;background:linear-gradient(90deg,var(--accent-dim),var(--accent));width:0;transition:width 1.1s cubic-bezier(.2,.8,.2,1)}
+.bar-row .vv{font-family:var(--font-m);color:var(--ink-faint);font-size:.74rem}
+
+/* overlap comparison */
+.overlap-wrap{margin-top:20px;display:grid;gap:14px}
+.overlap-bar{display:flex;flex-direction:column;gap:6px}
+.overlap-bar .lb{font-family:var(--font-m);font-size:.78rem;color:var(--ink-soft)}
+.overlap-bar .tr{height:34px;background:var(--bg-sunk);border-radius:6px;overflow:hidden;border:1px solid var(--line);display:flex;align-items:center}
+.overlap-bar .fl{height:100%;display:flex;align-items:center;padding-left:12px;font-family:var(--font-m);font-weight:600;font-size:.84rem;color:#04181a;width:0;transition:width 1.1s cubic-bezier(.2,.8,.2,1)}
+.ratio-callout{margin-top:14px;border:1px solid var(--warn);background:var(--warn-bg);border-radius:var(--radius-sm);padding:14px 18px;font-size:.88rem;color:var(--ink)}
+
+/* dumbbell */
+.dumbbell{margin-top:18px;display:flex;flex-direction:column;gap:14px}
+.db-row{display:grid;grid-template-columns:180px 1fr 52px;align-items:center;gap:10px}
+.db-row .lb{font-family:var(--font-m);font-size:.76rem;color:var(--ink-soft);text-align:right}
+.db-track{position:relative;height:22px}
+.db-line{position:absolute;top:50%;height:2px;background:var(--line-bright);transform:translateY(-50%)}
+.db-dot{position:absolute;top:50%;width:11px;height:11px;border-radius:50%;transform:translate(-50%,-50%);border:2px solid var(--bg)}
+.db-dot.a{background:var(--warn)}
+.db-dot.b{background:var(--accent)}
+.db-row .sh{font-family:var(--font-m);font-size:.76rem;color:var(--ink-faint);text-align:right}
+.db-row .sh.big{color:var(--warn);font-weight:600}
+.axis-row{display:grid;grid-template-columns:180px 1fr 52px;margin-top:4px}
+.axis-line{position:relative;height:16px}
+.axis-tick{position:absolute;top:0;font-family:var(--font-m);font-size:.62rem;color:var(--ink-faint);transform:translateX(-50%)}
+
+/* trial and error */
+.te-list{margin-top:22px;display:flex;flex-direction:column;gap:0}
+.te-item{display:grid;grid-template-columns:32px 1fr;gap:14px;padding:18px 0;border-bottom:1px solid var(--line)}
+.te-item:last-child{border-bottom:none}
+.te-num{font-family:var(--font-m);font-size:.9rem;color:var(--warn);border:1px solid var(--warn);border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+.te-item h4{font-size:.98rem;color:var(--ink)}
+.te-item .lbl{font-family:var(--font-m);font-size:.66rem;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-faint);margin-top:8px}
+.te-item .fix{font-size:.87rem;color:var(--done)}
+.te-item p{font-size:.87rem;margin-bottom:.4em}
+
+/* verification */
+.verify-grid{display:grid;grid-template-columns:1fr;gap:12px;margin-top:22px}
+@media(min-width:700px){.verify-grid{grid-template-columns:repeat(3,1fr)}}
+.vcard{border:1px solid var(--done);background:var(--done-bg);border-radius:var(--radius);padding:18px}
+.vcard .check{width:26px;height:26px;border-radius:50%;background:var(--done);color:#04180f;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem;margin-bottom:10px}
+.vcard h4{font-size:.95rem;color:var(--ink)}
+.vcard p{font-size:.83rem;color:var(--ink-soft);margin-bottom:0}
+.vcard code{background:var(--bg-sunk);border:1px solid var(--line);border-radius:4px;padding:1px 5px;font-size:.78em;word-break:break-all}
+
+/* remaining stages blueprint cards */
+.phase-grid{display:grid;grid-template-columns:1fr;gap:14px;margin-top:24px}
+@media(min-width:700px){.phase-grid{grid-template-columns:repeat(2,1fr)}}
+.phase-card{border:1px solid var(--line);border-radius:var(--radius);padding:20px;background:var(--bg-panel)}
+.phase-card .wk{font-family:var(--font-m);font-size:.68rem;color:var(--accent);letter-spacing:.05em}
+.phase-card h4{font-size:1rem;margin:.3em 0 .4em}
+.phase-card p{font-size:.85rem;margin-bottom:.5em}
+.phase-card .stack{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+
+/* commit timeline */
+.git-line{margin-top:22px;position:relative;padding-left:26px}
+.git-line::before{content:"";position:absolute;left:7px;top:6px;bottom:6px;width:2px;background:var(--line-bright)}
+.git-item{position:relative;padding-bottom:20px}
+.git-item:last-child{padding-bottom:0}
+.git-item::before{content:"";position:absolute;left:-26px;top:3px;width:12px;height:12px;border-radius:50%;background:var(--bg);border:2px solid var(--accent)}
+.git-sha{font-family:var(--font-m);font-size:.72rem;color:var(--accent);background:var(--bg-panel);border:1px solid var(--line);border-radius:5px;padding:1px 7px;margin-right:8px}
+.git-item p{font-size:.86rem;margin:4px 0 0;color:var(--ink-soft)}
+
+footer{padding:46px 0 calc(46px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--line);text-align:center}
+footer p{margin:0 auto;color:var(--ink-faint);font-size:.84rem;max-width:52ch}
+.back-top{display:inline-block;margin-top:16px;font-family:var(--font-m);font-size:.76rem;color:var(--accent);text-decoration:none;border:1px solid var(--accent-dim);border-radius:999px;padding:7px 16px}
+</style>
+
+</head>
+<body>
+<nav class="topnav">
+  <div class="topnav-in">
+    <a class="brand" href="#top"><span class="dot"></span>TRUSTDTI // PIPELINE</a>
+    <div class="navlinks">
+      <a href="#map">Full map</a>
+      <a href="#data">Data stage</a>
+      <a href="#quality">Quality</a>
+      <a href="#trial">Trial &amp; error</a>
+      <a href="#verify">Verification</a>
+      <a href="#ahead">What's ahead</a>
+      <a href="#commits">Build log</a>
+    </div>
+    <span class="livepill"><span class="p"></span>WEEK 1 OF 12</span>
+  </div>
+</nav>
+
+<div id="top"></div>
+<section class="hero">
+  <div class="wrap">
+    <div class="eyebrow"><span class="num">system blueprint</span> · end-to-end</div>
+    <h1>Every stage of TrustDTI, from raw database to a cited report</h1>
+    <p class="lede">This is the whole engineering pipeline the finished project runs — thirteen stages, in order. Stage 1 is built and has already run on the real 24.5-million-row database; everything after it is the exact plan the rest of the build follows. Click any module below to open its readout.</p>
+    <div class="legend-row">
+      <span class="leg"><i style="background:var(--done)"></i>built &amp; verified</span>
+      <span class="leg"><i style="background:var(--next)"></i>next up</span>
+      <span class="leg"><i style="background:var(--planned)"></i>planned</span>
+    </div>
+    <div class="stat-strip">
+      <div class="stat"><b class="tabular">24.5M</b><span>ChEMBL activity records</span></div>
+      <div class="stat"><b class="tabular">8.30M</b><span>in our exact scope</span></div>
+      <div class="stat"><b class="tabular">5,738</b><span>human proteins</span></div>
+      <div class="stat"><b class="tabular">5.06M</b><span>drug–protein pairs</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="map" class="band">
+  <div class="wrap">
+    <div class="eyebrow"><span class="num">01</span> The full pipeline map</div>
+    <h2>Thirteen stages, two halves</h2>
+    <p class="lede">The offline half runs once and gets cached forever. The online half runs per query, in seconds, using only what the offline half built.</p>
+
+    <div class="map-lane">
+      <div class="map-lane-title">Offline — built once</div>
+      <div class="map-row" id="mapOffline"></div>
+    </div>
+    <div class="map-lane">
+      <div class="map-lane-title">Online — per query</div>
+      <div class="map-row" id="mapOnline"></div>
+    </div>
+    <div class="map-detail" id="mapDetail"></div>
+  </div>
+</section>
+
+<section id="data" class="band">
+  <div class="wrap">
+    <div class="eyebrow"><span class="num">02</span> Stage 1 in full — the data foundation</div>
+    <h2>What actually ran, on the actual database</h2>
+    <p class="lede">ChEMBL 37 was downloaded (5.76 GB), checksum-verified byte-for-byte against the publisher, and extracted to a 30.5 GB local SQLite database. Every number below came from querying it directly — nothing here is estimated.</p>
+
+    <div class="tile-grid">
+      <div class="tile"><b class="tabular">1.56M</b><span>distinct compounds</span><em>2,685 already FDA-approved</em></div>
+      <div class="tile"><b class="tabular">5,738</b><span>distinct human proteins</span><em>1,658 (29%) unclassified family</em></div>
+      <div class="tile warn"><b class="tabular">811k</b><span>censored measurements</span><em>every one kept, not dropped</em></div>
+      <div class="tile"><b class="tabular">1.94M</b><span>pairs with a clean potency</span><em>of 5.06M pairs total</em></div>
+    </div>
+
+    <h3 style="margin-top:40px;font-size:1.15rem">Drug–protein pairs, by protein family</h3>
+    <p class="lede" style="font-size:.9rem">The data is not remotely even. The busiest 10% of proteins hold 88% of every measured pair.</p>
+    <div class="barchart" id="familyBars"></div>
+
+    <h3 style="margin-top:44px;font-size:1.15rem">The ChEMBL ↔ BindingDB overlap problem</h3>
+    <p class="lede" style="font-size:.9rem">Both databases import from each other. Counting shared drug–protein pairs naively looks impressive — until you exclude the records each database copied from the other.</p>
+    <div class="overlap-wrap">
+      <div class="overlap-bar"><span class="lb">Naive — every record vs. every record</span>
+        <div class="tr"><div class="fl" id="ovBar1" style="background:var(--warn)">872,761 shared pairs</div></div></div>
+      <div class="overlap-bar"><span class="lb">Independent records only — the honest number</span>
+        <div class="tr"><div class="fl" id="ovBar2" style="background:var(--accent)">66,145 shared pairs</div></div></div>
+    </div>
+    <div class="ratio-callout">The naive count is <strong>≈13× inflated</strong>. 52% of BindingDB's human records are curated straight from ChEMBL; ChEMBL in turn imports 2.2M rows of BindingDB's own patent data (source ID 37). <strong>Decision:</strong> build the first network on ChEMBL alone; BindingDB's independent patent pairs (~426k, mostly newer than this ChEMBL release) get reconsidered for the time-based test later.</div>
+
+    <h3 style="margin-top:44px;font-size:1.15rem">A data source can quietly distort your conclusions</h3>
+    <p class="lede" style="font-size:.9rem">Median measured potency (pChEMBL — higher means a stronger drug), with and without PubChem's high-throughput screening data. Five protein families shift by more than a full order of magnitude.</p>
+    <div class="dumbbell" id="pubchemDumbbell"></div>
+    <div class="axis-row"><span></span><div class="axis-line" id="axisLine"></div><span></span></div>
+    <p class="small" style="margin-top:14px"><span style="color:var(--warn)">●</span> all sources &nbsp; <span style="color:var(--accent)">●</span> excluding PubChem screens &nbsp;·&nbsp; a per-family activity threshold has to control for this or it will encode screening artefacts as biology.</p>
+  </div>
+</section>
+
+<section id="quality" class="band">
+  <div class="wrap">
+    <div class="eyebrow"><span class="num">03</span> Data quality, exactly as measured</div>
+    <h2>What's in the 8.3M rows, precisely</h2>
+    <div class="grid" style="display:grid;grid-template-columns:1fr;gap:20px" >
+      <div class="twrap">
+        <table class="dtable">
+          <tr><th>Where the records came from</th><th class="n">rows</th><th class="n">has a year?</th></tr>
+          <tr><td>PubChem BioAssay (screening)</td><td class="n tabular">2,962,782</td><td class="n">0% — none</td></tr>
+          <tr><td>Scientific literature</td><td class="n tabular">2,324,270</td><td class="n">~100%</td></tr>
+          <tr><td>BindingDB patent data</td><td class="n tabular">2,235,193</td><td class="n">100%</td></tr>
+          <tr><td>GSK kinase set + DrugMatrix</td><td class="n tabular">322,650</td><td class="n">0% — none</td></tr>
+          <tr><td>SureChEMBL patents + 20 others</td><td class="n tabular">454,291</td><td class="n">mixed</td></tr>
+        </table>
+      </div>
+      <div class="twrap">
+        <table class="dtable">
+          <tr><th>Field</th><th class="n">missing</th><th>why it's missing</th></tr>
+          <tr><td>pChEMBL (clean potency)</td><td class="n tabular">68.7%</td><td>censored, or a non-potency endpoint</td></tr>
+          <tr><td>Publication year</td><td class="n tabular">39.8%</td><td>mostly screening-source deposits</td></tr>
+          <tr><td>standard_relation</td><td class="n tabular">29.9%</td><td>non-potency endpoints (e.g. solubility)</td></tr>
+          <tr><td>InChIKey (compound ID)</td><td class="n tabular">0.2%</td><td>rare structure-registration gaps</td></tr>
+        </table>
+      </div>
+      <div class="twrap">
+        <table class="dtable">
+          <tr><th>Assay confidence score</th><th class="n">meaning</th><th class="n">rows</th></tr>
+          <tr><td>9</td><td class="n">target assigned directly, single protein</td><td class="n tabular">5,400,801</td></tr>
+          <tr><td>8</td><td class="n">homologous single-protein assignment</td><td class="n tabular">2,898,385</td></tr>
+        </table>
+        <p class="small" style="padding:0 16px 14px">Only two values occur — the human-single-protein scope filter already implies high confidence, so "confidence floor" in Week 2 really means choosing between these two.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="trial" class="band">
+  <div class="wrap">
+    <div class="eyebrow"><span class="num">04</span> Trial and error — the real process</div>
+    <h2>Eight things that went wrong, and exactly how each was caught</h2>
+    <p class="lede">None of these were hypothetical risks — each one would have silently changed a downstream number if it had gone unnoticed.</p>
+    <div class="te-list" id="teList"></div>
+  </div>
+</section>
+
+<section id="verify" class="band">
+  <div class="wrap">
+    <div class="eyebrow"><span class="num">05</span> How we know Stage 1 can be trusted</div>
+    <h2>Verification, not vibes</h2>
+    <div class="verify-grid">
+      <div class="vcard"><div class="check">✓</div><h4>Checksum-verified</h4><p>ChEMBL's SHA-256 matched the publisher's own <code>checksums.txt</code> exactly: <code>33c2037…290d281</code>. BindingDB's MD5 matched too.</p></div>
+      <div class="vcard"><div class="check">✓</div><h4>Row-count verified</h4><p><code>COUNT(*) FROM activities</code> on the local database returned <strong>24,527,044</strong> — identical to ChEMBL's own published release notes.</p></div>
+      <div class="vcard"><div class="check">✓</div><h4>Reproducibility-verified</h4><p>Deleted every output, re-ran extraction and profiling from the raw database from scratch. All 16 result files came back <strong>byte-for-byte identical</strong>.</p></div>
+      <div class="vcard"><div class="check">✓</div><h4>Automated tests</h4><p>9 fast tests run in ~2 seconds on every change; a 10th, full-database test (~1 hour) runs before any data-version change.</p></div>
+      <div class="vcard"><div class="check">✓</div><h4>Cross-source agreement</h4><p>On 40,988 potency values measured independently by both databases: median difference <strong>0.0</strong> log units; 95.6% agree within 1 log unit.</p></div>
+      <div class="vcard"><div class="check">✓</div><h4>Ground-truth spot check</h4><p>A specific real row — imatinib vs. FLT3, IC50 &gt; 30,000 nM — was confirmed identically via the ChEMBL web API and a direct SQL query.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="ahead" class="band">
+  <div class="wrap">
+    <div class="eyebrow"><span class="num">06</span> What's ahead — the full blueprint</div>
+    <h2>The rest of the build, phase by phase</h2>
+    <p class="lede">Nothing below is speculative — this is the plan the whole 12-week project follows, gated so a phase can't start until the previous one's checks pass.</p>
+    <div class="phase-grid" id="phaseGrid"></div>
+  </div>
+</section>
+
+<section id="commits" class="band">
+  <div class="wrap">
+    <div class="eyebrow"><span class="num">07</span> The build log</div>
+    <h2>Every real commit so far</h2>
+    <div class="git-line" id="gitLine"></div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p>This page is the technical blueprint — every stage, the real numbers, current status. For the concept behind <em>why</em> it's built this way, see the companion page, <strong>TrustDTI Explained</strong>.</p>
+    <a class="back-top" href="#top">↑ Back to top</a>
+  </div>
+</footer>
+
+<script>
+(function(){
+
+/* ---------- pipeline map ---------- */
+var offline=[
+  {t:"Data", d:"Restrict ChEMBL 37 to human, single-protein targets. No potency filtering at this stage — every measurement, including censored and low-confidence ones, is kept for now.", status:"done", meta:["ChEMBL 37","BindingDB 202609","8.30M rows extracted"]},
+  {t:"Network 1", d:"Standardise every molecule (RDKit), map every protein to a canonical UniProt ID, aggregate repeated measurements, apply the three-state label, and carve out four different train/test splits.", status:"next", meta:["RDKit","random / drug-cold / target-cold / temporal splits"]},
+  {t:"Embeddings", d:"Convert every drug into a numeric vector with ChemBERTa, and every protein into a vector with ESM-2. Both models are frozen (never retrained) and run once, with results cached to disk.", status:"planned", meta:["ChemBERTa","ESM-2","Colab/Kaggle GPU"]},
+  {t:"Fusion head", d:"A small MLP — the single component actually trained in this entire project. Concatenates a drug vector and a protein vector, outputs one interaction probability.", status:"planned", meta:["PyTorch","MLflow-logged"]},
+  {t:"Evaluation", d:"Score the fusion head on all four splits, broken down per protein family rather than pooled — a model can look great on familiar families and fail completely on unfamiliar ones.", status:"planned", meta:["AUROC / AUPRC","per-family stratified"]},
+  {t:"Conformal calibration", d:"Wrap the raw probability in split conformal prediction, producing a prediction set — {1} confident-active, {0,1} genuinely uncertain, {0} confident-inactive — with a mathematical coverage guarantee.", status:"planned", meta:["MAPIE / custom","protected phase"]},
+  {t:"Network 2", d:"Join Network 1's predictions to a curated protein-disease lookup (Open Targets / DISGENET), producing a strong / moderate / weak anchor strength for every protein.", status:"planned", meta:["Open Targets","DISGENET","protected phase"]}
+];
+var online=[
+  {t:"Query", d:"A user asks in either direction — a drug in, candidate diseases out; or a disease in, candidate drugs out.", status:"planned", meta:["Streamlit UI"]},
+  {t:"Dual-signal router", d:"Deterministic, unit-tested code — never an LLM — combines the conformal state and the disease-anchor strength into exactly one of 7 policies.", status:"planned", meta:["plain Python","fully unit-tested"]},
+  {t:"Evidence retrieval", d:"Search PubMed/PubTator using a query template specific to the chosen policy — e.g. CHALLENGE searches counter-evidence and safety terms before anything else.", status:"planned", meta:["PubTator","NCBI E-utilities","ChromaDB"]},
+  {t:"Structured extraction", d:"Every retrieved passage becomes a typed record: drug, protein, disease, evidence category, direction (SUPPORT/CONTRADICT/UNKNOWN), citation, exact source span.", status:"planned", meta:["sentence-transformers"]},
+  {t:"Grounded synthesis", d:"An LLM writes the final report using only those structured records — any claim without a matching record is rejected before it reaches the report.", status:"planned", meta:["LangGraph","pinned open-weight LLM"]},
+  {t:"Report", d:"Prediction, calibrated confidence, disease-anchor strength, and ranked, fully traceable evidence — every sentence pointing back to a real citation.", status:"planned", meta:["Streamlit report view"]}
+];
+function badgeHtml(s){ return '<span class="badge '+s+'">'+(s==="done"?"done":s==="next"?"next":"planned")+'</span>'; }
+function buildRow(containerId, arr, lane){
+  var row=document.getElementById(containerId);
+  arr.forEach(function(stage,i){
+    var el=document.createElement("div");
+    el.className="map-node"; el.dataset.lane=lane; el.dataset.i=i;
+    el.innerHTML=badgeHtml(stage.status)+'<div class="idx">'+(lane==="off"?"STAGE "+(i+1):"STEP "+String.fromCharCode(65+i))+'</div><h5>'+stage.t+'</h5><p>'+stage.meta[0]+'</p>';
+    el.addEventListener("click",function(){ paintMap(lane,i); });
+    row.appendChild(el);
+  });
+}
+buildRow("mapOffline",offline,"off");
+buildRow("mapOnline",online,"on");
+function paintMap(lane,i){
+  var data = lane==="off" ? offline[i] : online[i];
+  document.querySelectorAll(".map-node").forEach(function(n){n.classList.remove("active");});
+  document.querySelector('.map-node[data-lane="'+lane+'"][data-i="'+i+'"]').classList.add("active");
+  var det=document.getElementById("mapDetail");
+  var chips = data.meta.map(function(m){return '<span class="chip">'+m+'</span>';}).join("");
+  det.innerHTML =
+    '<div class="eyebrow">'+(lane==="off"?"Offline · ":"Online · ")+data.t+' '+badgeHtml(data.status)+'</div>'+
+    '<h4>'+data.t+'</h4><p>'+data.d+'</p>'+
+    '<div class="metaline">'+chips+'</div>';
+}
+paintMap("off",0);
+
+/* ---------- family bar chart (real numbers, pairs per L1 family) ---------- */
+var families=[
+  {n:"Enzyme", proteins:2396, pairs:2546363},
+  {n:"Membrane receptor", proteins:455, pairs:718858},
+  {n:"Epigenetic regulator", proteins:171, pairs:526599},
+  {n:"Unclassified protein", proteins:1658, pairs:441257},
+  {n:"Transcription factor", proteins:184, pairs:328642},
+  {n:"Ion channel", proteins:185, pairs:105561},
+  {n:"Transporter", proteins:168, pairs:100492},
+  {n:"All other (9 classes)", proteins:521, pairs:297110}
+];
+var maxPairs=Math.max.apply(null, families.map(function(f){return f.pairs;}));
+var barWrap=document.getElementById("familyBars");
+families.forEach(function(f){
+  var row=document.createElement("div"); row.className="bar-row";
+  var pct=(f.pairs/maxPairs*100).toFixed(1);
+  row.innerHTML='<span class="lb">'+f.n+'</span><span class="tr"><span class="fl" data-w="'+pct+'"></span></span><span class="vv tabular">'+f.pairs.toLocaleString()+'</span>';
+  barWrap.appendChild(row);
+});
+
+/* ---------- pubchem confounding dumbbell (real numbers) ---------- */
+var pc=[
+  {n:"Oxidoreductase", all:4.82, excl:6.36, share:"61% PubChem"},
+  {n:"Other cytosolic (no L2)", all:4.89, excl:6.78, share:"83% PubChem"},
+  {n:"Enzyme (no L2)", all:5.00, excl:6.59, share:"62% PubChem"},
+  {n:"Reader", all:5.21, excl:6.70, share:"64% PubChem"},
+  {n:"Eraser", all:5.15, excl:6.54, share:"46% PubChem"},
+  {n:"Family A GPCR", all:6.86, excl:7.12, share:"13% PubChem"},
+  {n:"Kinase", all:7.09, excl:7.25, share:"11% PubChem"}
+];
+var dbMin=4.5, dbMax=7.5;
+function scaleX(v){ return (v-dbMin)/(dbMax-dbMin)*100; }
+var dbWrap=document.getElementById("pubchemDumbbell");
+pc.forEach(function(row){
+  var el=document.createElement("div"); el.className="db-row";
+  var x1=scaleX(row.all), x2=scaleX(row.excl);
+  var lo=Math.min(x1,x2), hi=Math.max(x1,x2);
+  var shiftBig = (row.excl-row.all) > 1 ? " big" : "";
+  el.innerHTML =
+    '<span class="lb">'+row.n+'<br><span style="color:var(--ink-faint);font-size:.66rem">'+row.share+'</span></span>'+
+    '<span class="db-track">'+
+      '<span class="db-line" style="left:'+lo+'%;width:'+(hi-lo)+'%"></span>'+
+      '<span class="db-dot a" style="left:'+x1+'%"></span>'+
+      '<span class="db-dot b" style="left:'+x2+'%"></span>'+
+    '</span>'+
+    '<span class="sh'+shiftBig+'">+'+(row.excl-row.all).toFixed(2)+'</span>';
+  dbWrap.appendChild(el);
+});
+var axisLine=document.getElementById("axisLine");
+[4.5,5.5,6.5,7.5].forEach(function(v){
+  var t=document.createElement("span"); t.className="axis-tick"; t.style.left=scaleX(v)+"%"; t.textContent=v.toFixed(1);
+  axisLine.appendChild(t);
+});
+
+/* ---------- reveal-on-scroll bar/animation triggers ---------- */
+var animated={bars:false, overlap:false};
+function reveal(){
+  var bRect=barWrap.getBoundingClientRect();
+  if(!animated.bars && bRect.top < window.innerHeight*0.9){
+    document.querySelectorAll("#familyBars .fl").forEach(function(f){ f.style.width=f.dataset.w+"%"; });
+    animated.bars=true;
+  }
+  var o1=document.getElementById("ovBar1");
+  var oRect=o1.getBoundingClientRect();
+  if(!animated.overlap && oRect.top < window.innerHeight*0.9){
+    o1.style.width="100%";
+    document.getElementById("ovBar2").style.width=(66145/872761*100)+"%";
+    animated.overlap=true;
+  }
+}
+window.addEventListener("scroll", reveal);
+reveal();
+
+/* ---------- trial & error ---------- */
+var trials=[
+  {t:"ChEMBL download failed — a 265 MB fragment of a 5.76 GB file looked plausible", caught:"tar -tzf produced \"gzip: unexpected end of file\" on inspection", fix:"Resumed with curl -C - from the exact byte offset; accepted the result only after its SHA-256 matched EBI's own published checksum."},
+  {t:"The working repo lived inside OneDrive, next to a database about to reach 30 GB", caught:"Routine environment review before starting any download", fix:"Moved the working copy to a non-synced folder. The OneDrive copy was left completely untouched as a backup."},
+  {t:"BindingDB: 5 rows looked to have gone missing after streaming a 9 GB file", caught:"Reconciled the raw line count (3,237,052) against rows actually read (3,237,047)", fix:"Found 5 blank lines and 1 corrupted NUL-byte line in the publisher's own file — both upstream artefacts. Zero real data was lost."},
+  {t:"The exploration notebook over-counted censored measurements", caught:"Relation counts didn't add up — 859 rows had a blank relation field, not a real censoring operator", fix:"Replaced a loose \"not equal to =\" filter with an explicit list of the real censoring operators."},
+  {t:"Two undocumented relation operators, >> and <<, turned up in the real data", caught:"A full tally of every distinct relation value during profiling", fix:"Added both to the censored-operator set; the automated test suite was updated to cover them."},
+  {t:"The ChEMBL–BindingDB overlap looked enormous — 873,000 shared pairs", caught:"Checked BindingDB's own source column: 52% of its human records are curated directly from ChEMBL", fix:"Recomputed the overlap using only independently-sourced records on each side: 66,145 — about 13× smaller, and the honest number."},
+  {t:"Measured drug potency looked wildly different across protein families", caught:"A sharp, unexplained spike in the potency histogram around pChEMBL ≈ 4.5", fix:"Traced it to PubChem's screening data; five families shift by more than a full order of magnitude once it's excluded. Flagged for the Week 2 threshold decision."},
+  {t:"One test took 58 minutes to run", caught:"Simply timing the test suite", fix:"Marked the full-database check as \"slow\" and split it out — the everyday test suite now runs in about 2 seconds."}
+];
+var teWrap=document.getElementById("teList");
+trials.forEach(function(tr,i){
+  var el=document.createElement("div"); el.className="te-item";
+  el.innerHTML =
+    '<div class="te-num">'+(i+1)+'</div>'+
+    '<div><h4>'+tr.t+'</h4>'+
+    '<div class="lbl">how it was caught</div><p>'+tr.caught+'</p>'+
+    '<div class="lbl">fix</div><p class="fix">'+tr.fix+'</p></div>';
+  teWrap.appendChild(el);
+});
+
+/* ---------- phase grid (weeks 2-12 blueprint) ---------- */
+var phases=[
+  {wk:"WEEK 2", t:"Lock the scope from real numbers", d:"Decide activity thresholds (controlling for data source), which endpoints count, measured-inactive rules, minimum data per protein, and the time-split cutoff — then freeze it in writing.", stack:["pandas","RDKit"]},
+  {wk:"WEEK 3", t:"Build Network 1", d:"Canonical SMILES, salt stripping, duplicate resolution by InChIKey, scaffold computed before any split, and a leakage check across all four splits.", stack:["RDKit","Bemis-Murcko scaffolds"]},
+  {wk:"WEEK 4–5", t:"Represent, then train the one model", d:"Cache ChemBERTa + ESM-2 embeddings for the whole universe. Build classical baselines. Train the fusion head, deliberately overfitting a tiny subset first to prove the plumbing works.", stack:["ChemBERTa","ESM-2","PyTorch","MLflow"]},
+  {wk:"WEEK 6", t:"Evaluate under real distribution shift", d:"All four splits, stratified by protein family, not pooled. Error analysis on the worst-performing family.", stack:["AUROC/AUPRC"]},
+  {wk:"WEEK 7", t:"Calibrate uncertainty — protected phase", d:"Split conformal prediction; confirm empirical coverage matches the target and that uncertainty rises specifically where Week 6 showed the task getting harder.", stack:["MAPIE"]},
+  {wk:"WEEK 8", t:"Disease anchor, router, seal 6 cases — protected", d:"Join to Open Targets/DISGENET. Implement the router as unit-tested code. Select and freeze six retrospective test cases — not to be reopened until Week 9.", stack:["Open Targets","DISGENET"]},
+  {wk:"WEEK 9", t:"The central experiment — protected", d:"Build the evidence agent. Run fixed-retrieval vs. uncertainty-adaptive retrieval on identical candidates. Open the sealed cases. Report the result honestly, whichever way it goes.", stack:["PubTator","LangGraph","ChromaDB"]},
+  {wk:"WEEK 10", t:"Delivery", d:"Streamlit interface, full written report, rehearsed defence against hard questions.", stack:["Streamlit","FastAPI"]},
+  {wk:"WEEK 11–12", t:"Reserved buffer", d:"Absorb delay from any week above first. Depth only if nothing is owed. No new scope, ever.", stack:["—"]}
+];
+var pg=document.getElementById("phaseGrid");
+phases.forEach(function(p){
+  var el=document.createElement("div"); el.className="phase-card";
+  var stack=p.stack.map(function(s){return '<span class="chip">'+s+'</span>';}).join("");
+  el.innerHTML='<div class="wk">'+p.wk+'</div><h4>'+p.t+'</h4><p>'+p.d+'</p><div class="stack">'+stack+'</div>';
+  pg.appendChild(el);
+});
+
+/* ---------- commit log ---------- */
+var commits=[
+  {sha:"16fe9b5", m:"Correct a count in the Stage 0 report (5 families shift by more than 1 log unit, not 7) — caught while double-checking this very page's numbers."},
+  {sha:"8ee1855", m:"Weekly reports for course weeks 2 and 3: copy-paste form entries, PDFs, diagrams, references."},
+  {sha:"9df4a36", m:"Week 1 Day 5: Stage 0 report, family table, ChEMBL/BindingDB overlap results, decision log."},
+  {sha:"215d7ed", m:"Week 1 Days 2-4: ChEMBL extraction pipeline, profiler, overlap script, data-level regression tests."},
+  {sha:"c6fd155", m:"Week 1 Day 1: ChEMBL 37 verified on disk (checksum + row count), schema notes, data manifest."},
+  {sha:"6918de8", m:"Week 1 Day 1: closed out the imatinib censored-measurement check with real, executed values."},
+  {sha:"c7b1483", m:"Week 1 Day 3 (part 1): BindingDB streaming extraction, censored-value parsing, family helper."},
+  {sha:"2430958", m:"Week 1 setup: curated environment, config, decision log, repo moved out of OneDrive."},
+  {sha:"053e078", m:"Project briefing added to the repo."},
+  {sha:"84c2b23", m:"Project skeleton: folder structure per the master plan."}
+];
+var gl=document.getElementById("gitLine");
+commits.forEach(function(c){
+  var el=document.createElement("div"); el.className="git-item";
+  el.innerHTML='<span class="git-sha">'+c.sha+'</span><p>'+c.m+'</p>';
+  gl.appendChild(el);
+});
+
+})();
+</script>
+
+</body>
+</html>

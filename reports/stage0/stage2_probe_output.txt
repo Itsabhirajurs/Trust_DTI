@@ -1,0 +1,11 @@
+pairs: 5064882  rows/pair mean 1.64 median 1 max 1934  share>1 row: 28.0%
+exact-potency pairs: 1347583  with >1 measurement: 308269 (22.9%)
+  of those, spread >=1 log: 23.1%  >=2 log: 8.2%  median spread 0.20
+molregno: 1557251  distinct full InChIKey: 1557251  distinct connectivity block: 1487133
+  connectivity blocks shared by >1 ChEMBL compound IDs: 53559
+records sharing imatinib connectivity block:
+   CHEMBL941 IMATINIB Cc1ccc(NC(=O)c2ccc(CN3CCN(C)CC3)cc2)cc1Nc1nccc(-c2cccnc2)n1
+   CHEMBL2386595 None [2H]C([2H])([2H])N1CCN(Cc2ccc(C(=O)Nc3ccc(C)c(Nc4nccc(-c5cccnc5)n4)c3)
+sample 40k: unparseable 0  multi-component (salt/mixture) SMILES: 3.2%
+  distinct scaffolds: 31147  empty scaffold (acyclic): 0.5%  scaffolds with 1 compound: 86.8%  top scaffold share: 1.4%
+  top-5 scaffold sizes: [570, 191, 68, 62, 55]

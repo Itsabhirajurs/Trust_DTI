@@ -436,6 +436,8 @@ Prepare short, honest answers to these. Every one has already been reasoned thro
 
 ## Part 8 — Running Log
 
+> **Moved (2026-10-03):** new session entries now go in `docs/PROJECT_LOG.md` (newest first), and the current state lives in `docs/STATUS.md`. The entries below are kept unchanged as history.
+
 *(Claude Code: append a dated entry here at the end of every work session. Keep entries short and factual — what was done, what was found, what changed vs. the plan above, what's still open. Do not delete or rewrite earlier entries; this log is itself part of the project's provenance.)*
 
 ### [Date to be filled by whoever starts the session]
