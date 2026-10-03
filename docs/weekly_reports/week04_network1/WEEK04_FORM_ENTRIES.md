@@ -42,7 +42,7 @@ How dataset-labelling decisions (activity thresholds, handling censored measurem
 
 ### GITHUB REPOSITORY / COMMIT URL (optional)
 ```
-__COMMIT_URL__
+https://github.com/Itsabhirajurs/Trust_DTI/commit/a88809bb84e55880d377cfe0a101eca7a8cff499
 ```
 
 ### SUPPORTING DOCUMENT / DEMO LINK  (mandatory)
