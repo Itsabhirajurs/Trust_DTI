@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000" role="img" aria-labelledby="title desc">
+<title id="title">TrustDTI Week 7: Protein Validation and Embedding Pilot</title>
+<desc id="desc">Week 7 project status infographic summarizing 2,312 UniProt sequences validated, a 100-compound ChemBERTa pilot and a 20-protein ESM-2 pilot, plus next steps.</desc>
+<defs>
+  <linearGradient id="header" x1="0" x2="1"><stop offset="0" stop-color="#103e68"/><stop offset="1" stop-color="#176092"/></linearGradient>
+  <style>
+    text{font-family:Inter,Segoe UI,Arial,sans-serif;fill:#132b43}
+    .title{font-size:37px;font-weight:750;fill:white}
+    .sub{font-size:18px;fill:#e8f4ff}
+    .h{font-size:23px;font-weight:750}
+    .k{font-size:16px;font-weight:700}
+    .body{font-size:17px}
+    .muted{font-size:15px;fill:#53687b}
+    .big{font-size:31px;font-weight:800}
+    .card{stroke-width:2}
+    .check{font-size:17px;font-weight:750;fill:#08724c}
+  </style>
+</defs>
+<rect width="1600" height="1000" fill="#f5f8fc"/>
+<rect x="22" y="20" width="1556" height="105" rx="20" fill="url(#header)"/>
+<g transform="translate(55 43)" fill="none" stroke="#66d9df" stroke-width="4"><circle cx="18" cy="16" r="10"/><circle cx="51" cy="7" r="8"/><circle cx="49" cy="43" r="10"/><circle cx="80" cy="28" r="7"/><path d="M27 14 L42 9 M25 23 L41 38 M59 12 L75 24 M59 41 L74 31"/></g>
+<text x="150" y="61" class="title">TrustDTI — Week 7: Protein Validation &amp; Embedding Pilot</text>
+<text x="150" y="94" class="sub">Objective: validate protein sequences and establish a reproducible compound/protein embedding pipeline.</text>
+<text x="1540" y="110" text-anchor="end" font-size="14" fill="#e8f4ff">25 OCT 2026</text>
+
+<!-- Stage 1 -->
+<rect x="28" y="151" width="368" height="340" rx="17" fill="#e8f4ff" stroke="#58a9ed" class="card"/>
+<circle cx="68" cy="190" r="23" fill="#1683bd"/><text x="68" y="199" text-anchor="middle" font-size="25" font-weight="800" fill="white">1</text>
+<text x="105" y="186" class="h">Protein data</text><text x="105" y="213" class="h">preparation</text>
+<rect x="54" y="234" width="315" height="1" fill="#abd6f4"/>
+<text x="54" y="269" class="big" fill="#126aa1">2,312 / 2,312</text>
+<text x="54" y="296" class="body">UniProt sequences retrieved</text>
+<text x="54" y="329" class="body">✓ All mapped to human metadata</text>
+<text x="54" y="358" class="body">✓ Homo sapiens</text>
+<text x="54" y="387" class="body">✓ 0 unmatched accessions</text>
+<text x="54" y="416" class="body">✓ Lengths matched</text>
+<text x="54" y="445" class="body">✓ Amino-acid checks passed</text>
+<rect x="49" y="458" width="326" height="20" rx="10" fill="#c9f2e1"/>
+
+<!-- Stage 2 -->
+<rect x="416" y="151" width="368" height="340" rx="17" fill="#e7f8ef" stroke="#51c08e" class="card"/>
+<circle cx="456" cy="190" r="23" fill="#138456"/><text x="456" y="199" text-anchor="middle" font-size="25" font-weight="800" fill="white">2</text>
+<text x="493" y="186" class="h">Compound embeddings</text><text x="493" y="213" class="h">ChemBERTa</text>
+<rect x="442" y="234" width="315" height="1" fill="#b8e7cd"/>
+<text x="442" y="269" class="big" fill="#0d7650">100 × 384</text>
+<text x="442" y="296" class="body">100 compound SMILES</text>
+<text x="442" y="325" class="body">Checkpoint: ChemBERTa-77M</text>
+<text x="442" y="354" class="body">Max tokens: 163</text>
+<text x="442" y="383" class="body">Truncated inputs: 0</text>
+<text x="442" y="412" class="body">Finite values: yes</text>
+<text x="442" y="441" class="body">Load 10.88 s · infer 1.39 s</text>
+<text x="442" y="468" class="muted">Mean-pool hidden states</text>
+
+<!-- Stage 3 -->
+<rect x="804" y="151" width="368" height="340" rx="17" fill="#f2eaff" stroke="#ac8cf0" class="card"/>
+<circle cx="844" cy="190" r="23" fill="#7541b8"/><text x="844" y="199" text-anchor="middle" font-size="25" font-weight="800" fill="white">3</text>
+<text x="881" y="186" class="h">Protein embeddings</text><text x="881" y="213" class="h">ESM-2</text>
+<rect x="830" y="234" width="315" height="1" fill="#d5c7fa"/>
+<text x="830" y="269" class="big" fill="#7042b1">20 × 320</text>
+<text x="830" y="296" class="body">20 protein sequences</text>
+<text x="830" y="325" class="body">Checkpoint: ESM-2 8M</text>
+<text x="830" y="354" class="body">Max sequence: 618 amino acids</text>
+<text x="830" y="383" class="body">Truncated proteins: 0</text>
+<text x="830" y="412" class="body">Finite values: yes</text>
+<text x="830" y="441" class="body">Load 2.66 s · infer 0.54 s</text>
+<text x="830" y="468" class="muted">Mean-pool residue states</text>
+
+<!-- Stage 4 -->
+<rect x="1192" y="151" width="380" height="340" rx="17" fill="#fff4d8" stroke="#f1bd49" class="card"/>
+<circle cx="1232" cy="190" r="23" fill="#de920b"/><text x="1232" y="199" text-anchor="middle" font-size="25" font-weight="800" fill="white">4</text>
+<text x="1269" y="186" class="h">Integrity checks</text><text x="1269" y="213" class="h">&amp; packaging</text>
+<rect x="1218" y="234" width="328" height="1" fill="#f2d998"/>
+<text x="1218" y="270" class="body">✓ Expected dimensions</text>
+<text x="1218" y="302" class="body">✓ IDs and inputs aligned</text>
+<text x="1218" y="334" class="body">✓ No non-finite values</text>
+<text x="1218" y="366" class="body">✓ NPZ safe-load fix verified</text>
+<text x="1218" y="398" class="body">✓ 10 report checks passed</text>
+<text x="1218" y="430" class="body">✓ Local artifact audit passed</text>
+<rect x="1217" y="449" width="328" height="29" rx="8" fill="#d8f4de"/>
+<text x="1381" y="469" text-anchor="middle" class="check">PILOT PASSED</text>
+
+<!-- bottom cards -->
+<rect x="28" y="515" width="490" height="200" rx="16" fill="#ffffff" stroke="#cfdae6" stroke-width="2"/>
+<text x="53" y="551" class="h">Compute environment</text>
+<text x="53" y="585" class="body">Google Colab · NVIDIA Tesla T4</text>
+<text x="53" y="614" class="body">GPU memory reported: 14.56 GiB</text>
+<text x="53" y="643" class="body">Python 3.13.16 · PyTorch 2.11.0+cu130</text>
+<text x="53" y="672" class="body">Transformers 4.57.6</text>
+<text x="53" y="699" class="muted">Existing project tests: 9 passed, 1 deselected</text>
+
+<rect x="540" y="515" width="490" height="200" rx="16" fill="#ffffff" stroke="#cfdae6" stroke-width="2"/>
+<text x="565" y="551" class="h">What this proves</text>
+<text x="565" y="585" class="body">• Sequence retrieval and checks worked</text>
+<text x="565" y="614" class="body">• Encoder inference runs on GPU</text>
+<text x="565" y="643" class="body">• Outputs align to the saved inputs</text>
+<text x="565" y="672" class="body">• Vector shapes and values are valid</text>
+<text x="565" y="701" class="muted">Technical validation — not DTI performance</text>
+
+<rect x="1052" y="515" width="520" height="200" rx="16" fill="#ffffff" stroke="#cfdae6" stroke-width="2"/>
+<text x="1077" y="551" class="h">Next steps</text>
+<circle cx="1094" cy="584" r="13" fill="#176092"/><text x="1094" y="590" text-anchor="middle" font-size="16" font-weight="800" fill="white">1</text><text x="1120" y="590" class="body">Sync validated local output files to GitHub</text>
+<circle cx="1094" cy="617" r="13" fill="#176092"/><text x="1094" y="623" text-anchor="middle" font-size="16" font-weight="800" fill="white">2</text><text x="1120" y="623" class="body">Re-run notebook from a clean runtime</text>
+<circle cx="1094" cy="650" r="13" fill="#176092"/><text x="1094" y="656" text-anchor="middle" font-size="16" font-weight="800" fill="white">3</text><text x="1120" y="656" class="body">Build a labelled DTI baseline</text>
+<circle cx="1094" cy="683" r="13" fill="#176092"/><text x="1094" y="689" text-anchor="middle" font-size="16" font-weight="800" fill="white">4</text><text x="1120" y="689" class="body">Evaluate with leakage-aware splits</text>
+
+<rect x="28" y="740" width="1544" height="222" rx="16" fill="#e8eff7" stroke="#cad6e4" stroke-width="2"/>
+<text x="55" y="783" class="h">Important research boundary</text>
+<text x="55" y="821" class="body">This was a smoke test on 100 compounds and 20 proteins. It does not establish binding accuracy, calibrated uncertainty, conformal coverage, or improved evidence retrieval.</text>
+<text x="55" y="855" class="body">Full-dataset embedding generation, labelled drug–target model training, predictive evaluation, uncertainty calibration, and adaptive retrieval are still pending.</text>
+<text x="55" y="913" class="muted">TrustDTI · Week 7 course progress · Model IDs, timings, shapes, and validation counts documented in WEEK07_PROGRESS_REPORT.md</text>
+<text x="1543" y="913" text-anchor="end" class="muted">Research status: pilot complete, baseline not started</text>
+</svg>

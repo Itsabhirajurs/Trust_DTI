@@ -11,24 +11,18 @@ Format: `## D-NNN · YYYY-MM-DD · short title` → Decision / Why / Evidence / 
 ## D-001 · 2026-09-27 · DTI universe scope: all human single-protein targets (universal), not kinome-only
 
 **Decision.** The compound–protein universe is all ChEMBL targets with `target_type = 'SINGLE PROTEIN'`
-and `organism = 'Homo sapiens'`, with every result reported stratified by target family. This supersedes
-the Project Bible's framing (human kinome only, oncology case study, GNN as core drug encoder).
+and `organism = 'Homo sapiens'`, with every result reported stratified by target family. This supersedes the Project Bible's framing (human kinome only, oncology case study, GNN as core drug encoder).
 ChemBERTa remains the primary drug encoder; the molecular GNN is an optional ablation (Briefing Part 4).
 
 **Why.** Deliberate team decision, explicitly confirmed by the project owner on 2026-09-27 (asked twice,
-once with the trade-offs spelled out). It also matches the Submission document, the Master Plan and the
-Claude Code Briefing, which all describe a large all-protein network stratified by family.
+once with the trade-offs spelled out). It also matches the Submission document, the Master Plan and the Claude Code Briefing, which all describe a large all-protein network stratified by family.
 
 **Trade-offs knowingly accepted.**
-- *Given up:* the kinome's data density, structural homology across the universe, a cleaner target-cold
-  evaluation (proteins in one family are more comparable), and oncology-rich literature for sealed cases.
-- *Taken on:* ~3–5k proteins to embed with ESM-2 (vs ~500), more compounds, and sparse/noisy families
-  that will need an explicit minimum-data rule in Week 2.
-- *Mitigation:* family-stratified evaluation (Week 6) and family-conditioned calibration (Week 7) are
-  already planned; sparse-family handling is an open Week 2 question (see `docs/stage0_report.md`).
+- *Given up:* the kinome's data density, structural homology across the universe, a cleaner target-cold evaluation (proteins in one family are more comparable), and oncology-rich literature for sealed cases.
+- *Taken on:* ~3–5k proteins to embed with ESM-2 (vs ~500), more compounds, and sparse/noisy families that will need an explicit minimum-data rule in Week 2.
+- *Mitigation:* family-stratified evaluation (Week 6) and family-conditioned calibration (Week 7) are already planned; sparse-family handling is an open Week 2 question (see `docs/stage0_report.md`).
 
-**Status.** LOCKED as intent. Week 2's inclusion rules (min interactions per protein, confidence floor,
-endpoints) still decide *which* proteins survive inside this universe; that is not a change of scope.
+**Status.** LOCKED as intent. Week 2's inclusion rules (min interactions per protein, confidence floor, endpoints) still decide *which* proteins survive inside this universe; that is not a change of scope.
 
 ## D-002 · 2026-09-27 · Authoritative schedule: Briefing / Master Plan (10 build + 2 buffer weeks)
 
@@ -70,8 +64,7 @@ Each file is verified against its publisher's own checksum.
 
 **Decision.** Family = ChEMBL `protein_classification` walked from each component's class links up to level 1
 (15 classes, e.g. Enzyme, Membrane receptor) and level 2 (e.g. Kinase, Family A GPCR). If a component's links
-disagree at a level it is labelled `Multiple` (42 components at L1), never an arbitrary pick. A component with
-an L1 but no L2 node gets `"<L1> (no L2)"`. Code: `src/ingest/families.py`, unit-tested.
+disagree at a level it is labelled `Multiple` (42 components at L1), never an arbitrary pick. A component with an L1 but no L2 node gets `"<L1> (no L2)"`. Code: `src/ingest/families.py`, unit-tested.
 
 **Why.** Deterministic and auditable. Stratified reporting (Weeks 6–7) needs one family per protein without hiding ambiguity.
 
@@ -85,26 +78,19 @@ No pipeline step filters on `pchembl_value IS NOT NULL`. Enforced by `tests/test
 
 ## D-008 · 2026-09-27 · Overlap methodology for ChEMBL ↔ BindingDB
 
-**Decision.** Overlap is keyed on (InChIKey, UniProt accession), never SMILES, and reported three ways. The
-decision-relevant figure is *independent vs independent*: ChEMBL minus src_id 37 (BindingDB patents) versus
-BindingDB minus rows curated from ChEMBL.
+**Decision.** Overlap is keyed on (InChIKey, UniProt accession), never SMILES, and reported three ways. The decision-relevant figure is *independent vs independent*: ChEMBL minus src_id 37 (BindingDB patents) versus BindingDB minus rows curated from ChEMBL.
 
-**Evidence.** Naive shared pairs 872,761 vs independent 66,145 (≈13× inflation). 52% of BindingDB human
-single-chain rows are ChEMBL-sourced.
+**Evidence.** Naive shared pairs 872,761 vs independent 66,145 (≈13× inflation). 52% of BindingDB human single-chain rows are ChEMBL-sourced.
 
-**Status of the integration question itself:** *recommendation only* (ChEMBL-only for Network 1 v1; revisit
-BindingDB's ~353k recent patent pairs for the temporal split). Pending owner review at the W1 gate; not locked.
+**Status of the integration question itself:** *recommendation only* (ChEMBL-only for Network 1 v1; revisit BindingDB's ~353k recent patent pairs for the temporal split). Pending owner review at the W1 gate; not locked.
 
 ## D-009 · 2026-09-27 · Working rule: "inconclusive" is not "inactive"
 
-**Decision.** In all Week 1 estimates, `activity_comment` values "inconclusive" (1.73M rows), "not determined",
-"nd" and "na" are **not** counted as measured-inactive. The final three-state label rules are a Week 2 decision; this
-entry only prevents the most damaging conflation (Briefing §3.3) from creeping in beforehand.
+**Decision.** In all Week 1 estimates, `activity_comment` values "inconclusive" (1.73M rows), "not determined", "nd" and "na" are **not** counted as measured-inactive. The final three-state label rules are a Week 2 decision; this entry only prevents the most damaging conflation (Briefing §3.3) from creeping in beforehand.
 
 ## D-010 · 2026-09-27 · Slow full-database test excluded by default
 
-**Decision.** `pytest` runs fast unit and data tests by default (~2 s). The full 24.5M-row count check is marked
-`slow` (~1 h on the laptop) and runs with `pytest -m slow` before any data-release bump.
+**Decision.** `pytest` runs fast unit and data tests by default (~2 s). The full 24.5M-row count check is marked `slow` (~1 h on the laptop) and runs with `pytest -m slow` before any data-release bump.
 
 ## D-011 · 2026-10-03 · Endpoints used for labelling (Week 2)
 
@@ -115,28 +101,23 @@ screened at ≥10 µM with no activity), never to call ACTIVE. Kinetics (kon/kof
 
 **Why.** Dose-response affinities are the comparable, interpretable potencies. Restricting to them nearly
 eliminates the PubChem confounding found in Week 1: median pChEMBL for dose-response exact values is 6.85 and
-only moves to 6.91 when PubChem is excluded (vs. >1 log-unit shifts across all endpoints). qHTS "hits" are too
-noisy to call active but a high-concentration no-activity screen is legitimate negative evidence. Kinetics and
-%-inhibition are not affinities. Evidence: `reports/week2/A_endpoint_buckets.csv`, `week2_scope_summary.json`.
+only moves to 6.91 when PubChem is excluded (vs. >1 log-unit shifts across all endpoints). qHTS "hits" are too noisy to call active but a high-concentration no-activity screen is legitimate negative evidence. Kinetics and %-inhibition are not affinities. Evidence: `reports/week2/A_endpoint_buckets.csv`, `week2_scope_summary.json`.
 
 ## D-012 · 2026-10-03 · Activity thresholds (Week 2)
 
 **Decision.** From a pair's affinity dose-response measurements (exact `=`, nM), take the median pChEMBL.
 - **ACTIVE** if median pChEMBL **≥ 6.5** (≈300 nM or stronger).
-- **INACTIVE** if median pChEMBL **≤ 5.0** (≈10 µM or weaker), OR the pair has no exact value but has a censored
-  `>`/`>=`/`>>` affinity ≥10 µM, or a "not active"-type comment, or a qHTS ≥10 µM no-activity screen.
+- **INACTIVE** if median pChEMBL **≤ 5.0** (≈10 µM or weaker), OR the pair has no exact value but has a censored `>`/`>=`/`>>` affinity ≥10 µM, or a "not active"-type comment, or a qHTS ≥10 µM no-activity screen.
 - **GRAY** (median strictly between 5.0 and 6.5) is **excluded from training labels** but recorded with a flag.
 - **UNTESTED** = everything else (not materialised).
 
-**Why.** A 1.5-log gray buffer gives cleaner labels than a single cut, which matters for the Week 7 calibration
-honesty, and we are not data-starved: this yields 754,401 ACTIVE and 1,163,256 INACTIVE pairs (1.92M labelled).
+**Why.** A 1.5-log gray buffer gives cleaner labels than a single cut, which matters for the Week 7 calibration honesty, and we are not data-starved: this yields 754,401 ACTIVE and 1,163,256 INACTIVE pairs (1.92M labelled).
 Sensitivity: a ≥6.0 cut would give 937,896 ACTIVE with a smaller gray zone; recorded as the alternative.
 Evidence: `reports/week2/C_threshold_grid.csv`.
 
 ## D-013 · 2026-10-03 · Negatives are abundant; PU fallback not needed
 
-**Decision.** The positive-unlabelled fallback (Briefing Week 2 risk) is **not** invoked. We have 1,163,256
-measured-inactive pairs: 762k from "not active" comments, 273k censored-only, 141k exact-weak, 80k qHTS-only.
+**Decision.** The positive-unlabelled fallback (Briefing Week 2 risk) is **not** invoked. We have 1,163,256 measured-inactive pairs: 762k from "not active" comments, 273k censored-only, 141k exact-weak, 80k qHTS-only.
 "inconclusive"/"not determined"/"nd"/"na" remain UNTESTED (D-009 stands). Evidence: `week2_scope_summary.json`.
 
 ## D-014 · 2026-10-03 · Compound identity and stereo/isotope variants
@@ -154,8 +135,7 @@ correct, standard mechanism for leakage control. Supersedes open decision 6 in `
 **Decision.** The modelling universe keeps proteins with **≥10 labelled (ACTIVE or INACTIVE) pairs**: 2,313
 proteins (2,008 with both classes), 1,912,923 labelled pairs. Sparser proteins are dropped.
 
-**Why.** Near-free (loses ~2k pairs of 1.91M) while removing proteins too sparse to evaluate or to support a
-target-cold split. Evidence: `reports/week2/E_min_data_per_protein.csv`.
+**Why.** Near-free (loses ~2k pairs of 1.91M) while removing proteins too sparse to evaluate or to support a target-cold split. Evidence: `reports/week2/E_min_data_per_protein.csv`.
 
 ## D-016 · 2026-10-03 · Temporal split cutoff
 
@@ -167,17 +147,12 @@ excluded from the temporal split only; they remain in the other three splits.
 
 ## D-017 · 2026-10-03 · BindingDB: ChEMBL-only for Network 1 v1 (confirms D-008)
 
-**Decision.** Network 1 v1 is built from **ChEMBL only**. BindingDB's independent patent pairs (~its newer
-records) are reconsidered for the temporal test in a later iteration, not now. This confirms the recommendation
-left pending in D-008.
+**Decision.** Network 1 v1 is built from **ChEMBL only**. BindingDB's independent patent pairs (~its newer records) are reconsidered for the temporal test in a later iteration, not now. This confirms the recommendation left pending in D-008.
 
 ## D-018 · 2026-10-03 · Measurement hygiene for aggregation
 
-**Decision.** Keep confidence_score ≥ 8 (all in-scope rows are 8 or 9). When aggregating repeated measurements
-per pair, use the **median** pChEMBL and retain the spread (IQR) and count; flag pairs whose IQR ≥ 1 log unit.
-Drop rows flagged `data_validity_comment` = "Potential transcription error" or "Potential author error" from the
-exact-value aggregation. Repeated-measurement disagreement is real: of pairs with >1 exact value, 23.1% differ
-by ≥1 log unit (`reports/stage0/stage2_probe_output.txt`).
+**Decision.** Keep confidence_score ≥ 8 (all in-scope rows are 8 or 9). When aggregating repeated measurements per pair, use the **median** pChEMBL and retain the spread (IQR) and count; flag pairs whose IQR ≥ 1 log unit.
+Drop rows flagged `data_validity_comment` = "Potential transcription error" or "Potential author error" from the exact-value aggregation. Repeated-measurement disagreement is real: of pairs with >1 exact value, 23.1% differ by ≥1 log unit (`reports/stage0/stage2_probe_output.txt`).
 
 ## D-019 · 2026-10-03 · Four splits + calibration carve-out
 
@@ -185,3 +160,13 @@ by ≥1 log unit (`reports/stage0/stage2_probe_output.txt`).
 whole Murcko scaffolds), **target-cold** (hold out whole proteins — the primary generalisation test),
 **temporal** (D-016). For each split a **calibration slice** is carved from its training partition only, provably
 disjoint from that split's test set (needed by Week 7 conformal prediction). A leakage check must pass for all four.
+
+## D-020 · 2026-10-25 · Provisional encoder configuration for Stage 3 smoke test
+
+**Decision.** For the Stage 3 pilot only, use `DeepChem/ChemBERTa-77M-MLM` for compound SMILES and `facebook/esm2_t6_8M_UR50D` for protein sequences, producing one vector per input by mean-pooling the model's last hidden states while excluding padding and special boundary tokens. Pilot size is 100 compounds and 20 proteins. This does **not** lock the final encoder checkpoint, pooling strategy, or full-dataset processing method.
+
+**Why.** The purpose was to verify the end-to-end software path and output integrity on a modest Colab Tesla T4, before allocating resources to more than one million compounds. The chosen models are small enough for an initial smoke test and let us verify output dimensions, truncation, finite values, and input/output alignment.
+
+**Evidence.** `docs/weekly_reports/week07_embedding_pilot/WEEK07_PROGRESS_REPORT.md` and the recorded model summaries from the pilot. Inference times (1.39 s and 0.54 s) are small-sample measurements only, not full-dataset throughput estimates.
+
+**Status.** PROVISIONAL. Benchmark on leakage-aware validation and estimate compute/storage before deciding the final Stage 3 embedding approach.

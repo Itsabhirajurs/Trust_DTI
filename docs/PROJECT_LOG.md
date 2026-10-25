@@ -1,3 +1,20 @@
+## 2026-10-25 · Stage 3 smoke test: sequence retrieval and embeddings
+**Where:** Windows working copy + Google Colab + GitHub · **Stage / project week:** preliminary Stage 3 pilot / course report Week 7
+**Done:**
+- Audited 2,312 unique Network 1 protein accessions; all mapped to human target metadata and passed the preliminary UniProt-format check.
+- Retrieved 2,312 UniProt human protein sequences. The local summary showed zero unmatched accessions, all sequences passing the implemented amino-acid check, and all reported/actual lengths matching.
+- Tested pretrained embedding generation on Google Colab / NVIDIA Tesla T4: 100 compound SMILES with ChemBERTa-77M-MLM (100 × 384) and 20 protein sequences with ESM-2 8M UR50D (20 × 320). No pilot inputs were truncated; all embedding values were finite.
+- Verified local output shapes, identifier alignment, sequence alignment, and safe NumPy loading. Local tests: 9 passed, 1 deselected.
+- Added the Week 7 progress documentation, form entries, references, infographic, reproduction notebook, and sequence retrieval scripts.
+**Found:** Model load/inference times in the recorded pilot were 10.88 s / 1.39 s for ChemBERTa and 2.66 s / 0.54 s for ESM-2. These are small-sample pilot measurements, not full-dataset throughput estimates.
+**Changed vs plan:** the laptop GPU environment was not established; the small pilot therefore ran on Colab. The result does not complete full-scale embedding generation.
+**Decisions:** D-020 records the encoders/pooling as a provisional smoke-test configuration only.
+**Commits:** see the Week 7 repository update.
+**Open / next:** sync local NPZ and sample CSV artifacts into the repository; rerun the notebook after a clean runtime; then design and evaluate a labelled DTI baseline.
+**For the owner to understand:** an embedding is a numerical representation, not a binding prediction. Passing shape and finite-value checks proves that the encoding pipeline ran, not that the vectors improve DTI accuracy.
+
+---
+
 # PROJECT LOG (the diary)
 
 Newest entry at the **top**. One entry per working session. Facts only: what was done, what was found, what changed versus the plan, what is open. Never rewrite an old entry; if something turns out wrong, correct it in a new entry and say which one.
