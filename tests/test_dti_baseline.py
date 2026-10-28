@@ -113,7 +113,7 @@ def test_split_integrity_requires_each_partition():
     assert not checks["calib_nonempty"]
 
 
-def test_ece_is_zero_for_perfectly_calibrated_binary_example():
+def test_ece_reports_fixed_bin_gap():
     labels = np.array([0, 0, 1, 1])
     probabilities = np.array([0.1, 0.1, 0.9, 0.9])
     assert expected_calibration_error(labels, probabilities, n_bins=10) == pytest.approx(0.1)
