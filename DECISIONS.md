@@ -170,3 +170,14 @@ disjoint from that split's test set (needed by Week 7 conformal prediction). A l
 **Evidence.** `docs/weekly_reports/week07_embedding_pilot/WEEK07_PROGRESS_REPORT.md` and the recorded model summaries from the pilot. Inference times (1.39 s and 0.54 s) are small-sample measurements only, not full-dataset throughput estimates.
 
 **Status.** PROVISIONAL. Benchmark on leakage-aware validation and estimate compute/storage before deciding the final Stage 3 embedding approach.
+
+## D-021 · 2026-10-28 · Provisional classical DTI baseline before the fusion model
+
+**Decision.** Add a reproducible reference model using RDKit Morgan fingerprints (radius 2, 2,048 bits) for compounds, one-hot `family_l1` features for target family, and logistic regression with balanced class weights. The runner uses Network 1's existing random, drug-cold, target-cold, or temporal split column and the separate train/calibration/test partitions. Default row caps are 50,000 / 10,000 / 20,000; caps are saved with the metrics and must be reported.
+
+**Why.** A simple baseline gives a measurable reference before the planned ChemBERTa/ESM-2 fusion head and catches evaluation-path problems while limiting local CPU and memory use.
+
+**Evidence.** Code: `src/model/evaluate_dti_baseline.py`; unit tests: `tests/test_dti_baseline.py`; instructions: `docs/stages/baseline_before_fusion.md`. GitHub Actions validates the helper/test path, but actual local-data model metrics have not yet been generated.
+
+**Status.** PROVISIONAL. This is not the final architecture. The protein feature is family-level only. The split-conformal-style diagnostic reports empirical coverage, not a formal guarantee, since exchangeability and distribution-shift assumptions have not been established.
+
