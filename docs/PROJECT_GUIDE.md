@@ -31,12 +31,16 @@ It is written so it can fail. If adaptive retrieval does not beat fixed retrieva
 | # | Stage | What it does | Tools | Status |
 |---|---|---|---|---|
 | 1 | Data | Restrict ChEMBL 37 to human single-protein targets; profile; cross-check BindingDB | ChEMBL, BindingDB, SQLite, pandas | **done** |
-| 2 | Network 1 | Standardise molecules, map proteins, aggregate repeats, three-state label, four splits, leakage check | RDKit, pandas | next |
-| 3 | Embeddings | Drug and protein vectors from frozen pretrained models, cached | ChemBERTa, ESM-2 (Colab/Kaggle GPU) | planned |
-| 4 | Fusion head | The **only trained component**: MLP over drug + protein vectors → probability | PyTorch, MLflow | planned |
-| 5 | Evaluation | Random / drug-cold / target-cold / temporal splits, stratified by family | scikit-learn | planned |
-| 6 | Conformal calibration | Probability → `{1}`, `{0,1}`, `{0}` with coverage guarantee | MAPIE or custom | planned |
+| 2 | Network 1 | Standardise molecules, map proteins, aggregate repeats, three-state label, four splits, leakage check | RDKit, pandas | built and validated |
+| 3 | Embeddings | Drug and protein vectors from frozen pretrained models, cached | ChemBERTa, ESM-2 (Colab/Kaggle GPU) | small pilot passed; full-scale cache pending |
+| 4 | Fusion head | MLP over drug + protein vectors → probability | PyTorch, MLflow | pending; classical reference baseline added |
+| 5 | Evaluation | Random / drug-cold / target-cold / temporal splits, stratified by family | scikit-learn | baseline runner added; real data-backed runs pending |
+| 6 | Conformal calibration | Probability → `{1}`, `{0,1}`, `{0}`; coverage claims require assumptions | MAPIE or custom | split-conformal-style diagnostic added; formal assessment pending |
 | 7 | Network 2 | Add curated protein–disease links → anchor strength | Open Targets, DISGENET | planned |
+
+**Reference baseline before the fusion head**
+
+The resource-capped pre-fusion reference is implemented in `src/model/evaluate_dti_baseline.py`: RDKit Morgan fingerprints (radius 2, 2,048 bits) plus `family_l1` one-hot features and logistic regression. It is intended to establish a comparison floor, not to replace the planned ChemBERTa/ESM-2 fusion model. Actual model metrics are pending a local data-backed run. See [`docs/stages/baseline_before_fusion.md`](stages/baseline_before_fusion.md).
 
 **Online, per query, in seconds**
 
