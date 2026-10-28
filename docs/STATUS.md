@@ -1,49 +1,61 @@
 # STATUS: where we are right now
 
-*Last updated: 2026-10-25. Rewrite this file at the end of every session. History goes in `PROJECT_LOG.md`.*
+*Last updated: 2026-10-28. Rewrite this file at the end of every session. History goes in `PROJECT_LOG.md`.*
 
 ## One-line state
-**Stages 1 (Data) and 2 (Network 1) are built and verified. Stage 3 (Embeddings) has passed a small pilot only.** The full-dataset embeddings, DTI model training/evaluation, conformal calibration, disease anchors, and adaptive evidence-retrieval policy remain unfinished.
 
-Network 1 contains 1,905,586 labelled drug–protein pairs (748,430 ACTIVE / 1,157,156 INACTIVE), 2,312 proteins, and 1,006,840 compounds, with four split definitions.
+**Stages 1 and 2 are built and verified; Stage 3 has a successful small embedding pilot; a test-covered classical DTI baseline runner has been added but has not yet been run on the local dataset.** No full-dataset embeddings, DTI performance metrics, formal calibrated predictions, Network 2, router, or evidence-policy comparison are complete yet.
 
-## Calendar
-- The course Week 7 progress report covers the preliminary Stage 3 embedding pilot performed on 2026-10-25.
-- Course report weeks and the project's 12-week build-plan weeks are different numbering systems.
-- The pilot used Google Colab / NVIDIA Tesla T4. It was a smoke test, not the planned full-scale embedding run.
+Network 1 contains 1,905,586 labelled drug–protein pairs (748,430 ACTIVE / 1,157,156 INACTIVE), 2,312 proteins, and 1,006,840 compounds. Four precomputed split definitions are available.
 
-## Done
-- **Stage 1 (Data):** ChEMBL 37 + BindingDB verified, extracted, and profiled; see `docs/stage0_report.md` and `reports/stage0/`.
-- **Week 2 scope:** `src/ingest/analyze_scope_week2.py` → `reports/week2/`; decisions D-011–D-019 recorded.
-- **Stage 2 (Network 1):** compound standardization and `src/network/build_network1.py`; Network 1 and leakage validation are documented. Network 1 validation script: `src/network/validate_network1.py`.
-- **Stage 3 pilot (course Week 7):** audited 2,312 protein accessions, retrieved 2,312 human protein sequences from UniProt, and validated sequence lengths/characters. Generated 100 ChemBERTa vectors (100 × 384) and 20 ESM-2 vectors (20 × 320) on a Tesla T4. Local output alignment and finite-value checks passed. Model training has not started.
-- **Tests:** most recent local test run returned 9 passed, 1 deselected.
-- **Documentation:** Week 7 report, form entries, references, infographic, and pilot notebook have been prepared.
+## Current progress
 
-## Next actions (in order)
-1. Synchronize the current GitHub documentation commit into the Windows working copy without overwriting the locally generated seven-file pilot result folder.
-2. Add the locally validated NPZ embedding outputs and sample CSV files to `TrustDTI_Week07_Pilot_Results/`, then rerun the local artifact audit and commit those data artifacts.
-3. Restart Colab and verify that the Week 7 notebook can reproduce the two small pilots; record dependency versions and output checksums.
-4. Estimate storage and throughput before deciding full-scale embedding execution (about 1,006,840 compound rows, plus 2,312 protein rows).
-5. Construct/evaluate a labelled DTI baseline using the existing random, drug-cold, target-cold, and temporal splits, then consider calibration as a separate stage.
+- **Stage 1 — Data:** ChEMBL 37 and BindingDB were verified, extracted, and profiled; see `docs/stage0_report.md` and `reports/stage0/`.
+- **Stage 2 — Network 1:** `src/network/build_network1.py` and `src/network/validate_network1.py` build/validate the labelled table. Earlier local validation passed all 13 checks.
+- **Stage 3 — embedding pilot:** 2,312 UniProt human protein sequences were retrieved and passed the implemented sequence/length checks. On Colab/Tesla T4, ChemBERTa produced 100 × 384 compound embeddings and ESM-2 produced 20 × 320 protein embeddings. This is only a smoke test; the full cache is not created.
+- **Week 7 result artifacts:** The seven NPZ/CSV/JSON result files were verified locally, but the last confirmed local Git status showed them uncommitted. They still need to be synchronized to the latest local `main` and pushed.
+- **Classical DTI baseline:** `src/model/evaluate_dti_baseline.py` now implements a capped Morgan-fingerprint + `family_l1` one-hot logistic-regression baseline using the existing split assignments. It saves metrics and test predictions under `reports/model_baseline/`; the estimator artifact is written under ignored `data/processed/`. It must first be run against local data.
+- **CI:** GitHub Actions passed the fast suite on commit `d7e0db4`: **17 passed, 2 skipped, 1 deselected**. Two tests need local ChEMBL files; the full-database test is deliberately deselected. The first CI attempt failed because the Windows-frozen requirements tried to compile `pywinpty` on Linux; CI now uses `requirements-ci.txt`.
+- **Week 8 plan:** `docs/plans/week08_core_pipeline_sprint.md`.
+
+## Next actions — strictly in order
+
+1. Pull latest `origin/main` into `C:\Users\91701\code\Trust_DTI` using fast-forward only. Keep the seven Week 7 result files.
+2. Run `python -m pytest -q` locally. Commit/push only the seven audited Week 7 result files; never add raw, interim, processed Parquet data, the virtual environment, or caches.
+3. Run the default resource-capped random baseline: `python -m src.model.evaluate_dti_baseline --split random`. Inspect runtime, actual sampled counts, split checks, ROC-AUC/average precision, balanced accuracy, Brier/ECE, and the empirical prediction-set diagnostic. Do not claim baseline performance until this output exists.
+4. If the random baseline completes acceptably, run separate `drugcold`, `targetcold`, and `temporal` invocations. Compare results only with each cap and split integrity recorded.
+5. Decide whether to add a separately fitted probability calibrator after inspecting the baseline. Keep probability calibration distinct from conformal prediction sets; do not claim guaranteed coverage without justified assumptions.
+6. Build curated protein–disease Network 2 with source/version, stable identifiers, confidence/evidence, and explicit curated provenance. Never mix disease links with predicted drug–protein edges.
+7. Implement and unit-test the deterministic router; the UNKNOWN evidence state must never be converted to CONTRADICT.
+8. Build a small literature retrieval prototype with source URLs, retrieval dates, queries/policies, evidence direction, and an empty-result/error path.
+9. Run the fixed-vs-adaptive policy comparison only when a reproducible candidate set, labels, retrieval budget, and outcome definitions are in place.
+
+## Sprint completion definition
+
+A “90% prototype” means a runnable core path with passing tests, recorded baseline metrics, explicit uncertainty/disease/router contracts, and a small traceable evidence demo. It does **not** mean the scientific research question is proven. Full-scale embeddings and matched-budget retrieval experiments must have actual runs and saved results before being reported as completed.
 
 ## Open decisions
+
 | Topic | State |
 |---|---|
-| ChemBERTa model/pooling | Week 7 smoke-test choice only; benchmark before locking final method |
-| ESM-2 checkpoint/pooling | ESM-2 8M + mean pooling used only for the pilot; final choice open |
-| Full-scale embedding hardware | Colab/Kaggle/HPC; estimate quotas, memory, storage, and recovery first |
-| DTI baseline/fusion head | Not started |
-| Conformal calibration | Not started |
-| Curated protein–disease network | Planned after the DTI baseline stage |
-| Adaptive evidence router and retrieval evaluation | Not started |
+| Final ChemBERTa checkpoint/pooling | Pilot choice only; benchmark before locking |
+| Final ESM-2 checkpoint/pooling | 8M + mean pooling used for pilot only |
+| Full-scale embedding hardware/storage | Not benchmarked |
+| Classical baseline metrics | Runner and tests added; local data run pending |
+| Fusion head | Not started |
+| Probability calibration and conformal analysis | Conformal-style diagnostic in baseline; full calibration assessment pending |
+| Curated protein–disease network | Not started |
+| Router, evidence retrieval, matched-budget experiment | Not started |
 
 ## Key numbers
+
 - Network 1: 1,905,586 labelled pairs; 748,430 ACTIVE; 1,157,156 INACTIVE.
 - Unique Network 1 compounds: 1,006,840.
 - Unique Network 1 proteins: 2,312.
-- Week 7 protein sequence retrieval: 2,312 / 2,312 returned and passed implemented checks.
-- Week 7 pilot: ChemBERTa (100, 384); ESM-2 (20, 320); both with zero truncated inputs and finite outputs.
+- Week 7 retrieval: 2,312 / 2,312 protein sequences returned and passed the implemented checks.
+- Week 7 pilot: ChemBERTa 100 × 384; ESM-2 20 × 320; both had zero truncated inputs and finite outputs.
+- Latest successful CI: 17 passed, 2 skipped, 1 deselected.
 
 ## Where things are
-`README.md` → front door. `docs/PROJECT_GUIDE.md` → research design. `docs/PROJECT_LOG.md` → history. `DECISIONS.md` → method decisions. `docs/stages/` → stage teaching notes. `docs/weekly_reports/week07_embedding_pilot/` → course Week 7 evidence.
+
+`README.md` → front door. `docs/STATUS.md` → present state. `docs/PROJECT_LOG.md` → history. `DECISIONS.md` → methodological choices. `docs/stages/` → teaching notes. `docs/weekly_reports/week07_embedding_pilot/` → course Week 7 evidence.
