@@ -1,0 +1,15 @@
+{
+  "model_id": "facebook/esm2_t6_8M_UR50D",
+  "device": "Tesla T4",
+  "num_proteins": 20,
+  "embedding_shape": [
+    20,
+    320
+  ],
+  "embedding_dimension": 320,
+  "max_sequence_length": 618,
+  "truncated_proteins": 0,
+  "all_values_finite": true,
+  "model_load_seconds": 2.66,
+  "inference_seconds": 0.54
+}

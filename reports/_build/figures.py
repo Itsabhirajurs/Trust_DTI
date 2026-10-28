@@ -1,6 +1,6 @@
 """Charts for the weekly reports, built only from committed files in reports/stage0/.
 
-Run from repo root: python reports/weekly_reports/_build/figures.py
+Run from repo root: python reports/_build/figures.py
 """
 from pathlib import Path
 
@@ -10,9 +10,9 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import pandas as pd
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parents[2]
 STAGE0 = ROOT / "reports" / "stage0"
-W3 = ROOT / "reports" / "weekly_reports" / "week03_data_pipeline"
+W3 = ROOT / "reports" / "week03_data_pipeline"
 
 # reference palette (dataviz skill, light mode)
 BLUE, ORANGE = "#2a78d6", "#eb6834"

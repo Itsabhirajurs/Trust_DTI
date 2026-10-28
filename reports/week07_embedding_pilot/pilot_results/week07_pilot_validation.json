@@ -1,0 +1,52 @@
+{
+  "project": "TrustDTI",
+  "week": 7,
+  "runtime": "Google Colab - NVIDIA Tesla T4",
+  "compound_model": "DeepChem/ChemBERTa-77M-MLM",
+  "protein_model": "facebook/esm2_t6_8M_UR50D",
+  "compound_count": 100,
+  "protein_count": 20,
+  "compound_embedding_dimension": 384,
+  "protein_embedding_dimension": 320,
+  "checks": {
+    "100 compound embeddings": true,
+    "20 protein embeddings": true,
+    "ChemBERTa dimension is 384": true,
+    "ESM-2 dimension is 320": true,
+    "Compound identifiers aligned": true,
+    "Compound SMILES aligned": true,
+    "Protein accessions aligned": true,
+    "Protein sequences aligned": true,
+    "ChemBERTa values finite": true,
+    "ESM-2 values finite": true
+  },
+  "chemberta_diagnostics": {
+    "shape": [
+      100,
+      384
+    ],
+    "all_values_finite": true,
+    "exact_duplicate_rows": 0,
+    "zero_norm_rows": 0,
+    "mean_vector_norm": 2.9459710121154785,
+    "mean_within_vector_std": 0.14972102642059326,
+    "pairwise_cosine_min": 0.3847919702529907,
+    "pairwise_cosine_median": 0.7319380044937134,
+    "pairwise_cosine_max": 0.9150148034095764
+  },
+  "esm2_diagnostics": {
+    "shape": [
+      20,
+      320
+    ],
+    "all_values_finite": true,
+    "exact_duplicate_rows": 0,
+    "zero_norm_rows": 0,
+    "mean_vector_norm": 4.906325817108154,
+    "mean_within_vector_std": 0.2740032970905304,
+    "pairwise_cosine_min": 0.6840815544128418,
+    "pairwise_cosine_median": 0.891887366771698,
+    "pairwise_cosine_max": 0.980164647102356
+  },
+  "interpretation": "Embedding integrity and numerical diagnostics only; not evidence of drug-target prediction performance."
+}

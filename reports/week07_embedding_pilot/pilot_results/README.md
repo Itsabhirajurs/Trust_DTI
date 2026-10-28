@@ -2,7 +2,7 @@
 
 The local pilot completed and was audited. The workstation folder was:
 
-`reports/week07_pilot/`
+`reports/week07_embedding_pilot/pilot_results/`
 
 Expected output files:
 - `chemberta_pilot_embeddings.npz` — 100 × 384 float32 compound embeddings plus aligned identifiers and SMILES.

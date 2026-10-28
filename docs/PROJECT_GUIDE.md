@@ -166,8 +166,12 @@ tests/                    10 tests (9 fast, 1 slow)
 reports/                  all experimental outputs, manifests, and weekly submissions
   stage0/                 Stage 1 profiling outputs (committed)
   week2/                  Stage 2 Network 1 manifest and scope summaries (committed)
-  week07_pilot/           Stage 3 embedding pilot arrays and summaries
-  weekly_reports/         course progress reports, form text, figures, PDFs
+  week02_dataset_selection/ Course Week 2 report, form entries, figures
+  week03_data_pipeline/   Course Week 3 report, form entries, figures
+  week04_network1/        Course Week 4 report, form entries, figures
+  week06_network1_validation/ Course Week 6 validation report and form entries
+  week07_embedding_pilot/ Course Week 7 report, infographic, and pilot results
+  _build/                 figure and PDF rendering scripts
 data/MANIFEST.md          provenance of every raw file; data/raw and data/interim are gitignored
 notebooks/                01_chembl_first_look.ipynb, week07/
 requirements.in / .txt    direct dependencies / pinned freeze
@@ -184,7 +188,7 @@ python -m src.ingest.profile_chembl
 python -m src.ingest.profile_overlap
 python -m src.ingest.profile_source_confounding
 ```
-Figures and PDFs for weekly reports: `python reports/weekly_reports/_build/figures.py` then `python reports/weekly_reports/_build/render.py` (needs Chrome or Edge).
+Figures and PDFs for weekly reports: `python reports/_build/figures.py` then `python reports/_build/render.py` (needs Chrome or Edge).
 
 ## 16. Glossary
 - **ChEMBL**: EMBL-EBI's curated database of bioactivity measurements (24.5M in release 37).
