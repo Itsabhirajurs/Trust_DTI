@@ -10,7 +10,10 @@ One folder per reporting week. Each folder can be uploaded as-is to the shared G
 | `week06_network1_validation/` | Reproducible Network 1 validation | `NETWORK1_VALIDATION_RESULTS.md` |
 | `week07_embedding_pilot/` | Protein sequence validation and compound/protein embedding pilot | `WEEK07_PROGRESS_REPORT.md` |
 
-Each weekly folder should include a progress report, form entries, supporting figures, references, and relevant reproduction notes. Keep course-report week numbers distinct from the project's 12-week build plan.
+The Week 8 implementation sprint plan is at [`docs/plans/week08_core_pipeline_sprint.md`](../plans/week08_core_pipeline_sprint.md). Course report weeks and the project build-plan weeks are separate numbering systems.
+
+Each weekly folder should include a progress report, form entries, supporting figures, references, and relevant reproduction notes.
 
 ## Rebuilding earlier figures and PDFs
+
 Existing reports were generated from committed sources and data summaries. For a new week, keep the evidence and conclusions traceable to actual files; never invent metrics to fill a report.
