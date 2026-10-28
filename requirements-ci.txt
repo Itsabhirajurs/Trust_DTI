@@ -1,0 +1,11 @@
+# Minimal cross-platform dependencies used by the fast unit-test suite.
+# Keep aligned with requirements.txt for the modeling/data libraries.
+numpy==2.5.3
+pandas==3.0.6
+pyarrow==25.0.1
+rdkit==2026.3.6
+scikit-learn==1.9.1
+scipy==1.18.1
+joblib==1.6.0
+threadpoolctl==3.7.0
+pytest==9.1.1
