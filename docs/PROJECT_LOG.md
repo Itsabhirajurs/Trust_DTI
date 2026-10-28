@@ -1,3 +1,20 @@
+## 2026-10-28 · Week 8 sprint kickoff and classical DTI baseline scaffolding
+**Where:** GitHub repository + GitHub Actions · **Stage / project week:** Stage 3/4 bridge; Week 8 core-pipeline sprint
+**Done:**
+- Read the project instructions, current status, recent log, guide, and decision policy before changing code. The sealed-case rule remains untouched.
+- Added `docs/plans/week08_core_pipeline_sprint.md` with ordered work packages and measurable acceptance gates for the requested high-intensity sprint.
+- Added `src/model/evaluate_dti_baseline.py`: resource-capped logistic regression over RDKit Morgan fingerprints plus `family_l1` one-hot features, using existing random, drug-cold, target-cold, or temporal split assignments; reports standard classification metrics, Brier/ECE diagnostics, and split-conformal-style set statistics.
+- Added unit tests for deterministic stratified sampling, fingerprint output, split integrity guards, ECE, and prediction-set calculation. Added scikit-learn/scipy/joblib/threadpoolctl pins and a minimal cross-platform CI dependency file.
+- Added the baseline explanation note and GitHub Actions test workflow.
+**Found:** first CI attempt failed before tests because the full Windows-frozen dependency list tried compiling `pywinpty` on Linux. CI was changed to install `requirements-ci.txt`; run `40689615417` passed **17 tests**, with 2 data-dependent tests skipped and 1 slow test deselected.
+**Changed vs plan:** the implementation is a conventional reference baseline, not the final ChemBERTa/ESM-2 fusion head. The runner has not yet been run against the user's local Network 1 data, so no predictive metrics are claimed.
+**Decisions:** D-021 records the classical baseline as a provisional reference only.
+**Commits:** baseline runner `ce8d2ed`; baseline tests `504e254`; passing CI setup `d7e0db4`; sprint plan `b20f182`. Additional dependency/workflow updates followed.
+**Open / next:** sync the latest main branch to the local workstation; commit the seven previously validated Week 7 artifact files; run the random baseline locally; then proceed through the other split evaluations before Network 2 and the router.
+**For the owner to understand:** an embedding vector is not a binding prediction. The baseline is a reference measurement; its output scores and diagnostics still need to be generated from the actual dataset before they can support a scientific claim.
+
+---
+
 ## 2026-10-25 · Stage 3 smoke test: sequence retrieval and embeddings
 **Where:** Windows working copy + Google Colab + GitHub · **Stage / project week:** preliminary Stage 3 pilot / course report Week 7
 **Done:**
