@@ -3,6 +3,12 @@ name: TrustDTI tests
 on:
   push:
     branches: [main]
+    paths:
+      - "src/model/**"
+      - "tests/**"
+      - "requirements.in"
+      - "requirements.txt"
+      - ".github/workflows/tests.yml"
   pull_request:
     branches: [main]
   workflow_dispatch:
