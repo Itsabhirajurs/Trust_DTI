@@ -1,6 +1,6 @@
 """Week 4 data-driven charts: label counts and split distributions, from the Network 1 manifest.
 
-Run from repo root (after build_network1): python docs/weekly_reports/_build/w4_figures.py
+Run from repo root (after build_network1): python reports/weekly_reports/_build/w4_figures.py
 """
 import json
 from pathlib import Path
@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 
 ROOT = Path(__file__).resolve().parents[3]
 MANIFEST = ROOT / "reports" / "week2" / "network1_v1_manifest.json"
-W4 = ROOT / "docs" / "weekly_reports" / "week04_network1"
+W4 = ROOT / "reports" / "weekly_reports" / "week04_network1"
 
 BLUE, GREEN, BRICK, GREY = "#2a78d6", "#1a9850", "#d6604d", "#9aa0a6"
 INK, INK2, GRID, SURFACE = "#0b0b0b", "#52514e", "#e6e5e0", "#ffffff"

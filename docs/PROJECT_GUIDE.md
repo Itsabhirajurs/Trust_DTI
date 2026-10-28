@@ -150,7 +150,6 @@ AGENTS.md                 entry point for AI assistants (auto-loaded by Antigrav
 CLAUDE.md                 same idea for Claude Code
 README.md                 front door
 DECISIONS.md              every methodological choice, dated (D-NNN)
-CLAUDE_CODE_BRIEFING.md   the original full plan and rules (history; repo wins on conflict)
 docs/
   PROJECT_GUIDE.md        this file
   STATUS.md               where we are now, next actions, open decisions
@@ -159,14 +158,18 @@ docs/
   interactive/            two interactive explainer pages (open in a browser)
   stage0_report.md        Week 1 data report and open-issue list
   chembl_schema_notes.md  the ChEMBL tables we use and how they join
-  weekly_reports/         course progress reports, form text, figures, PDFs
+  archive/                historical briefing documents (CLAUDE_CODE_BRIEFING.md)
 src/
   config.py               paths and pinned data versions
   ingest/                 chembl_extract, bindingdb_extract, profile_*, families, relations, probe_stage2_issues
 tests/                    10 tests (9 fast, 1 slow)
-reports/stage0/           every small result file the scripts produce (committed)
+reports/                  all experimental outputs, manifests, and weekly submissions
+  stage0/                 Stage 1 profiling outputs (committed)
+  week2/                  Stage 2 Network 1 manifest and scope summaries (committed)
+  week07_pilot/           Stage 3 embedding pilot arrays and summaries
+  weekly_reports/         course progress reports, form text, figures, PDFs
 data/MANIFEST.md          provenance of every raw file; data/raw and data/interim are gitignored
-notebooks/                01_chembl_first_look.ipynb (imatinib censoring check)
+notebooks/                01_chembl_first_look.ipynb, week07/
 requirements.in / .txt    direct dependencies / pinned freeze
 ```
 
@@ -181,7 +184,7 @@ python -m src.ingest.profile_chembl
 python -m src.ingest.profile_overlap
 python -m src.ingest.profile_source_confounding
 ```
-Figures and PDFs for weekly reports: `python docs/weekly_reports/_build/figures.py` then `python docs/weekly_reports/_build/render.py` (needs Chrome or Edge).
+Figures and PDFs for weekly reports: `python reports/weekly_reports/_build/figures.py` then `python reports/weekly_reports/_build/render.py` (needs Chrome or Edge).
 
 ## 16. Glossary
 - **ChEMBL**: EMBL-EBI's curated database of bioactivity measurements (24.5M in release 37).
@@ -209,4 +212,4 @@ Figures and PDFs for weekly reports: `python docs/weekly_reports/_build/figures.
 - `docs/interactive/TrustDTI_Explained.html` (concept and architecture) and `TrustDTI_Pipeline.html` (all 13 stages with real numbers): open in a browser. They load fonts from Google Fonts; without internet they still work with fallback fonts.
 - The same two pages were published as private claude.ai artifacts: TrustDTI Explained (`https://claude.ai/artifact/V2ytHoyZZax6wBjosdFEte`), TrustDTI Pipeline (`https://claude.ai/artifact/77NbVdTWghovZeU61vR1MH`). Only the owner can open them.
 - The owner's original planning PDFs (Master Plan, Project Bible, 12-Week Working Protocol, Project Submission) are not in the repo. Where they conflict, `DECISIONS.md` records which one won.
-- `CLAUDE_CODE_BRIEFING.md`: the long-form plan with week-by-week tasks, risks and fallbacks (Part 5) and the questions to be ready to answer (Part 6).
+- `docs/archive/CLAUDE_CODE_BRIEFING.md`: the long-form plan with week-by-week tasks, risks and fallbacks (Part 5) and the questions to be ready to answer (Part 6).

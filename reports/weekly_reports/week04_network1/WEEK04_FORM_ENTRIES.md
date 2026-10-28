@@ -49,7 +49,7 @@ https://github.com/Itsabhirajurs/Trust_DTI/commit/a88809bb84e55880d377cfe0a101ec
 ```
 <paste your Google Drive link for the Week 4 folder here>
 ```
-*(Upload this folder's PDF + figures to your Drive "Week 4" folder, as you did for Weeks 2 and 3, and paste the share link. GitHub alternative: https://github.com/Itsabhirajurs/Trust_DTI/tree/main/docs/weekly_reports/week04_network1)*
+*(Upload this folder's PDF + figures to your Drive "Week 4" folder, as you did for Weeks 2 and 3, and paste the share link. GitHub alternative: https://github.com/Itsabhirajurs/Trust_DTI/tree/main/reports/weekly_reports/week04_network1)*
 
 ---
 

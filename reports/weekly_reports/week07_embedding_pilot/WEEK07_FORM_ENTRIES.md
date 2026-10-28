@@ -24,4 +24,4 @@ Learned to retrieve and validate UniProt protein sequences and transform SMILES 
 https://github.com/Itsabhirajurs/Trust_DTI
 
 ## Supporting Document / Demo Link
-https://github.com/Itsabhirajurs/Trust_DTI/tree/main/docs/weekly_reports/week07_embedding_pilot
+https://github.com/Itsabhirajurs/Trust_DTI/tree/main/reports/weekly_reports/week07_embedding_pilot

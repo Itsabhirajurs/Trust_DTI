@@ -51,7 +51,7 @@ https://github.com/Itsabhirajurs/Trust_DTI/commit/c6fd1553d9e19f6a331fc5dbecb096
 ```
 <paste your Google Drive folder link for this week's files>
 ```
-*(Or link the GitHub folder: https://github.com/Itsabhirajurs/Trust_DTI/tree/main/docs/weekly_reports/week02_dataset_selection)*
+*(Or link the GitHub folder: https://github.com/Itsabhirajurs/Trust_DTI/tree/main/reports/weekly_reports/week02_dataset_selection)*
 
 ---
 

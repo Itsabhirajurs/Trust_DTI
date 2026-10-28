@@ -3,7 +3,7 @@
 Each diagram HTML declares its canvas as <meta name="size" content="WIDTHxHEIGHT"> and its output
 as <meta name="out" content="week0X_.../NAME.png">. Report HTMLs declare <meta name="pdf" content="...">.
 
-Run from repo root: python docs/weekly_reports/_build/render.py
+Run from repo root: python reports/weekly_reports/_build/render.py
 """
 import re
 import shutil

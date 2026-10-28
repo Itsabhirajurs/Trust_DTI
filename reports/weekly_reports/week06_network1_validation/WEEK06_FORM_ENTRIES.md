@@ -76,7 +76,7 @@ Add the final commit URL after committing and pushing the Week 6 changes.
 
 
 
-https://github.com/Itsabhirajurs/Trust_DTI/tree/main/docs/weekly_reports/week06_network1_validation
+https://github.com/Itsabhirajurs/Trust_DTI/tree/main/reports/weekly_reports/week06_network1_validation
 
 
 

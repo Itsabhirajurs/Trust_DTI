@@ -1,3 +1,19 @@
+## 2026-10-28 · Repository reorganization and reports consolidation
+**Where:** Antigravity IDE (desktop) · **Stage / project week:** Repository hygiene & structure consolidation
+**Done:**
+- Consolidated all course submission packages (Weeks 2, 3, 4, 6, 7) directly into `reports/`.
+- Moved root-level pilot output folder `TrustDTI_Week07_Pilot_Results/` into `reports/week07_embedding_pilot/pilot_results/`.
+- Moved legacy planning document `CLAUDE_CODE_BRIEFING.md` into `docs/archive/` to keep the root directory clean and minimal.
+- Created `reports/README.md` documenting the unified reports hierarchy (`stage0`, `week2`, `week02_*` through `week07_*`).
+- Updated internal relative links in `README.md`, `docs/PROJECT_GUIDE.md`, `docs/STATUS.md`, `CLAUDE.md`, and report build scripts so no paths or links are broken.
+**Found:** Zero files deleted; zero substantive content changed. Clean root containing only standard project configuration and entry points.
+**Changed vs plan:** none; executed after owner confirmation on reorganization choices.
+**Decisions:** none (structural cleanup).
+**Open / next:** continue Stage 3 embedding scale-up planning and baseline model design.
+**For the owner to understand:** All reports and experimental outputs now live in a single unified `reports/` directory, while `docs/` is reserved for documentation and teaching guides.
+
+---
+
 ## 2026-10-28 · Week 8 sprint kickoff and classical DTI baseline scaffolding
 **Where:** GitHub repository + GitHub Actions · **Stage / project week:** Stage 3/4 bridge; Week 8 core-pipeline sprint
 **Done:**
@@ -36,7 +52,7 @@
 
 Newest entry at the **top**. One entry per working session. Facts only: what was done, what was found, what changed versus the plan, what is open. Never rewrite an old entry; if something turns out wrong, correct it in a new entry and say which one.
 
-The older running log in `CLAUDE_CODE_BRIEFING.md` Part 8 stays as history. New entries go here.
+The older running log in `docs/archive/CLAUDE_CODE_BRIEFING.md` Part 8 stays as history. New entries go here.
 
 ### Entry template (copy to the top)
 ```

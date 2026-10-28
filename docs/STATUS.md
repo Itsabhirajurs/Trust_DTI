@@ -13,14 +13,14 @@ Network 1 contains 1,905,586 labelled drug–protein pairs (748,430 ACTIVE / 1,1
 - **Stage 1 — Data:** ChEMBL 37 and BindingDB were verified, extracted, and profiled; see `docs/stage0_report.md` and `reports/stage0/`.
 - **Stage 2 — Network 1:** `src/network/build_network1.py` and `src/network/validate_network1.py` build/validate the labelled table. Earlier local validation passed all 13 checks.
 - **Stage 3 — embedding pilot:** 2,312 UniProt human protein sequences were retrieved and passed the implemented sequence/length checks. On Colab/Tesla T4, ChemBERTa produced 100 × 384 compound embeddings and ESM-2 produced 20 × 320 protein embeddings. This is only a smoke test; the full cache is not created.
-- **Week 7 result artifacts:** The seven NPZ/CSV/JSON result files were verified locally, but the last confirmed local Git status showed them uncommitted. They still need to be synchronized to the latest local `main` and pushed.
+- **Week 7 result artifacts:** The seven NPZ/CSV/JSON result files were verified locally and reside under `reports/week07_embedding_pilot/pilot_results/`.
 - **Classical DTI baseline:** `src/model/evaluate_dti_baseline.py` now implements a capped Morgan-fingerprint + `family_l1` one-hot logistic-regression baseline using the existing split assignments. It saves metrics and test predictions under `reports/model_baseline/`; the estimator artifact is written under ignored `data/processed/`. It must first be run against local data.
 - **CI:** GitHub Actions passed the fast suite on commit `d7e0db4`: **17 passed, 2 skipped, 1 deselected**. Two tests need local ChEMBL files; the full-database test is deliberately deselected. The first CI attempt failed because the Windows-frozen requirements tried to compile `pywinpty` on Linux; CI now uses `requirements-ci.txt`.
 - **Week 8 plan:** `docs/plans/week08_core_pipeline_sprint.md`.
 
 ## Next actions — strictly in order
 
-1. Pull latest `origin/main` into `C:\Users\91701\code\Trust_DTI` using fast-forward only. Keep the seven Week 7 result files.
+1. Keep the seven Week 7 result files in `reports/week07_embedding_pilot/pilot_results/`.
 2. Run `python -m pytest -q` locally. Commit/push only the seven audited Week 7 result files; never add raw, interim, processed Parquet data, the virtual environment, or caches.
 3. Run the default resource-capped random baseline: `python -m src.model.evaluate_dti_baseline --split random`. Inspect runtime, actual sampled counts, split checks, ROC-AUC/average precision, balanced accuracy, Brier/ECE, and the empirical prediction-set diagnostic. Do not claim baseline performance until this output exists.
 4. If the random baseline completes acceptably, run separate `drugcold`, `targetcold`, and `temporal` invocations. Compare results only with each cap and split integrity recorded.
@@ -57,5 +57,4 @@ A “90% prototype” means a runnable core path with passing tests, recorded ba
 - Latest successful CI: 17 passed, 2 skipped, 1 deselected.
 
 ## Where things are
-
-`README.md` → front door. `docs/STATUS.md` → present state. `docs/PROJECT_LOG.md` → history. `DECISIONS.md` → methodological choices. `docs/stages/` → teaching notes. `docs/weekly_reports/week07_embedding_pilot/` → course Week 7 evidence.
+`README.md` → front door. `docs/STATUS.md` → present state. `docs/PROJECT_LOG.md` → history. `DECISIONS.md` → methodological choices. `docs/stages/` → teaching notes. `reports/` → experimental outputs & weekly reports. `reports/week07_embedding_pilot/` → course Week 7 evidence.

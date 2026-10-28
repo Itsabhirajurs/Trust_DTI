@@ -27,7 +27,8 @@ Open the working folder `C:\Users\91701\code\Trust_DTI` (not the old OneDrive co
 | Project overview and research question | [`docs/PROJECT_GUIDE.md`](docs/PROJECT_GUIDE.md) |
 | Methodological decisions | [`DECISIONS.md`](DECISIONS.md) |
 | Stage teaching notes | [`docs/stages/`](docs/stages/README.md) |
-| Week 7 progress evidence | [`docs/weekly_reports/week07_embedding_pilot/`](docs/weekly_reports/week07_embedding_pilot/) |
+| Consolidated reports and experimental outputs | [`reports/`](reports/README.md) |
+| Week 7 report and infographic | [`reports/week07_embedding_pilot/`](reports/week07_embedding_pilot/) |
 | Week 8 sprint plan | [`docs/plans/week08_core_pipeline_sprint.md`](docs/plans/week08_core_pipeline_sprint.md) |
 | Baseline instructions | [`docs/stages/baseline_before_fusion.md`](docs/stages/baseline_before_fusion.md) |
 | Raw data sources and checksums | [`data/MANIFEST.md`](data/MANIFEST.md) |

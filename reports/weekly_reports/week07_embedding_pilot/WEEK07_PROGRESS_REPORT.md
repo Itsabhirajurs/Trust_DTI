@@ -67,7 +67,7 @@ The downloaded artifacts were validated on the local machine. The audit confirme
 - The validation JSON recorded all ten shape, alignment, and numerical checks as passing.
 - Existing project tests: **9 passed, 1 deselected**.
 
-The pilot NPZ arrays and CSV inputs were validated in the local working copy. They are listed in `TrustDTI_Week07_Pilot_Results/README.md`; their binary contents still need to be synchronized from that working copy to GitHub after the local branch is reconciled with this documentation commit.
+The pilot NPZ arrays and CSV inputs were validated in the local working copy. They are listed in `reports/week07_pilot/README.md`; their binary contents still need to be synchronized from that working copy to GitHub after the local branch is reconciled with this documentation commit.
 
 ## 7. Visual and reproducible artifacts
 
