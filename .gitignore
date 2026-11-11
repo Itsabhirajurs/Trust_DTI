@@ -23,3 +23,13 @@ data/processed/*
 # transient run logs
 reports/week2/*.log
 data/external/*
+
+# Week 10 local literature results contain retrieved abstracts and annotations.
+# Keep them on the research workstation; commit only a compact, redacted summary.
+outputs/week10/retrieval_records.jsonl
+outputs/week10/retrieval_failures.json
+outputs/week10/retrieval_annotation_sheet.csv
+outputs/week10/retrieval_policy_comparison.json
+outputs/week10/pubchem_title_cache.json
+outputs/week10/retrieval_strategy_manifest.csv
+outputs/week10/retrieval_strategy_key.csv

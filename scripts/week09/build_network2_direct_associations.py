@@ -471,6 +471,8 @@ def process_association_shards(
                 EXISTING_FIRST_SHARD / filename
             )
 
+            cached_temp_path = TEMP_DIR / filename
+
             if (
                 shard_number == 1
                 and existing_path.exists()
@@ -479,21 +481,23 @@ def process_association_shards(
                 local_path = existing_path
                 file_hash = sha256_file(local_path)
                 reused_existing = True
+                print(f"Reusing schema-check shard: {local_path}")
 
-                print(
-                    "Reusing existing first-shard download: "
-                    f"{local_path}"
-                )
+            elif (
+                cached_temp_path.exists()
+                and cached_temp_path.stat().st_size > 1_000_000
+            ):
+                local_path = cached_temp_path
+                file_hash = sha256_file(local_path)
+                reused_existing = True
+                print(f"Reusing previously downloaded shard: {local_path}")
 
             else:
-                local_path = TEMP_DIR / filename
-
                 local_path, file_hash = download_parquet(
                     session,
                     shard_url,
-                    local_path,
+                    cached_temp_path,
                 )
-
                 reused_existing = False
 
             file_size = local_path.stat().st_size
@@ -549,6 +553,12 @@ def process_association_shards(
                     .append(
                         pa.field(
                             "opentargets_release",
+                            pa.string(),
+                        )
+                    )
+                    .append(
+                        pa.field(
+                            "edge_provenance",
                             pa.string(),
                         )
                     )
@@ -683,6 +693,14 @@ def process_association_shards(
                     "opentargets_release",
                     pa.array(
                         [RELEASE] * source_rows.num_rows,
+                        type=pa.string(),
+                    ),
+                )
+
+                source_rows = source_rows.append_column(
+                    "edge_provenance",
+                    pa.array(
+                        ["curated"] * source_rows.num_rows,
                         type=pa.string(),
                     ),
                 )

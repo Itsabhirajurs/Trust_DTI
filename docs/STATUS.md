@@ -4,7 +4,7 @@
 
 ## One-line state
 
-**Stages 1–2 are built and validated; a small Stage 3 embedding pilot is complete; the classical DTI baseline has been run on all four predefined split types; Open Targets target mapping is prepared for Network 2; full Network 2 association extraction is the current local execution gate.** The deterministic router, literature evidence pipeline, matched-budget comparison and integrated demo are not yet complete.
+**Stages 1–2 are built and validated; a small Stage 3 embedding pilot and four classical baseline pilots are complete; Open Targets mapping is prepared.** The feature branch `work/90-percent-prototype` now contains implementation code for Network 2 overall-direct extraction, validation, the seven-policy router, Europe PMC retrieval, matched-budget strategy allocation, an annotation worksheet and an evaluator. These additions still require pull-request CI and local data-backed execution; they are not yet validated as a working end-to-end system.
 
 This status is about the engineering prototype. It is not a claim that the research question has been proven.
 
