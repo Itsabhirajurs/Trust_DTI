@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import csv
-import gc
 import hashlib
 import json
 import os
@@ -16,6 +15,8 @@ import pyarrow as pa
 import pyarrow.compute as pc
 import pyarrow.parquet as pq
 import requests
+
+from src.network.parquet_io import close_and_remove_shard
 
 
 # ============================================================
@@ -358,43 +359,6 @@ def load_target_bridge():
     )
 
     return bridge, target_mapping
-
-
-def close_and_remove_shard(
-    parquet_file: pq.ParquetFile,
-    local_path: Path,
-    should_remove: bool,
-) -> bool:
-    """
-    Explicitly release the Parquet reader before attempting Windows file cleanup.
-
-    Returns True when cleanup is complete (or deletion was not requested).
-    Returns False when Windows still prevents deletion; the file is retained
-    so a later run can reuse it instead of crashing.
-    """
-    try:
-        parquet_file.close(force=True)
-    except Exception as error:
-        print(f"WARNING: Could not force-close Parquet reader: {error}")
-        return False
-
-    gc.collect()
-
-    if not should_remove:
-        return True
-
-    if not local_path.exists():
-        return True
-
-    try:
-        local_path.unlink()
-        return True
-    except PermissionError as error:
-        print(
-            "WARNING: Windows still holds the temporary shard; "
-            f"retaining it for reuse. Details: {error}"
-        )
-        return False
 
 
 # ============================================================
@@ -847,7 +811,6 @@ def process_association_shards(
                 should_remove=not reused_existing,
             )
             del parquet_file
-            gc.collect()
 
             if not reused_existing and cleanup_completed:
                 print("Temporary shard removed.")
