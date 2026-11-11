@@ -87,6 +87,15 @@ def select_label_blind_predictions(predictions: pd.DataFrame) -> pd.DataFrame:
     ].rename(columns={"accession": "uniprot_accession"}).copy()
 
 
+def deduplicate_candidate_pairs(frame: pd.DataFrame) -> pd.DataFrame:
+    """Keep one candidate row per compound InChIKey and UniProt accession."""
+    required = {"pik", "uniprot_accession"}
+    missing = sorted(required - set(frame.columns))
+    if missing:
+        raise ValueError(f"Candidate rows missing deduplication keys: {missing}")
+    return frame.drop_duplicates(["pik", "uniprot_accession"]).copy()
+
+
 def parse_args():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--per-state", type=int, default=12)
@@ -196,7 +205,7 @@ def main():
         selected_parts.append(sample)
 
     selected = pd.concat(selected_parts, ignore_index=True) if selected_parts else merged.head(0)
-    selected = selected.drop_duplicates(["pik", "accession"])
+    selected = deduplicate_candidate_pairs(selected)
     if len(selected) > args.max_candidates:
         selected = selected.sample(n=args.max_candidates, random_state=args.seed)
 
