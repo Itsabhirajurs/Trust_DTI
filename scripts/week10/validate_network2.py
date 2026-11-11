@@ -35,6 +35,12 @@ def _score_summary(series: pd.Series) -> dict[str, Any]:
     }
 
 
+def _null_like_mask(series: pd.Series) -> pd.Series:
+    """Treat actual nulls and common serialized null sentinels as missing."""
+    normalized = series.astype("string").str.strip().str.casefold()
+    return series.isna() | normalized.isin({"", "none", "null", "<null>"})
+
+
 def _mapping_audit(frame: pd.DataFrame, bridge: pd.DataFrame) -> dict[str, Any]:
     expected = bridge.set_index("uniprot_accession")["ensembl_gene_id"].to_dict()
     mapped = frame["uniprot_accession"].astype(str).map(expected)
@@ -92,20 +98,14 @@ def validate_frames(
     source_type_counts = (
         source["aggregationType"].fillna("<NULL>").astype(str).value_counts().to_dict()
     )
-    source_missing_mask = (
-        source["aggregationValue"].isna()
-        | source["aggregationValue"].fillna("").astype(str).str.strip().eq("")
-    )
+    source_missing_mask = _null_like_mask(source["aggregationValue"])
     source_missing_source_id = int(source_missing_mask.sum())
     source_provenance_bad = int((source["edge_provenance"] != "curated").sum())
     overall_provenance_bad = int((overall["edge_provenance"] != "curated").sum())
     overall_type_counts = (
         overall["aggregationType"].fillna("<NULL>").astype(str).value_counts().to_dict()
     )
-    overall_value_nonempty_mask = (
-        overall["aggregationValue"].notna()
-        & overall["aggregationValue"].fillna("").astype(str).str.strip().ne("")
-    )
+    overall_value_nonempty_mask = ~_null_like_mask(overall["aggregationValue"])
     overall_value_nonnull = int(overall_value_nonempty_mask.sum())
 
     source_releases = set(source["opentargets_release"].dropna().astype(str))
@@ -176,7 +176,9 @@ def validate_frames(
             ),
             "datasource_counts": {
                 str(key): int(value)
-                for key, value in source["aggregationValue"].value_counts().to_dict().items()
+                for key, value in source.loc[
+                    ~source_missing_mask, "aggregationValue"
+                ].value_counts().to_dict().items()
             },
         },
         "overall_direct": {
