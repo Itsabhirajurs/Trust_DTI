@@ -1,3 +1,25 @@
+## 2026-11-11 · Full 14-shard Network 2 source-specific extraction completed locally
+**Where:** Windows workstation, `C:\\Users\\91701\\code\\Trust_DTI` · **Stage / project week:** Network 2 / Week 10
+
+**Done:**
+- Ran `python scripts/week09/build_network2_direct_associations.py` on branch `work/90-percent-prototype`.
+- All 14 of 14 Open Targets 26.09 `association_by_datasource_direct` shards processed. The script reused the first two cached shards and downloaded/processed/cleaned the remaining 12.
+- Wrote `data/processed/network2_direct_associations.parquet`, source counts, download manifest and extraction audit under `outputs/week09_network2/`.
+- Downloaded and inspected the separate Open Targets disease metadata file (45,896 rows; 18 columns).
+
+**Found (from the submitted terminal log):**
+- 7,522,466 input rows; 1,739,224 rows matched and retained at datasource level.
+- All 2,295 high-confidence bridge targets represented; 21,268 distinct disease IDs.
+- 1,739,224 unique target–disease–source keys; zero duplicate key rows.
+- Top sources: Europe PMC 752,854; IMPC 680,209; GWAS Credible Sets 165,102; Clinical Precedence 56,902; Cancer Gene Census 33,961.
+- Disease metadata fields include IDs, codes, names, descriptions, database cross-references, ontology relations, synonyms, therapeutic areas and ontology metadata.
+
+**Changed vs plan:** the complete extraction succeeded on the first full rerun after the explicit PyArrow close-before-cleanup change. The Windows file-lock blocker is resolved for this run.
+
+**Still open:** build the separate `association_overall_direct` table; join disease labels to those edges; run the joint Network 2 validator; then build the fixed candidate set and run the four retrieval arms. The source-specific extraction alone is not yet a fully validated combined Network 2.
+
+**For the owner to understand:** the same target–disease pair can appear once per supporting data source. Those records preserve provenance; they are not interchangeable scores and must not be averaged by hand.
+
 ## 2026-11-11 · 90% prototype implementation branch prepared
 **Where:** GitHub feature branch `work/90-percent-prototype` · **Stage / project week:** Network 2, routing and literature retrieval
 

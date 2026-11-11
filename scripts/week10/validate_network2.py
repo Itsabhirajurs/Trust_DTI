@@ -136,6 +136,7 @@ def validate_frames(
         "overall_score_within_0_1": overall_score["out_of_range_0_1"] == 0,
         "source_provenance_curated": source_provenance_bad == 0,
         "overall_provenance_curated": overall_provenance_bad == 0,
+        "disease_metadata_join_has_named_rows": disease_name_missing < len(overall),
     }
     warnings = []
     if disease_name_missing:
@@ -187,6 +188,10 @@ def validate_frames(
             "rows_with_nonempty_aggregation_value": overall_value_nonnull,
             "rows_with_non_curated_provenance": overall_provenance_bad,
             "rows_missing_disease_name": disease_name_missing,
+            "disease_name_coverage_fraction": (
+                float((len(overall) - disease_name_missing) / len(overall))
+                if len(overall) else 0.0
+            ),
             "association_score": overall_score,
             "unique_disease_ids": int(overall["diseaseId"].nunique()),
             "unique_target_disease_pairs": int(

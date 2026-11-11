@@ -65,3 +65,12 @@ def test_network2_validation_rejects_nonunique_bridge():
     bridge.loc[1, "uniprot_accession"] = "P1"
     with pytest.raises(ValueError, match="one row per UniProt"):
         validate_frames(source, overall, bridge)
+
+
+
+def test_network2_validation_requires_at_least_some_disease_metadata_join():
+    source, overall, bridge = example_frames()
+    overall.loc[0, "disease_name"] = None
+    result = validate_frames(source, overall, bridge)
+    assert not result["checks"]["disease_metadata_join_has_named_rows"]
+    assert not result["all_critical_checks_passed"]

@@ -4,7 +4,7 @@
 
 ## One-line state
 
-**Stages 1–2 are built and validated; a small Stage 3 embedding pilot and four classical baseline pilots are complete; Open Targets mapping is prepared.** The feature branch `work/90-percent-prototype` now contains implementation code for Network 2 overall-direct extraction, validation, the seven-policy router, Europe PMC retrieval, matched-budget strategy allocation, an annotation worksheet and an evaluator. These additions still require pull-request CI and local data-backed execution; they are not yet validated as a working end-to-end system.
+**Stages 1–2 and the classical baseline pilots are complete; the 2,295-target Open Targets bridge is validated; the full 14-shard direct-by-datasource Network 2 extraction has now completed locally.** The feature branch `work/90-percent-prototype` contains the separate overall-direct builder, joint validator, deterministic router, Europe PMC retrieval, four strategy arms, blinded annotation workflow and evaluator. Pull-request CI is green. Overall-direct extraction, joint Network 2 validation and the end-to-end retrieval experiment remain local execution gates.
 
 This status is about the engineering prototype. It is not a claim that the research question has been proven.
 
@@ -22,8 +22,9 @@ Network 1 contains 1,905,586 labelled drug–protein pairs (748,430 ACTIVE / 1,1
 - **Compound representation sensitivity:** Standard InChI round-trip was assessed on random and drug-cold pilot samples. The original branch reproduced the baseline; normalization produced small, inconsistent metric changes, so the original representation remains the reference.
 - **Network 2 identifier bridge:** 2,295 high-confidence unique UniProt-to-Ensembl/Open Targets target mappings prepared from 2,312 Network 1 accessions. 2,170 are one-to-one and 125 one-to-many cases were resolved using a unique direct UniProt cross-reference. Seventeen accessions remain in a review queue. The bridge includes 2,294 protein-coding rows and one IG_V_gene row (retained with an explicit biotype flag).
 - **Open Targets target validation:** release 26.09 target index contains 78,733 unique target IDs. 2,301 / 2,312 Network 1 accessions had at least one Open Targets target (99.52%).
-- **Association dataset reconnaissance:** the 26.09 `association_by_datasource_direct` directory lists 14 shards (~821.33 MB compressed); `disease` lists one file (~6.05 MB). The first association shard schema was inspected. A two-shard extraction test matched 248,834 datasource-level rows (114,855 + 133,979), then stopped on a Windows file lock during cleanup. No complete Network 2 association output is claimed yet.
-- **Windows cleanup fix:** Parquet reader cleanup was isolated in `src/network/parquet_io.py`; regression tests cover closing/deleting and closing/retaining reused files. GitHub Actions on commit `36d4161` passed **19 tests, 2 skipped, 1 deselected**. The full association build still needs a rerun on the Windows workstation.
+- **Full Network 2 source-specific extraction:** on 2026-11-11, all 14 `association_by_datasource_direct` shards completed. The run processed 7,522,466 source rows and retained 1,739,224 target-matched datasource-level records for all 2,295 bridge targets and 21,268 distinct diseases. All 1,739,224 target–disease–source keys were unique; zero duplicate-key rows were retained. Source distribution and download manifest were written under `outputs/week09_network2/`; the filtered table is `data/processed/network2_direct_associations.parquet`.
+- **Disease metadata inspection:** the Open Targets 26.09 disease table downloaded and inspected successfully: 45,896 records and 18 columns, including names, descriptions, ontology relationships and synonyms. Schema/sample JSON files were saved in `outputs/week09_network2/`.
+- **Windows cleanup fix:** the Parquet lifecycle helper is isolated in `src/network/parquet_io.py`; the complete 14-shard rerun confirms temporary shard cleanup worked for newly downloaded shards. GitHub Actions on the latest PR head `3a4c87f` passed the fast test suite.
 
 ## Baseline pilot metrics
 
@@ -40,14 +41,12 @@ All four runs used train/calibration/test sample caps of 5,000 / 1,000 / 2,000. 
 
 ## Current workstream and next actions
 
-1. Pull the latest `main` on the Windows workstation and rerun `python scripts/week09/build_network2_direct_associations.py`. Confirm all 14 shards finish and disease metadata schema is printed.
-2. Validate the filtered association Parquet: schema, row counts, target/disease coverage, source distribution, duplicate keys, nulls and score ranges. Keep source-specific scores separate.
-3. Confirm whether release 26.09 exposes `association_by_overall_direct`; use the official overall direct association score as the main anchor if present, while retaining source-level associations for provenance. Do not average source-specific scores ourselves.
-4. Join disease metadata; preserve `curated` provenance, Open Targets release, target identifiers and source identifiers. Keep the 17 unresolved protein mappings separate.
-5. Implement the deterministic uncertainty × disease-relevance router with unit tests for all seven policies. UNKNOWN evidence must never become CONTRADICT.
-6. Build a small literature retrieval prototype with stable record identifiers, source URL, retrieval timestamp, query, retrieval intent, publication metadata, text provenance and explicit empty/error handling.
-7. Prepare a small, reproducible candidate set and an annotation protocol before evaluating fixed, uncertainty-only, disease-only and combined retrieval under identical budgets.
-8. Integrate a reproducible CLI/demo path and document setup, outputs and limitations.
+1. Run `python scripts/week10/build_network2_overall_direct.py` to obtain the official Open Targets overall-direct disease score table and join the disease metadata.
+2. Run `python scripts/week10/validate_network2.py` to validate source-specific and overall-direct tables together: mapping, aggregation type, release, curated provenance, duplicate keys, disease labels and score ranges.
+3. Only if the validation audit passes, run the label-blind candidate builder and the small four-arm Europe PMC retrieval pilot.
+4. Create the blinded annotation worksheet, annotate candidate–publication pairs as SUPPORT / CONTRADICT / UNKNOWN, and then evaluate all four policies using the private strategy manifest/key.
+5. Review retrieval failures and annotation coverage. Do not claim an improvement or exhaustive counter-evidence recall from the pooled retrieved set.
+6. Integrate the reproducible demo path and document actual measured results and remaining limitations.
 
 ## Open decisions / limitations
 
@@ -56,12 +55,12 @@ All four runs used train/calibration/test sample caps of 5,000 / 1,000 / 2,000. 
 | Full ChemBERTa / ESM-2 embedding cache | Pending; GPU-scale run not completed |
 | Fusion model | Pending |
 | Formal probability calibration | Not complete; existing conformal-style outputs are diagnostics |
-| Full Network 2 association extraction | Pending local rerun after Windows cleanup fix |
-| Overall direct disease association score availability | Must verify for Open Targets 26.09 |
-| Disease anchor thresholds | Must define and document before evaluation |
-| Evidence direction annotation | Must be explicit; retrieved query intent is not a ground-truth label |
-| Literature retrieval and counter-evidence | Not implemented end-to-end yet |
-| Matched-budget comparison | Pending candidate set and adjudicated outcome labels |
+| Direct-by-datasource Network 2 extraction | Completed locally: 1,739,224 rows across all 14 shards; joint QA pending |
+| Overall-direct disease association table | Builder implemented; local extraction and join pending |
+| Disease anchor thresholds | Quantile rule implemented; cutoffs must be frozen from the extracted overall-direct score distribution |
+| Evidence direction annotation | Blinded sheet and evaluator implemented; human annotation pending |
+| Literature retrieval and counter-evidence | Europe PMC retrieval code implemented; live candidate run pending |
+| Matched-budget comparison | Four policies implemented; human adjudication and measured comparison pending |
 | Sealed retrospective cases | Remain untouched until the documented Week 9 evaluation gate is ready |
 
 ## Research safeguards
