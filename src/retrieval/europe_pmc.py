@@ -87,8 +87,17 @@ def normalise_article(
     if not journal:
         journal = (journal_info.get("journal") or {}).get("title")
 
-    record_id = f"{source}:{source_id}" if source_id else str(record.get("doi") or "")
-    if not record_id:
+    # Canonicalise across MED/PMC source records so one publication is
+    # deduplicated consistently even if Europe PMC exposes multiple records.
+    if pmid:
+        record_id = f"PMID:{pmid}"
+    elif record.get("doi"):
+        record_id = f"DOI:{str(record['doi']).strip().lower()}"
+    elif record.get("pmcid"):
+        record_id = f"PMCID:{str(record['pmcid']).strip().upper()}"
+    elif source_id:
+        record_id = f"{source}:{source_id}"
+    else:
         raise ValueError("Europe PMC record has no stable source identifier.")
 
     return {

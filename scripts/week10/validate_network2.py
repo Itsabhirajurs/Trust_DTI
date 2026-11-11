@@ -92,18 +92,30 @@ def validate_frames(
     source_type_counts = (
         source["aggregationType"].fillna("<NULL>").astype(str).value_counts().to_dict()
     )
-    source_missing_source_id = int(source["aggregationValue"].isna().sum())
+    source_missing_mask = (
+        source["aggregationValue"].isna()
+        | source["aggregationValue"].fillna("").astype(str).str.strip().eq("")
+    )
+    source_missing_source_id = int(source_missing_mask.sum())
     source_provenance_bad = int((source["edge_provenance"] != "curated").sum())
     overall_provenance_bad = int((overall["edge_provenance"] != "curated").sum())
     overall_type_counts = (
         overall["aggregationType"].fillna("<NULL>").astype(str).value_counts().to_dict()
     )
-    overall_value_nonnull = int(overall["aggregationValue"].notna().sum())
-
-    disease_name_missing = int(
-        overall["disease_name"].isna().sum()
-        + overall["disease_name"].astype(str).str.strip().eq("").sum()
+    overall_value_nonempty_mask = (
+        overall["aggregationValue"].notna()
+        & overall["aggregationValue"].fillna("").astype(str).str.strip().ne("")
     )
+    overall_value_nonnull = int(overall_value_nonempty_mask.sum())
+
+    source_releases = set(source["opentargets_release"].dropna().astype(str))
+    overall_releases = set(overall["opentargets_release"].dropna().astype(str))
+
+    disease_name_missing_mask = (
+        overall["disease_name"].isna()
+        | overall["disease_name"].fillna("").astype(str).str.strip().eq("")
+    )
+    disease_name_missing = int(disease_name_missing_mask.sum())
     source_score = _score_summary(source["associationScore"])
     overall_score = _score_summary(overall["associationScore"])
 
@@ -115,6 +127,8 @@ def validate_frames(
         "source_rows_are_datasource_level": set(source_type_counts).issubset({"datasourceId"}),
         "overall_rows_are_overall": set(overall_type_counts).issubset({"overall"}),
         "overall_aggregation_value_empty": overall_value_nonnull == 0,
+        "source_release_is_26_09": source_releases == {"26.09"},
+        "overall_release_is_26_09": overall_releases == {"26.09"},
         "source_id_present": source_missing_source_id == 0,
         "source_keys_unique": source_duplicates == 0,
         "overall_target_disease_keys_unique": overall_duplicates == 0,
@@ -199,8 +213,18 @@ def main() -> None:
             raise SystemExit(f"Required input is missing: {path}")
 
     bridge = pd.read_csv(args.bridge, dtype=str)
-    source = pd.read_parquet(args.source)
-    overall = pd.read_parquet(args.overall)
+    source_columns = [
+        "targetId", "diseaseId", "aggregationType", "aggregationValue",
+        "associationScore", "evidenceCount", "uniprot_accession",
+        "edge_provenance", "opentargets_release",
+    ]
+    overall_columns = [
+        "targetId", "diseaseId", "aggregationType", "aggregationValue",
+        "associationScore", "evidenceCount", "uniprot_accession",
+        "edge_provenance", "opentargets_release", "disease_name",
+    ]
+    source = pd.read_parquet(args.source, columns=source_columns)
+    overall = pd.read_parquet(args.overall, columns=overall_columns)
     result = validate_frames(source, overall, bridge)
 
     args.output.parent.mkdir(parents=True, exist_ok=True)

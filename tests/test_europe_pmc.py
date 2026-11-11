@@ -30,7 +30,7 @@ def test_article_normalisation_preserves_provenance_and_starts_unannotated():
         },
         query="TITLE_ABS:(example)",
     )
-    assert article["record_id"] == "MED:12345"
+    assert article["record_id"] == "PMID:12345"
     assert article["pmid"] == "12345"
     assert article["annotation_status"] == "UNANNOTATED"
     assert article["direction_label"] is None
