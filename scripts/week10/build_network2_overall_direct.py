@@ -122,6 +122,42 @@ def load_bridge() -> tuple[pd.DataFrame, dict[str, dict[str, str]]]:
     return bridge, target_map
 
 
+
+
+def as_optional_string(value) -> str | None:
+    """Convert scalar pandas/Arrow metadata to a nullable Python string."""
+    if value is None:
+        return None
+    try:
+        if pd.isna(value):
+            return None
+    except (TypeError, ValueError):
+        pass
+    return str(value)
+
+
+def as_string_list(value) -> list[str]:
+    """Convert pandas/Arrow list-like disease metadata to a Python string list."""
+    if value is None:
+        return []
+    if isinstance(value, str):
+        return [value] if value else []
+    try:
+        items = list(value)
+    except TypeError:
+        return []
+    result = []
+    for item in items:
+        if item is None:
+            continue
+        try:
+            if pd.isna(item):
+                continue
+        except (TypeError, ValueError):
+            pass
+        result.append(str(item))
+    return result
+
 def load_disease_metadata(session: requests.Session) -> tuple[pd.DataFrame, dict]:
     urls = list_parquet_urls(session, DISEASE_URL)
     if not urls:
@@ -304,11 +340,32 @@ def run() -> dict:
             ids = table["diseaseId"].to_pylist()
             rows = [disease_lookup.get(str(x), {}) if x is not None else {} for x in ids]
             disease_missing += sum(not row for row in rows)
-            table = table.append_column("disease_name", pa.array([row.get("name") for row in rows], type=pa.string()))
-            table = table.append_column("disease_description", pa.array([row.get("description") for row in rows], type=pa.string()))
-            table = table.append_column("disease_code", pa.array([row.get("code") for row in rows], type=pa.string()))
-            table = table.append_column("disease_exact_synonyms", pa.array([row.get("exactSynonyms") or [] for row in rows], type=pa.list_(pa.string())))
-            table = table.append_column("disease_therapeutic_areas", pa.array([row.get("therapeuticAreas") or [] for row in rows], type=pa.list_(pa.string())))
+            table = table.append_column(
+                "disease_name",
+                pa.array([as_optional_string(row.get("name")) for row in rows], type=pa.string()),
+            )
+            table = table.append_column(
+                "disease_description",
+                pa.array([as_optional_string(row.get("description")) for row in rows], type=pa.string()),
+            )
+            table = table.append_column(
+                "disease_code",
+                pa.array([as_optional_string(row.get("code")) for row in rows], type=pa.string()),
+            )
+            table = table.append_column(
+                "disease_exact_synonyms",
+                pa.array(
+                    [as_string_list(row.get("exactSynonyms")) for row in rows],
+                    type=pa.list_(pa.string()),
+                ),
+            )
+            table = table.append_column(
+                "disease_therapeutic_areas",
+                pa.array(
+                    [as_string_list(row.get("therapeuticAreas")) for row in rows],
+                    type=pa.list_(pa.string()),
+                ),
+            )
             if joined_writer is None:
                 joined_writer = pq.ParquetWriter(final_tmp, schema_with_disease, compression="zstd")
             joined_writer.write_table(table, row_group_size=50_000)

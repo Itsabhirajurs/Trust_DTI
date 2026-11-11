@@ -75,6 +75,18 @@ def add_drug_names(frame: pd.DataFrame) -> pd.DataFrame:
     return frame
 
 
+
+def select_label_blind_predictions(predictions: pd.DataFrame) -> pd.DataFrame:
+    """Keep model outputs only and rename the Network 1 UniProt join key."""
+    required = {"pik", "accession", "p_active", "conformal_set"}
+    missing = sorted(required - set(predictions.columns))
+    if missing:
+        raise ValueError(f"Baseline predictions missing {missing}")
+    return predictions[
+        ["pik", "accession", "p_active", "conformal_set"]
+    ].rename(columns={"accession": "uniprot_accession"}).copy()
+
+
 def parse_args():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--per-state", type=int, default=12)
@@ -104,11 +116,8 @@ def main():
         )
 
     predictions = pd.read_csv(PREDICTIONS, dtype={"pik": str, "accession": str})
-    required = {"pik", "accession", "p_active", "conformal_set"}
-    if not required.issubset(predictions.columns):
-        raise ValueError(f"Baseline predictions missing {sorted(required-set(predictions.columns))}")
-    # The observed label column is intentionally discarded before candidate selection.
-    predictions = predictions[list(required)].copy()
+    # Exclude observed labels and align the key to Network 2.
+    predictions = select_label_blind_predictions(predictions)
     predictions["p_active"] = pd.to_numeric(predictions["p_active"], errors="raise")
 
     bridge = pd.read_csv(BRIDGE, dtype=str)
@@ -119,7 +128,7 @@ def main():
     network_columns = [
         "uniprot_accession", "targetId", "diseaseId",
         "associationScore", "evidenceCount", "currentNovelty",
-        "disease_name",
+        "disease_name", "edge_provenance",
     ]
     network = pd.read_parquet(NETWORK2, columns=network_columns)
     must = {
@@ -195,7 +204,7 @@ def main():
     selected["candidate_id"] = [
         hashlib.sha256(
             (
-                f"{row.pik}|{row.accession}|"
+                f"{row.pik}|{row.uniprot_accession}|"
                 f"{'NO_DISEASE' if pd.isna(row.diseaseId) else row.diseaseId}"
             ).encode()
         ).hexdigest()[:16]
@@ -204,13 +213,12 @@ def main():
 
     output_cols = [
         "candidate_id", "pik", "drug_name", "drug_name_source",
-        "accession", "ensembl_gene_id", "approved_gene_symbol", "target_biotype",
+        "uniprot_accession", "ensembl_gene_id", "approved_gene_symbol", "target_biotype",
         "diseaseId", "disease_name", "associationScore", "evidenceCount",
         "currentNovelty", "anchor_tier", "p_active", "conformal_set",
         "conformal_state",
     ]
     selected = selected[output_cols].rename(columns={
-        "accession": "uniprot_accession",
         "ensembl_gene_id": "target_id",
         "approved_gene_symbol": "gene_symbol",
         "diseaseId": "disease_id",
