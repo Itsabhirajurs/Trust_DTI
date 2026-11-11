@@ -1,0 +1,162 @@
+{
+  "endpoint_buckets": {
+    "qHTS": 2902536,
+    "affinity_dose_response": 2768225,
+    "kinetics": 1371846,
+    "percent_or_single_point": 1022518,
+    "other": 234061
+  },
+  "pchembl_dr_exact": {
+    "n": 1896899,
+    "all": {
+      "5": 4.58,
+      "10": 5.041,
+      "25": 5.842,
+      "50": 6.854,
+      "75": 7.824,
+      "90": 8.63,
+      "95": 9.076
+    },
+    "excl_pubchem": {
+      "5": 4.6,
+      "10": 5.071,
+      "25": 5.903,
+      "50": 6.909,
+      "75": 7.854,
+      "90": 8.658,
+      "95": 9.097
+    }
+  },
+  "threshold_grid": [
+    {
+      "active_cut": 6.0,
+      "inactive_cut": 5.0,
+      "ACTIVE": 937896,
+      "INACTIVE": 1163256,
+      "GRAY": 269128,
+      "UNTESTED": 2694602,
+      "active_per_inactive": 0.806
+    },
+    {
+      "active_cut": 6.0,
+      "inactive_cut": 5.5,
+      "ACTIVE": 937896,
+      "INACTIVE": 1292540,
+      "GRAY": 139844,
+      "UNTESTED": 2694602,
+      "active_per_inactive": 0.726
+    },
+    {
+      "active_cut": 6.5,
+      "inactive_cut": 5.0,
+      "ACTIVE": 754401,
+      "INACTIVE": 1163256,
+      "GRAY": 452623,
+      "UNTESTED": 2694602,
+      "active_per_inactive": 0.649
+    },
+    {
+      "active_cut": 6.5,
+      "inactive_cut": 5.5,
+      "ACTIVE": 754401,
+      "INACTIVE": 1292540,
+      "GRAY": 323339,
+      "UNTESTED": 2694602,
+      "active_per_inactive": 0.584
+    },
+    {
+      "active_cut": 7.0,
+      "inactive_cut": 5.0,
+      "ACTIVE": 588245,
+      "INACTIVE": 1163256,
+      "GRAY": 618779,
+      "UNTESTED": 2694602,
+      "active_per_inactive": 0.506
+    },
+    {
+      "active_cut": 7.0,
+      "inactive_cut": 5.5,
+      "ACTIVE": 588245,
+      "INACTIVE": 1292540,
+      "GRAY": 489495,
+      "UNTESTED": 2694602,
+      "active_per_inactive": 0.455
+    }
+  ],
+  "inactive_sources": {
+    "total_inactive_pairs": 1163256,
+    "from_exact_weak_measure": 140559,
+    "from_censored_only": 273166,
+    "from_comment_only": 762122,
+    "from_qhts_only": 79870
+  },
+  "min_data_per_protein": [
+    {
+      "min_labeled_pairs": 5,
+      "proteins": 2560,
+      "proteins_with_both_classes": 2119,
+      "labeled_pairs_retained": 1914589
+    },
+    {
+      "min_labeled_pairs": 10,
+      "proteins": 2313,
+      "proteins_with_both_classes": 2008,
+      "labeled_pairs_retained": 1912923
+    },
+    {
+      "min_labeled_pairs": 20,
+      "proteins": 2054,
+      "proteins_with_both_classes": 1858,
+      "labeled_pairs_retained": 1909251
+    },
+    {
+      "min_labeled_pairs": 50,
+      "proteins": 1659,
+      "proteins_with_both_classes": 1576,
+      "labeled_pairs_retained": 1896434
+    },
+    {
+      "min_labeled_pairs": 100,
+      "proteins": 1409,
+      "proteins_with_both_classes": 1358,
+      "labeled_pairs_retained": 1878879
+    }
+  ],
+  "temporal": {
+    "labeled_pairs_with_year": 1256728,
+    "labeled_pairs_without_year": 660929,
+    "cutoffs": [
+      {
+        "cutoff_year": 2018,
+        "train_pairs_pre": 726260,
+        "test_pairs_post": 530468,
+        "pct_test": 42.2
+      },
+      {
+        "cutoff_year": 2019,
+        "train_pairs_pre": 794438,
+        "test_pairs_post": 462290,
+        "pct_test": 36.8
+      },
+      {
+        "cutoff_year": 2020,
+        "train_pairs_pre": 860525,
+        "test_pairs_post": 396203,
+        "pct_test": 31.5
+      },
+      {
+        "cutoff_year": 2021,
+        "train_pairs_pre": 924337,
+        "test_pairs_post": 332391,
+        "pct_test": 26.4
+      }
+    ]
+  },
+  "recommended_scheme": {
+    "active_cut": 6.5,
+    "inactive_cut": 5.0,
+    "ACTIVE": 754401,
+    "INACTIVE": 1163256,
+    "active_per_inactive": 0.649
+  }
+}

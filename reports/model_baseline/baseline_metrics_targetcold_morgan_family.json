@@ -1,0 +1,106 @@
+{
+  "project": "TrustDTI",
+  "baseline": "Morgan fingerprints + protein-family one-hot + logistic regression",
+  "split": "targetcold",
+  "split_column": "split_targetcold",
+  "seed": 42,
+  "network1_manifest_rows": 1905586,
+  "available_partition_rows": {
+    "train": 1297587,
+    "calib": 250019,
+    "test": 357980
+  },
+  "sampled_partition_label_counts": {
+    "train": {
+      "INACTIVE": 3066,
+      "ACTIVE": 1934
+    },
+    "calib": {
+      "ACTIVE": 513,
+      "INACTIVE": 487
+    },
+    "test": {
+      "INACTIVE": 1338,
+      "ACTIVE": 662
+    }
+  },
+  "sample_caps": {
+    "train": 5000,
+    "calib": 1000,
+    "test": 2000
+  },
+  "actual_partition_rows": {
+    "train": 5000,
+    "calib": 1000,
+    "test": 2000
+  },
+  "split_integrity_checks": {
+    "train_nonempty": true,
+    "calib_nonempty": true,
+    "test_nonempty": true,
+    "unique_compound_protein_pairs": true,
+    "all_pairs_have_protein_accession": true,
+    "train_calib_target_disjoint": true,
+    "train_test_target_disjoint": true,
+    "calib_test_target_disjoint": true
+  },
+  "split_integrity_passed": true,
+  "features": {
+    "compound": "RDKit Morgan binary fingerprint, radius=2, bits=2048",
+    "protein": "family_l1 one-hot; no protein sequence or identity embedding",
+    "total_sparse_dimension": 2061
+  },
+  "model": {
+    "estimator": "sklearn LogisticRegression",
+    "solver": "liblinear",
+    "class_weight": "balanced",
+    "max_iter": 200,
+    "classification_threshold": 0.5
+  },
+  "test_metrics": {
+    "accuracy": 0.7535,
+    "balanced_accuracy": 0.723042237365595,
+    "precision_active": 0.6263079222720478,
+    "recall_active": 0.6329305135951662,
+    "f1_active": 0.6296018031555222,
+    "roc_auc": 0.8008622013285825,
+    "average_precision": 0.6484444033430306,
+    "brier_score": 0.18430604658294902,
+    "expected_calibration_error_15_bins": 0.11633480906619684,
+    "confusion_matrix_labels_inactive_active": [
+      [
+        1088,
+        250
+      ],
+      [
+        243,
+        419
+      ]
+    ]
+  },
+  "conformal_diagnostic": {
+    "alpha": 0.1,
+    "calibration_nonconformity_quantile": 0.9223575329226038,
+    "empirical_test_coverage": 0.9315,
+    "mean_prediction_set_size": 1.5145,
+    "empty_set_count": 0,
+    "singleton_set_count": 971,
+    "two_label_set_count": 1029,
+    "interpretation": "Empirical split-conformal-style diagnostic. Formal coverage relies on exchangeability; pair dependence and distribution shift in group/temporal splits may violate assumptions. No coverage guarantee is claimed here."
+  },
+  "timing_seconds": {
+    "feature_building": 4.483,
+    "model_fit": 0.169
+  },
+  "output_paths": {
+    "metrics": "C:\\Users\\91701\\code\\Trust_DTI\\reports\\model_baseline\\baseline_metrics_targetcold_morgan_family.json",
+    "predictions": "C:\\Users\\91701\\code\\Trust_DTI\\reports\\model_baseline\\baseline_predictions_targetcold_morgan_family.csv",
+    "model_artifact_gitignored": "C:\\Users\\91701\\code\\Trust_DTI\\data\\processed\\dti_baseline_targetcold_morgan_family.joblib"
+  },
+  "limitations": [
+    "This is a classical baseline, not the pretrained embedding fusion model.",
+    "Metrics describe stratified row-capped samples unless the caps include each full partition.",
+    "Family-only target features limit target-specific biological information.",
+    "The prediction-set coverage is empirical and not a formal guarantee under unverified exchangeability."
+  ]
+}

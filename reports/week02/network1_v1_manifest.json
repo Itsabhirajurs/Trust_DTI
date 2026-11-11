@@ -1,0 +1,61 @@
+{
+  "rows": 1905586,
+  "dropped_below_min_protein_pairs": 4737,
+  "label_counts": {
+    "INACTIVE": 1157156,
+    "ACTIVE": 748430
+  },
+  "distinct_compounds": 1006840,
+  "distinct_proteins": 2312,
+  "distinct_scaffold_groups": 333583,
+  "high_disagreement_pairs": 18078,
+  "params": {
+    "active_cut": 6.5,
+    "inactive_cut": 5.0,
+    "min_pairs_per_protein": 10,
+    "temporal_cutoff": 2020,
+    "seed": 42,
+    "test_frac": 0.15,
+    "calib_frac": 0.15
+  },
+  "split_distributions": {
+    "split_random": {
+      "train": 1333912,
+      "test": 285837,
+      "calib": 285837
+    },
+    "split_drugcold": {
+      "train": 1327915,
+      "calib": 303654,
+      "test": 274017
+    },
+    "split_targetcold": {
+      "train": 1297587,
+      "test": 357980,
+      "calib": 250019
+    },
+    "split_temporal": {
+      "train": 724919,
+      "<NA>": 659861,
+      "test": 392879,
+      "calib": 127927
+    }
+  },
+  "leakage_check": {
+    "drugcold_by_scaffold": {
+      "train_test_overlap": 0,
+      "calib_test_overlap": 0,
+      "train_calib_overlap": 0
+    },
+    "targetcold_by_accession": {
+      "train_test_overlap": 0,
+      "calib_test_overlap": 0,
+      "train_calib_overlap": 0
+    },
+    "temporal_calib_vs_test_by_year": {
+      "calib_max_year": 2019,
+      "test_min_year": 2020
+    }
+  },
+  "leakage_check_passed": true
+}

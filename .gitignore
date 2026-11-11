@@ -22,3 +22,4 @@ data/processed/*
 
 # transient run logs
 reports/week2/*.log
+data/external/*

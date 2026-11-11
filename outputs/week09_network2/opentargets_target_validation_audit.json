@@ -1,0 +1,34 @@
+{
+  "project": "TrustDTI",
+  "task": "Open Targets target-index validation",
+  "release": "26.09",
+  "source_url": "https://ftp.ebi.ac.uk/pub/databases/opentargets/platform/26.09/output/target/",
+  "retrieved_at_utc": "2026-11-07T19:05:20.308589+00:00",
+  "downloaded_parquet_shards": 3,
+  "target_index_rows": 78733,
+  "target_index_unique_ids": 78733,
+  "input_uniprot_accessions": 2312,
+  "accessions_with_ensembl_mapping": 2303,
+  "accessions_with_at_least_one_opentargets_target": 2301,
+  "accessions_without_any_opentargets_target": 11,
+  "accessions_with_direct_uniprot_xref": 2301,
+  "protein_ids_cross_reference_available": true,
+  "mapping_candidates_total": 2542,
+  "candidate_targets_found": 2336,
+  "candidate_targets_not_found": 206,
+  "protein_coding_candidate_records": 2335,
+  "ambiguous_accessions_preserved": 132,
+  "target_validation_status_distribution": {
+    "ONE_TO_ONE_TARGET_XREF_CONFIRMED": 2170,
+    "ONE_TO_MANY_REVIEW_REQUIRED_XREF_AVAILABLE": 131,
+    "NO_ENSEMBL_MAPPING": 9,
+    "NO_OPENTARGETS_TARGET": 2
+  },
+  "opentargets_target_found_percentage": 99.5242,
+  "outputs": {
+    "target_index": "C:\\Users\\91701\\code\\Trust_DTI\\outputs\\week09_network2\\opentargets_target_index.csv",
+    "target_bridge": "C:\\Users\\91701\\code\\Trust_DTI\\outputs\\week09_network2\\uniprot_opentargets_target_bridge.csv",
+    "accession_summary": "C:\\Users\\91701\\code\\Trust_DTI\\outputs\\week09_network2\\uniprot_opentargets_accession_summary.csv",
+    "validation_issues": "C:\\Users\\91701\\code\\Trust_DTI\\outputs\\week09_network2\\opentargets_target_validation_issues.csv"
+  }
+}

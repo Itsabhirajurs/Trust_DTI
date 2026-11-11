@@ -1,0 +1,43 @@
+{
+  "project": "TrustDTI",
+  "task": "UniProt to Ensembl mapping",
+  "retrieved_at_utc": "2026-11-07T18:43:51.385264+00:00",
+  "api": "https://rest.uniprot.org",
+  "source_database": "UniProtKB_AC-ID",
+  "target_database": "Ensembl",
+  "job_id": "49GfcdqYkg",
+  "job_history": [
+    {
+      "attempt": 1,
+      "job_id": "49GfcdqYkg",
+      "submitted_at_utc": "2026-11-07T18:43:46.814826+00:00",
+      "status": "COMPLETED",
+      "completed_at_utc": "2026-11-07T18:43:50.672717+00:00"
+    }
+  ],
+  "input_network1_accessions": 2312,
+  "raw_mapping_rows": 2542,
+  "unique_raw_mapping_pairs": 2542,
+  "ensembl_gene_mapping_rows": 2542,
+  "unique_uniprot_gene_pairs": 2542,
+  "accessions_with_gene_mapping": 2303,
+  "accessions_without_gene_mapping": 9,
+  "one_to_one_accessions": 2171,
+  "one_to_many_accessions": 132,
+  "unmapped_accessions": 9,
+  "distinct_ensembl_gene_ids": 2542,
+  "mapping_coverage_percentage": 99.6107,
+  "mapping_status_distribution": {
+    "ONE_TO_ONE": 2171,
+    "ONE_TO_MANY": 132,
+    "NO_MAPPING": 9
+  },
+  "outputs": {
+    "raw_mapping": "C:\\Users\\91701\\code\\Trust_DTI\\outputs\\week09_network2\\uniprot_ensembl_raw.tsv",
+    "gene_candidates": "C:\\Users\\91701\\code\\Trust_DTI\\outputs\\week09_network2\\uniprot_ensembl_gene_candidates.csv",
+    "accession_coverage": "C:\\Users\\91701\\code\\Trust_DTI\\outputs\\week09_network2\\uniprot_ensembl_accession_coverage.csv",
+    "unmapped_accessions": "C:\\Users\\91701\\code\\Trust_DTI\\outputs\\week09_network2\\unmapped_uniprot_accessions.csv",
+    "multi_mapped_accessions": "C:\\Users\\91701\\code\\Trust_DTI\\outputs\\week09_network2\\multi_mapped_uniprot_accessions.csv",
+    "job_history": "C:\\Users\\91701\\code\\Trust_DTI\\outputs\\week09_network2\\uniprot_mapping_job_history.json"
+  }
+}

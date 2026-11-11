@@ -1,0 +1,6 @@
+min_labeled_pairs,proteins,proteins_with_both_classes,labeled_pairs_retained
+5,2560,2119,1914589
+10,2313,2008,1912923
+20,2054,1858,1909251
+50,1659,1576,1896434
+100,1409,1358,1878879
