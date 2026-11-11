@@ -8,8 +8,9 @@ TrustDTI is an uncertainty-aware drug–protein interaction research prototype. 
 - **Embedding pilot:** ChemBERTa 100 × 384 and ESM-2 20 × 320 sample outputs passed integrity checks. Full embeddings remain pending.
 - **Classical baseline:** Morgan fingerprints + protein-family one-hot logistic regression evaluated on random, drug-cold, target-cold and temporal pilot samples. See [baseline metrics](reports/model_baseline/). ROC-AUC: 0.8103 / 0.7785 / 0.8009 / 0.6117 respectively. Each run used 5k/1k/2k train/calibration/test caps; see JSON files for full details and caveats.
 - **Network 2 target bridge:** 2,295 high-confidence UniProt–Ensembl/Open Targets mappings; 17 accessions remain in the review queue. Open Targets 26.09 target-index coverage is 2,301/2,312 (99.52%).
-- **Network 2 associations:** direct association data inspected; a two-shard extraction test matched 248,834 rows. The complete 14-shard build is pending a local Windows rerun after fixing a Parquet file-handle cleanup issue.
-- **Still pending:** disease association table validation, deterministic router, literature retrieval with provenance, matched-budget policy comparison and integrated demo.
+- **Network 2 associations:** direct-by-datasource extraction was tested on two shards (248,834 matched records) but the complete 14-shard output still needs a local rerun. A separate Open Targets overall-direct score dataset is identified for the disease anchor; neither full association table has yet passed the combined local validation gate.
+- **Prototype implementation branch:** `work/90-percent-prototype` adds the overall-direct builder, Network 2 validator, deterministic seven-policy uncertainty × disease router, Europe PMC retrieval with provenance, four matched-budget retrieval strategies, a human annotation worksheet and an evaluator. Pull-request CI and local data-backed execution are still required.
+- **Still pending:** full Network 2 extraction/join validation, end-to-end retrieval run, human evidence annotation, policy comparison and integrated demo results.
 
 **Do not interpret row-capped pilot metrics as full-partition estimates or empirical prediction-set coverage as a formal guarantee.** The project’s scientific research question has not yet been answered.
 
@@ -20,7 +21,9 @@ Read [`docs/STATUS.md`](docs/STATUS.md) for the current ordered work plan.
 Working folder: `C:\Users\91701\code\Trust_DTI` (not the old OneDrive copy).
 
 ```bash
-git pull origin main
+git fetch origin
+git checkout work/90-percent-prototype
+git pull origin work/90-percent-prototype
 .venv/Scripts/activate
 python -m pytest -q
 ```

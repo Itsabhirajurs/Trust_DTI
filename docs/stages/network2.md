@@ -61,6 +61,14 @@ Keep the raw/source-specific association table at one row per source-specific ta
 
 If release 26.09 exposes `association_by_overall_direct`, retain its score in a separate per-target–disease table as the candidate anchor score. Do not manufacture an “overall” score by averaging datasource scores.
 
+## Overall-direct score anchor
+
+Open Targets 26.09 also publishes a separate `association_overall_direct` dataset. It contains one overall score for each direct target–disease pair, with `aggregationType=overall` and an empty `aggregationValue`. This is the correct anchor-score product for Network 2; it is not created by averaging the datasource-specific rows.
+
+Open Targets describes the overall score as a harmonic sum of source-level association scores weighted by its datasource weights. It is between 0 and 1 and supports ranking, but the documentation explicitly cautions that it is a heuristic based on evidence availability—not a confidence score or causal proof. Under-studied diseases may have low scores despite potentially interesting targets. Use it only as a routing-priority signal and keep the source-specific dataset as separate provenance.
+
+The feature-branch builder is `scripts/week10/build_network2_overall_direct.py`; the joint quality gate is `scripts/week10/validate_network2.py`. Candidate generation must not proceed until both datasets pass the validation audit.
+
 ## What the score does and does not mean
 
 An association score is an evidence-ranking/association score. It helps rank target–disease relationships within the Open Targets framework. It is not a calibrated probability that the gene causes the disease and not proof of a causal mechanism. Scores also depend on source coverage and evidence availability; a low score may reflect under-studied biology.

@@ -1,3 +1,19 @@
+## 2026-11-11 · 90% prototype implementation branch prepared
+**Where:** GitHub feature branch `work/90-percent-prototype` · **Stage / project week:** Network 2, routing and literature retrieval
+
+**Implemented on the feature branch (pending CI and local data execution):**
+- A separate Open Targets 26.09 `association_overall_direct` builder, kept distinct from `association_by_datasource_direct`; disease labels are joined from the disease metadata dataset.
+- Network 2 validation for UniProt↔Ensembl consistency, direct/source aggregation type, overall aggregation type, provenance, duplicate target–disease keys, disease-name coverage and score ranges.
+- A deterministic seven-policy router. The uncertainty-only arm does not allocate disease-context queries; the disease-only arm does not depend on the conformal state.
+- Europe PMC search client and retrieval runner with stable publication identifiers, query and timestamp provenance, API retries and explicit per-query failures. Every result begins UNANNOTATED.
+- Four matched per-candidate retrieval policies: fixed, uncertainty-only, disease-only and combined.
+- Human annotation worksheet and evaluator that retain UNKNOWN separately and clearly label the pooled counter-evidence recall denominator as within the retrieved candidate pool, not exhaustive literature recall.
+- Unit tests for router policies, strategy isolation, article provenance, query failures, evaluator safeguards and Network 2 table validation.
+
+**Research safeguards:** no LLM controls routing or assigns evidence direction; source-specific scores are not averaged into the official overall score; DTI observed labels are excluded from candidate selection; generated abstracts and annotations are ignored by Git.
+
+**Pending gates:** pull-request CI, full local 14-shard datasource extraction, overall-direct extraction and disease join, joint Network 2 validation, small live Europe PMC run, human annotations and actual matched-policy metrics. This entry records code added, not validated end-to-end results.
+
 ## 2026-11-11 · Week 9 Network 2 mapping, baseline reconciliation and Parquet cleanup repair
 **Where:** GitHub repository + GitHub Actions; local Windows extraction is the next owner action · **Stage / project week:** baseline evaluation and Network 2 build
 **Done:**

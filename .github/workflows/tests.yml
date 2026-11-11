@@ -5,6 +5,9 @@ on:
     branches: [main]
     paths:
       - "src/model/**"
+      - "src/network/**"
+      - "src/retrieval/**"
+      - "scripts/week10/**"
       - "tests/**"
       - "requirements.in"
       - "requirements.txt"
