@@ -1,3 +1,23 @@
+## 2026-11-11 · Week 9 Network 2 mapping, baseline reconciliation and Parquet cleanup repair
+**Where:** GitHub repository + GitHub Actions; local Windows extraction is the next owner action · **Stage / project week:** baseline evaluation and Network 2 build
+**Done:**
+- Reconciled the current repository with committed baseline JSON files. Four resource-capped split runs are present (random, drug-cold, target-cold, temporal), correcting the stale README/STATUS statements that baseline metrics were pending.
+- Reviewed Week 9 Open Targets 26.09 work: 2,295 high-confidence UniProt-to-Ensembl/Open Targets target bridge rows from 2,312 Network 1 proteins; 17 unresolved accessions remain in a review queue.
+- Reviewed the direct-association extraction failure: 248,834 target-matched datasource-level rows were processed from the first two shards, but a Windows file lock prevented temporary-shard deletion and the full output was not published.
+- Added `src/network/parquet_io.py` to close a PyArrow Parquet reader before optional deletion, updated the extraction script to use it, and added two file-lifecycle regression tests.
+- GitHub Actions on commit `36d4161` passed **19 passed, 2 skipped, 1 deselected**.
+- Updated current status, project entry-point documentation and the Network 2 teaching note.
+**Found:**
+- Baseline ROC-AUC (row caps: 5k train / 1k calibration / 2k test): random 0.8103; drug-cold 0.7785; target-cold 0.8009; temporal 0.6117. The temporal gap and ECE deterioration are material limitations.
+- Target mapping coverage: 2,301/2,312 (99.52%) have at least one Open Targets target; 2,295 have a unique supported bridge. The IG_V_gene record is flagged, not hidden.
+**Changed vs plan:** the cleanup helper was split into its own module after CI showed that importing the downloader also required `requests`, which is not part of the fast CI dependency set. The test now verifies only the file lifecycle behavior.
+**Decisions:** no new biological scoring/threshold decision yet. Overall-direct association availability and disease anchor thresholds remain to be checked.
+**Commits:** `b7f1b91` initial cleanup helper/tests; `36d4161` isolated helper/test correction; both pushed to `main`.
+**Open / next:** pull latest main on Windows, rerun all 14 association shards and inspect disease schema; then validate network, router, evidence retrieval, matched-budget comparison and demo.
+**For the owner to understand:** an identifier bridge says which external target belongs to one of our proteins. It is not yet the disease network. The disease-association data must be filtered and validated separately, and a source-specific score must stay attached to its source.
+
+---
+
 ## 2026-10-28 · Repository reorganization and reports consolidation
 **Where:** Antigravity IDE (desktop) · **Stage / project week:** Repository hygiene & structure consolidation
 **Done:**
