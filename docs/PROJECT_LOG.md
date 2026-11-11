@@ -1,3 +1,28 @@
+## 2026-11-12 · Overall-direct Network 2 extraction completed; null-sentinel validation fix added
+**Where:** Windows workstation + GitHub feature branch · **Stage / project week:** Network 2 / Week 10
+
+**Done:**
+- Ran `python scripts/week10/build_network2_overall_direct.py` against Open Targets 26.09. All 14 `association_overall_direct` Parquet shards completed.
+- Built `data/processed/network2_overall_direct.parquet` and `outputs/week10/network2_overall_direct_audit.json`; disease metadata was joined from the Open Targets disease table.
+- Ran `python scripts/week10/validate_network2.py` against the source-specific and overall-direct tables.
+- Added a builder normalization for null-like aggregation values, validator support for serialized null sentinels, and regression tests for `None`, ` null `, blank and `<NULL>` values.
+
+**Found (from the submitted terminal output):**
+- 7,225,847 overall-direct input rows; 1,633,220 rows matched the 2,295-target bridge and were written.
+- All 2,295 mapped targets and 21,268 disease IDs were represented; disease metadata unmatched rows: 0.
+- The joint validation audit reported zero duplicate target–disease keys, zero mapping mismatches, zero missing disease names and all association scores within [0, 1].
+- The only failed check was `overall_aggregation_value_empty`: every row contained the literal string `None`, not an actual association aggregation value. The small inspection script confirmed this representation across the table.
+
+**Changed vs plan:** the first joint validation run did not pass because the extractor/validator had not accounted for this stringified null sentinel. The code now normalizes null-like values on rebuild and treats them as missing in validation; local rerun and pull-request CI remain pending.
+
+**Decisions:** no change to the biological network or association-score interpretation. The overall-direct score remains a prioritisation score, not a probability or causal proof.
+
+**Open / next:** re-run `python scripts/week10/validate_network2.py`; confirm all checks pass; then build the label-blind candidate set and run the small Europe PMC retrieval pilot.
+
+**For the owner to understand:** `aggregationType=overall` identifies the aggregated direct-association record. Its `aggregationValue` is absent; the string `None` is just how the upstream data serialized that absence. It must not be treated as another datasource or a biological value.
+
+---
+
 ## 2026-11-11 · Full 14-shard Network 2 source-specific extraction completed locally
 **Where:** Windows workstation, `C:\\Users\\91701\\code\\Trust_DTI` · **Stage / project week:** Network 2 / Week 10
 
