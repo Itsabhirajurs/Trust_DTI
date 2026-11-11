@@ -74,3 +74,15 @@ def test_network2_validation_requires_at_least_some_disease_metadata_join():
     result = validate_frames(source, overall, bridge)
     assert not result["checks"]["disease_metadata_join_has_named_rows"]
     assert not result["all_critical_checks_passed"]
+
+
+@pytest.mark.parametrize("sentinel", ["None", " null ", "", "<NULL>"])
+def test_overall_validation_accepts_null_like_aggregation_value_sentinels(sentinel):
+    source, overall, bridge = example_frames()
+    overall.loc[0, "aggregationValue"] = sentinel
+
+    result = validate_frames(source, overall, bridge)
+
+    assert result["checks"]["overall_aggregation_value_empty"]
+    assert result["overall_direct"]["rows_with_nonempty_aggregation_value"] == 0
+    assert result["all_critical_checks_passed"]
