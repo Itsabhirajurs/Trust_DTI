@@ -1,10 +1,10 @@
 # STATUS: where we are right now
 
-*Last updated: 2026-11-11. History goes in `PROJECT_LOG.md`.*
+*Last updated: 2026-11-12. History goes in `PROJECT_LOG.md`.*
 
 ## One-line state
 
-**Stages 1–2 and the classical baseline pilots are complete; the 2,295-target Open Targets bridge is validated; the full 14-shard direct-by-datasource Network 2 extraction has now completed locally.** The feature branch `work/90-percent-prototype` contains the separate overall-direct builder, joint validator, deterministic router, Europe PMC retrieval, four strategy arms, blinded annotation workflow and evaluator. Pull-request CI is green. Overall-direct extraction, joint Network 2 validation and the end-to-end retrieval experiment remain local execution gates.
+**Stages 1–2 and the classical baseline pilots are complete; the 2,295-target Open Targets bridge is validated; both direct Network 2 tables have now been extracted locally across all 14 shards.** The first joint validation run passed every check except the overall `aggregationValue` null check, because this release serializes its absent value as the literal string `None`. A validator/extractor normalization and regression-test fix is committed on the follow-up branch; local revalidation and PR CI are pending. Literature retrieval, human annotation and the matched-budget experiment remain outstanding.
 
 This status is about the engineering prototype. It is not a claim that the research question has been proven.
 
@@ -23,6 +23,8 @@ Network 1 contains 1,905,586 labelled drug–protein pairs (748,430 ACTIVE / 1,1
 - **Network 2 identifier bridge:** 2,295 high-confidence unique UniProt-to-Ensembl/Open Targets target mappings prepared from 2,312 Network 1 accessions. 2,170 are one-to-one and 125 one-to-many cases were resolved using a unique direct UniProt cross-reference. Seventeen accessions remain in a review queue. The bridge includes 2,294 protein-coding rows and one IG_V_gene row (retained with an explicit biotype flag).
 - **Open Targets target validation:** release 26.09 target index contains 78,733 unique target IDs. 2,301 / 2,312 Network 1 accessions had at least one Open Targets target (99.52%).
 - **Full Network 2 source-specific extraction:** on 2026-11-11, all 14 `association_by_datasource_direct` shards completed. The run processed 7,522,466 source rows and retained 1,739,224 target-matched datasource-level records for all 2,295 bridge targets and 21,268 distinct diseases. All 1,739,224 target–disease–source keys were unique; zero duplicate-key rows were retained. Source distribution and download manifest were written under `outputs/week09_network2/`; the filtered table is `data/processed/network2_direct_associations.parquet`.
+- **Overall-direct Network 2 extraction:** on 2026-11-11, all 14 `association_overall_direct` shards completed. The run processed 7,225,847 input rows and retained 1,633,220 rows for all 2,295 bridge targets and 21,268 disease IDs. The disease metadata join reported zero unmatched rows; the joint audit found zero duplicate target–disease keys, zero mapping mismatches, no missing disease names, and all scores within [0, 1]. The output is `data/processed/network2_overall_direct.parquet`; audit: `outputs/week10/network2_overall_direct_audit.json`.
+- **Joint Network 2 validation — first run:** all checks passed except `overall_aggregation_value_empty`. Inspecting the Parquet field showed the literal string `None` in all 1,633,220 rows; it is a serialized null sentinel, not an aggregation value. The follow-up code accepts common null sentinels and normalizes them to Arrow nulls on extraction. Re-run of the validator and PR CI are still pending.
 - **Disease metadata inspection:** the Open Targets 26.09 disease table downloaded and inspected successfully: 45,896 records and 18 columns, including names, descriptions, ontology relationships and synonyms. Schema/sample JSON files were saved in `outputs/week09_network2/`.
 - **Windows cleanup fix:** the Parquet lifecycle helper is isolated in `src/network/parquet_io.py`; the complete 14-shard rerun confirms temporary shard cleanup worked for newly downloaded shards. GitHub Actions on the latest PR head `3a4c87f` passed the fast test suite.
 
@@ -41,8 +43,8 @@ All four runs used train/calibration/test sample caps of 5,000 / 1,000 / 2,000. 
 
 ## Current workstream and next actions
 
-1. Run `python scripts/week10/build_network2_overall_direct.py` to obtain the official Open Targets overall-direct disease score table and join the disease metadata.
-2. Run `python scripts/week10/validate_network2.py` to validate source-specific and overall-direct tables together: mapping, aggregation type, release, curated provenance, duplicate keys, disease labels and score ranges.
+1. Run `python scripts/week10/validate_network2.py` again. The validator now treats `None`, `null`, blank and `<NULL>` strings as missing aggregation values, and the extractor normalizes these sentinels to Arrow nulls on rebuild.
+2. Confirm the complete Network 2 audit passes, including mapping, aggregation type, release, curated provenance, duplicate keys, disease labels and score ranges.
 3. Only if the validation audit passes, run the label-blind candidate builder and the small four-arm Europe PMC retrieval pilot.
 4. Create the blinded annotation worksheet, annotate candidate–publication pairs as SUPPORT / CONTRADICT / UNKNOWN, and then evaluate all four policies using the private strategy manifest/key.
 5. Review retrieval failures and annotation coverage. Do not claim an improvement or exhaustive counter-evidence recall from the pooled retrieved set.
@@ -56,7 +58,7 @@ All four runs used train/calibration/test sample caps of 5,000 / 1,000 / 2,000. 
 | Fusion model | Pending |
 | Formal probability calibration | Not complete; existing conformal-style outputs are diagnostics |
 | Direct-by-datasource Network 2 extraction | Completed locally: 1,739,224 rows across all 14 shards; joint QA pending |
-| Overall-direct disease association table | Builder implemented; local extraction and join pending |
+| Overall-direct disease association table | Extraction and disease join completed locally: 1,633,220 rows across all 14 shards; joint QA pending after null-sentinel fix |
 | Disease anchor thresholds | Quantile rule implemented; cutoffs must be frozen from the extracted overall-direct score distribution |
 | Evidence direction annotation | Blinded sheet and evaluator implemented; human annotation pending |
 | Literature retrieval and counter-evidence | Europe PMC retrieval code implemented; live candidate run pending |
