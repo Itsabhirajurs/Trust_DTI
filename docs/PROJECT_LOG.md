@@ -1,3 +1,50 @@
+## 2026-11-12 · Overall-direct Network 2 extraction completed; null-sentinel validation fix added
+**Where:** Windows workstation + GitHub feature branch · **Stage / project week:** Network 2 / Week 10
+
+**Done:**
+- Ran `python scripts/week10/build_network2_overall_direct.py` against Open Targets 26.09. All 14 `association_overall_direct` Parquet shards completed.
+- Built `data/processed/network2_overall_direct.parquet` and `outputs/week10/network2_overall_direct_audit.json`; disease metadata was joined from the Open Targets disease table.
+- Ran `python scripts/week10/validate_network2.py` against the source-specific and overall-direct tables.
+- Added a builder normalization for null-like aggregation values, validator support for serialized null sentinels, and regression tests for `None`, ` null `, blank and `<NULL>` values.
+
+**Found (from the submitted terminal output):**
+- 7,225,847 overall-direct input rows; 1,633,220 rows matched the 2,295-target bridge and were written.
+- All 2,295 mapped targets and 21,268 disease IDs were represented; disease metadata unmatched rows: 0.
+- The joint validation audit reported zero duplicate target–disease keys, zero mapping mismatches, zero missing disease names and all association scores within [0, 1].
+- The only failed check was `overall_aggregation_value_empty`: every row contained the literal string `None`, not an actual association aggregation value. The small inspection script confirmed this representation across the table.
+
+**Changed vs plan:** the first joint validation run did not pass because the extractor/validator had not accounted for this stringified null sentinel. The code now normalizes null-like values on rebuild and treats them as missing in validation; local rerun and pull-request CI remain pending.
+
+**Decisions:** no change to the biological network or association-score interpretation. The overall-direct score remains a prioritisation score, not a probability or causal proof.
+
+**Open / next:** re-run `python scripts/week10/validate_network2.py`; confirm all checks pass; then build the label-blind candidate set and run the small Europe PMC retrieval pilot.
+
+**For the owner to understand:** `aggregationType=overall` identifies the aggregated direct-association record. Its `aggregationValue` is absent; the string `None` is just how the upstream data serialized that absence. It must not be treated as another datasource or a biological value.
+
+---
+
+## 2026-11-11 · Full 14-shard Network 2 source-specific extraction completed locally
+**Where:** Windows workstation, `C:\\Users\\91701\\code\\Trust_DTI` · **Stage / project week:** Network 2 / Week 10
+
+**Done:**
+- Ran `python scripts/week09/build_network2_direct_associations.py` on branch `work/90-percent-prototype`.
+- All 14 of 14 Open Targets 26.09 `association_by_datasource_direct` shards processed. The script reused the first two cached shards and downloaded/processed/cleaned the remaining 12.
+- Wrote `data/processed/network2_direct_associations.parquet`, source counts, download manifest and extraction audit under `outputs/week09_network2/`.
+- Downloaded and inspected the separate Open Targets disease metadata file (45,896 rows; 18 columns).
+
+**Found (from the submitted terminal log):**
+- 7,522,466 input rows; 1,739,224 rows matched and retained at datasource level.
+- All 2,295 high-confidence bridge targets represented; 21,268 distinct disease IDs.
+- 1,739,224 unique target–disease–source keys; zero duplicate key rows.
+- Top sources: Europe PMC 752,854; IMPC 680,209; GWAS Credible Sets 165,102; Clinical Precedence 56,902; Cancer Gene Census 33,961.
+- Disease metadata fields include IDs, codes, names, descriptions, database cross-references, ontology relations, synonyms, therapeutic areas and ontology metadata.
+
+**Changed vs plan:** the complete extraction succeeded on the first full rerun after the explicit PyArrow close-before-cleanup change. The Windows file-lock blocker is resolved for this run.
+
+**Still open:** build the separate `association_overall_direct` table; join disease labels to those edges; run the joint Network 2 validator; then build the fixed candidate set and run the four retrieval arms. The source-specific extraction alone is not yet a fully validated combined Network 2.
+
+**For the owner to understand:** the same target–disease pair can appear once per supporting data source. Those records preserve provenance; they are not interchangeable scores and must not be averaged by hand.
+
 ## 2026-11-11 · 90% prototype implementation branch prepared
 **Where:** GitHub feature branch `work/90-percent-prototype` · **Stage / project week:** Network 2, routing and literature retrieval
 

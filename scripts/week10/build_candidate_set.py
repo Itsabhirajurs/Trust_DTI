@@ -76,6 +76,42 @@ def add_drug_names(frame: pd.DataFrame) -> pd.DataFrame:
 
 
 
+def select_primary_named_disease_association(network: pd.DataFrame) -> pd.DataFrame:
+    """Select the highest overall-direct disease score with a usable disease label.
+
+    Rows with absent disease names remain in the Network 2 table and audit, but
+    are not used as named disease anchors for literature-query generation.
+    """
+    required = {
+        "uniprot_accession", "targetId", "diseaseId", "disease_name",
+        "associationScore", "evidenceCount", "currentNovelty",
+    }
+    missing = sorted(required - set(network.columns))
+    if missing:
+        raise ValueError(f"Network 2 rows missing primary-association fields: {missing}")
+
+    named = network.loc[
+        network["disease_name"].notna()
+        & network["disease_name"].astype(str).str.strip().ne("")
+    ].copy()
+    if named.empty:
+        return named
+
+    named["associationScore"] = pd.to_numeric(
+        named["associationScore"], errors="coerce"
+    )
+    named["evidenceCount"] = pd.to_numeric(
+        named["evidenceCount"], errors="coerce"
+    ).fillna(0)
+    named = named.loc[named["associationScore"].notna()].copy()
+    named = named.sort_values(
+        ["uniprot_accession", "associationScore", "evidenceCount"],
+        ascending=[True, False, False],
+        kind="mergesort",
+    )
+    return named.drop_duplicates("uniprot_accession", keep="first")
+
+
 def select_label_blind_predictions(predictions: pd.DataFrame) -> pd.DataFrame:
     """Keep model outputs only and rename the Network 1 UniProt join key."""
     required = {"pik", "accession", "p_active", "conformal_set"}
@@ -169,13 +205,7 @@ def main():
 
     scores = pd.to_numeric(network["associationScore"], errors="coerce").dropna()
     thresholds = derive_anchor_thresholds(scores)
-    network["associationScore"] = pd.to_numeric(network["associationScore"], errors="coerce")
-    network = network.sort_values(
-        ["uniprot_accession", "associationScore", "evidenceCount"],
-        ascending=[True, False, False],
-        kind="mergesort",
-    )
-    top = network.drop_duplicates("uniprot_accession", keep="first")[[
+    top = select_primary_named_disease_association(network)[[
         "uniprot_accession", "targetId", "diseaseId", "disease_name",
         "associationScore", "evidenceCount", "currentNovelty",
     ]]

@@ -43,11 +43,25 @@ Keep source-specific rows and source identifiers. Do not average or sum unrelate
 
 Use **direct** associations for the primary network. Indirect associations propagate evidence through disease ontology relationships and should not silently be mixed into the direct edge table.
 
-## Current extraction state
+## Current extraction state — 11 November 2026
 
-The first two of 14 shards previously processed 114,855 and 133,979 records matching the primary bridge (248,834 total). The run stopped at Windows cleanup because a PyArrow reader still held the downloaded file open. The cleanup helper now explicitly closes the Parquet reader before deletion and is unit-tested. GitHub Actions passed the fast suite after that change; the full 14-shard extraction still requires a local rerun.
+The complete local run processed all 14 of 14 `association_by_datasource_direct` shards:
 
-The disease metadata directory was found and is small enough to inspect/join locally. Its schema and sample were not yet recorded in the current status.
+- Input rows across the 14 shards: 7,522,466.
+- Rows linked to the high-confidence target bridge: 1,739,224.
+- Datasource-level rows retained: 1,739,224.
+- Unique targets represented: 2,295 (all targets in the primary bridge).
+- Unique disease IDs: 21,268.
+- Unique target–disease–source keys: 1,739,224.
+- Duplicate key rows retained for audit: 0.
+
+Largest source groups were Europe PMC (752,854), IMPC (680,209), GWAS Credible Sets (165,102), Clinical Precedence (56,902), and Cancer Gene Census (33,961). The full source distribution and checksums are recorded in `outputs/week09_network2/network2_association_source_counts.csv` and `network2_download_manifest.csv`.
+
+The filtered table is `data/processed/network2_direct_associations.parquet`; its audit is `outputs/week09_network2/network2_direct_association_audit.json`. Newly downloaded temporary shards were closed and removed successfully, so the prior Windows file-lock blocker is resolved.
+
+The separate disease metadata table was downloaded and inspected: 45,896 rows and 18 columns. It includes `id`, `code`, `name`, `description`, database cross-references, parent/child/ancestor/descendant ontology relations, exact and related synonyms, therapeutic areas, and ontology metadata. The inspected schema and sample are saved as `opentargets_disease_schema.json` and `opentargets_disease_sample.json`.
+
+This completes the direct-by-datasource extraction gate only. The overall-direct disease score table and joint Network 2 validation must still run before candidate construction.
 
 ## Safe data model (target structure)
 
@@ -59,7 +73,7 @@ Keep the raw/source-specific association table at one row per source-specific ta
 - `timeseries`, `currentNovelty`
 - `opentargets_release`, retrieval/file provenance and `edge_provenance = curated`
 
-If release 26.09 exposes `association_by_overall_direct`, retain its score in a separate per-target–disease table as the candidate anchor score. Do not manufacture an “overall” score by averaging datasource scores.
+The release's `association_overall_direct` table is the separate official overall score product. Retain its score in a separate per-target–disease table as the candidate anchor score. Do not manufacture an “overall” score by averaging datasource scores.
 
 ## Overall-direct score anchor
 

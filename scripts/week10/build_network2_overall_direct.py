@@ -260,6 +260,35 @@ def run() -> dict:
                 filtered = table.filter(mask)
                 if filtered.num_rows == 0:
                     continue
+
+                # Open Targets serializes the absent aggregationValue on overall
+                # rows as the literal string "None" in this release. Normalize
+                # null-like strings to Arrow nulls in our curated output.
+                if "aggregationValue" in filtered.column_names:
+                    agg_idx = filtered.schema.get_field_index("aggregationValue")
+                    agg_field = filtered.schema.field("aggregationValue")
+                    if not (
+                        pa.types.is_string(agg_field.type)
+                        or pa.types.is_large_string(agg_field.type)
+                    ):
+                        raise TypeError(
+                            "Expected aggregationValue to be a string field; "
+                            f"found {agg_field.type}"
+                        )
+                    agg_values = filtered["aggregationValue"].to_pylist()
+                    normalized_agg_values = [
+                        None
+                        if value is None
+                        or str(value).strip().casefold() in {"", "none", "null", "<null>"}
+                        else value
+                        for value in agg_values
+                    ]
+                    filtered = filtered.set_column(
+                        agg_idx,
+                        agg_field,
+                        pa.array(normalized_agg_values, type=agg_field.type),
+                    )
+
                 target_rows += filtered.num_rows
                 target_ids_batch = filtered["targetId"].to_pylist()
                 disease_ids_batch = filtered["diseaseId"].to_pylist()
