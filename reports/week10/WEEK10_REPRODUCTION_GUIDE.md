@@ -3,15 +3,15 @@
 ## Environment
 Repository: `C:\\Users\\91701\\code\\Trust_DTI`; Python 3.12.6; virtual environment: `.venv`.
 
-```bash
-source .venv/Scripts/activate
+```powershell
 git fetch origin
-git switch fix/network2-aggregation-null
-git pull --ff-only
+git switch main
+git pull --ff-only origin main
+.venv\Scripts\Activate.ps1
 python -m pytest -q
 ```
 
-GitHub Actions reported 61 passed, 2 skipped and 1 deselected.
+For Git Bash, activate with `source .venv/Scripts/activate` instead. PR #3 has been merged into `main`. The merge commit's [main-branch GitHub Actions run](https://github.com/Itsabhirajurs/Trust_DTI/actions/runs/43714015650) completed successfully; the full test log on the fix branch reported 61 passed, 2 skipped and 1 deselected.
 
 ## Revalidate existing local files
 ```bash
