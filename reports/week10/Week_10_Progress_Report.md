@@ -16,7 +16,7 @@ The complete `association_by_datasource_direct` build processed all 14 shards an
 
 The separate `association_overall_direct` build processed all 14 shards and retained **1,633,220 target-disease rows**, again covering all 2,295 targets and 21,268 disease identifiers. The disease-metadata join reported zero unmatched rows. The official overall score remains separate; no average of datasource scores was manufactured.
 
-The first joint Network 2 validation run passed 16 of 17 checks. The only failure concerned `aggregationValue`: all overall rows carried the literal string `None`. Inspection established that this is a serialized null sentinel, not a datasource value. The builder and validator were corrected to normalize or recognize null-like values. GitHub Actions on the follow-up branch reported **61 passed, 2 skipped, 1 deselected**. The local data-backed validator must still be rerun after pulling the correction.
+The first joint Network 2 validation run passed 16 of 17 checks. The only failure concerned `aggregationValue`: all overall rows carried the literal string `None`. Inspection established that this is a serialized null sentinel, not a datasource value. The builder and validator were corrected to normalize or recognize null-like values. The follow-up branch was merged into `main` through PR #3. GitHub Actions on the fix branch reported **61 passed, 2 skipped, 1 deselected**, and the merged main-branch workflow completed successfully. The local data-backed validator must still be rerun after pulling the correction.
 
 The deterministic router, Europe PMC retrieval client, four strategy arms, blinded annotation preparation and evaluator are implemented and unit-tested. The live candidate-generation/retrieval run, human annotations and matched-budget comparison have not yet been completed. No claim is made that adaptive retrieval improves evidence precision or counter-evidence recall.
 
@@ -167,7 +167,7 @@ Inspection showed:
 
 This is a serialized missing value, not another source label.
 
-The follow-up branch `fix/network2-aggregation-null`:
+The follow-up branch `fix/network2-aggregation-null` (merged into `main` through PR #3):
 - converts `None`, `null`, blank and `<NULL>` sentinels to Arrow nulls when rebuilding;
 - treats those values as missing when validating an already-built local Parquet file;
 - includes parameterized regression tests for the sentinel forms.
