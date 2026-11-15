@@ -1,10 +1,10 @@
 # STATUS: where we are right now
 
-*Last updated: 2026-11-12. History goes in `PROJECT_LOG.md`.*
+*Last updated: 2026-11-15. History goes in `PROJECT_LOG.md`.*
 
 ## One-line state
 
-**Stages 1–2 and the classical baseline pilots are complete; the 2,295-target Open Targets bridge is validated; both direct Network 2 tables have now been extracted locally across all 14 shards.** The first joint validation run passed every check except the overall `aggregationValue` null check, because this release serializes its absent value as the literal string `None`. A validator/extractor normalization and regression-test fix is committed on the follow-up branch; local revalidation and PR CI are pending. Literature retrieval, human annotation and the matched-budget experiment remain outstanding.
+**Stages 1–2 and the classical baseline pilots are complete; the 2,295-target Open Targets bridge is validated; both direct Network 2 tables have now been extracted locally across all 14 shards.** The first joint validation run passed every check except the overall `aggregationValue` null check, because this release serializes its absent value as the literal string `None`. A validator/extractor normalization and regression-test fix is committed on the follow-up branch; local revalidation is still pending; CI has passed with 61 passed, 2 skipped and 1 deselected. Literature retrieval, human annotation and the matched-budget experiment remain outstanding.
 
 This status is about the engineering prototype. It is not a claim that the research question has been proven.
 
@@ -72,6 +72,10 @@ All four runs used train/calibration/test sample caps of 5,000 / 1,000 / 2,000. 
 - Open Targets association scores are prioritization/association scores, not probabilities or proof of causality. Source-specific scores are not averaged together.
 - Do not claim the adaptive retrieval policy improves precision or counter-evidence recall until a matched-budget experiment with reproducible annotations is run.
 - Do not commit raw, interim or processed Parquet datasets, local model binaries, caches or `.venv`.
+
+## Week 10 documentation package
+
+The Week 10 submission materials are indexed in `reports/week10/README.md`. The technical teaching note is `docs/stages/week10.md`; script run order is `scripts/week10/README.md`.
 
 ## Where things are
 

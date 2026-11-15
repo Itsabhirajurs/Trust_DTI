@@ -14,3 +14,11 @@ This directory consolidates all experimental results, validation manifests, and 
 | [`week06_network1_validation/`](week06_network1_validation/) | Course Week 6 | Reproducible Network 1 validation | `NETWORK1_VALIDATION_RESULTS.md`, `WEEK06_FORM_ENTRIES.md` |
 | [`week07_embedding_pilot/`](week07_embedding_pilot/) | Course Week 7 | Sequence audit, embedding pilot & NPZ arrays | `WEEK07_PROGRESS_REPORT.md`, `WEEK07_FORM_ENTRIES.md`, infographic, `pilot_results/` |
 | [`_build/`](_build/) | Tooling | Automated figure and PDF rendering scripts | `figures.py`, `w4_figures.py`, `render.py`, HTML templates |
+
+
+## Weekly engineering milestones
+
+| Folder | Milestone | Description |
+|---|---|---|
+| [`week09/`](week09/) | Course Week 9 | Open Targets identifier bridge and Network 2 preparation |
+| [`week10/`](week10/) | Course Week 10 | Full direct-association extraction, overall-direct anchor, QA correction and adaptive retrieval prototype |
