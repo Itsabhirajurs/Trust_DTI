@@ -8,9 +8,9 @@ TrustDTI is an uncertainty-aware drug–protein interaction research prototype. 
 - **Embedding pilot:** ChemBERTa 100 × 384 and ESM-2 20 × 320 sample outputs passed integrity checks. Full embeddings remain pending.
 - **Classical baseline:** Morgan fingerprints + protein-family one-hot logistic regression evaluated on random, drug-cold, target-cold and temporal pilot samples. See [baseline metrics](reports/model_baseline/). ROC-AUC: 0.8103 / 0.7785 / 0.8009 / 0.6117 respectively. Each run used 5k/1k/2k train/calibration/test caps; see JSON files for full details and caveats.
 - **Network 2 target bridge:** 2,295 high-confidence UniProt–Ensembl/Open Targets mappings; 17 accessions remain in the review queue. Open Targets 26.09 target-index coverage is 2,301/2,312 (99.52%).
-- **Network 2 source-specific associations:** all 14 Open Targets 26.09 shards completed locally, yielding 1,739,224 target-matched datasource-level rows across all 2,295 mapped targets and 21,268 disease IDs; duplicate target–disease–source keys: 0. The separate overall-direct table is now extracted locally (1,633,220 rows); joint QA needs a local rerun after the stringified-null correction.
-- **Prototype implementation branch:** `fix/network2-aggregation-null` adds the overall-direct builder, Network 2 validator, deterministic seven-policy uncertainty × disease router, Europe PMC retrieval with provenance, four matched-budget retrieval strategies, a human annotation worksheet and an evaluator. Pull-request CI and local data-backed execution are still required.
-- **Still pending:** overall-direct extraction and disease join, combined Network 2 validation, live Europe PMC retrieval, human evidence annotation, matched-policy comparison and integrated demo results.
+- **Network 2 direct associations:** both Open Targets 26.09 products were extracted locally across all 14 shards: 1,739,224 source-specific rows and 1,633,220 overall-direct rows, covering all 2,295 mapped targets and 21,268 disease IDs. The disease metadata join reported zero unmatched rows. The first joint validator run passed 16/17 checks; the sole issue was a stringified null sentinel in `aggregationValue`. The correction is merged into `main`; local data-backed revalidation remains open.
+- **Adaptive retrieval prototype:** the deterministic seven-policy router, Europe PMC client, four matched-budget strategy arms, blinded annotation preparation and evaluator are merged into `main` through [PR #3](https://github.com/Itsabhirajurs/Trust_DTI/pull/3). The merged commit's [GitHub Actions run](https://github.com/Itsabhirajurs/Trust_DTI/actions/runs/43714015650) passed; the preceding full test log recorded 61 passed, 2 skipped and 1 deselected.
+- **Still pending:** rerun the joint Network 2 validator on the workstation's local Parquet files, generate the fixed candidate set, run live Europe PMC retrieval, complete blinded human annotation, compare the four strategies at matched budget and document measured results. No retrieval improvement is claimed.
 
 **Do not interpret row-capped pilot metrics as full-partition estimates or empirical prediction-set coverage as a formal guarantee.** The project’s scientific research question has not yet been answered.
 
@@ -20,13 +20,15 @@ Read [`docs/STATUS.md`](docs/STATUS.md) for the current ordered work plan.
 
 Working folder: `C:\Users\91701\code\Trust_DTI` (not the old OneDrive copy).
 
-```bash
+```powershell
 git fetch origin
-git checkout work/90-percent-prototype
-git pull origin work/90-percent-prototype
-.venv/Scripts/activate
+git switch main
+git pull --ff-only origin main
+.venv\Scripts\Activate.ps1
 python -m pytest -q
 ```
+
+In Git Bash, activate the environment with `source .venv/Scripts/activate` instead.
 
 Then follow the next action in [`docs/STATUS.md`](docs/STATUS.md).
 
