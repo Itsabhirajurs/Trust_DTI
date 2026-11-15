@@ -1,3 +1,26 @@
+## 2026-11-15 · Week 10 pack merged and repository entry points reconciled
+**Where:** GitHub repository `Itsabhirajurs/Trust_DTI`, branch `main` · **Stage / project week:** Week 10 / Network 2 and adaptive retrieval
+
+**Done:**
+- Confirmed PR #3 (`fix/network2-aggregation-null`) was merged into `main` as merge commit `efa115a`.
+- Verified that `reports/week10/` contains the detailed Markdown report, scalable SVG infographic, form-ready entries, reproduction guide, source distribution, machine-readable extraction summary, references and local-artifact inventory.
+- Verified Week 10 implementation and tests under `scripts/week10/`, with related router/retrieval modules and unit tests in `src/` and `tests/`.
+- Verified the six Week 9 audit scripts are organized under `scripts/week09/`; the source-specific Network 2 extractor remains there for backward-compatible run instructions.
+- Corrected the root README and Week 10 README/reproduction guide: current state points to merged `main`, PowerShell/Git Bash activation commands are distinguished, and uncommitted DOCX/PDF/PNG exports are no longer claimed to exist.
+- Updated this status snapshot to distinguish merged CI success from owner-side data validation.
+
+**Found:** main-branch GitHub Actions run `43714015650` on merge commit `efa115a` completed successfully. The detailed test output from the null-sentinel fix run reported 61 passed, 2 skipped and 1 deselected. This CI run does not execute against the owner's local Parquet files.
+
+**Changed vs plan:** no scientific scope change. The report and infographic remain committed as Markdown and SVG source; optional DOCX/PDF/PNG exports are not stored in the repository.
+
+**Decisions:** preserve the two Open Targets direct-association products separately. Do not claim retrieval benefit before live matched-budget runs and blinded human annotations.
+
+**Open / next:** pull `main`; rerun the joint Network 2 validator on local Parquet files; only after it passes, build candidates, run the four Europe PMC arms, complete blinded annotation and evaluate the matched-budget results.
+
+**For the owner to understand:** a green CI run verifies the code tests; it does not validate local research data or prove the literature-retrieval hypothesis.
+
+---
+
 ## 2026-11-15 · Week 10 report pack and technical documentation
 **Where:** GitHub feature branch `fix/network2-aggregation-null` · **Stage / project week:** Week 10 / Network 2 and adaptive retrieval
 
