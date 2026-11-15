@@ -1,3 +1,24 @@
+## 2026-11-15 · Week 10 report pack and technical documentation
+**Where:** GitHub feature branch `fix/network2-aggregation-null` · **Stage / project week:** Week 10 / Network 2 and adaptive retrieval
+
+**Done:**
+- Added the Week 10 detailed report, infographic, form entries, reproduction guide, references, extraction summary, datasource distribution and local-artifact inventory under `reports/week10/`.
+- Added the Week 10 technical teaching note and indexed it in the stage catalogue.
+- Updated the Network 2 teaching note with overall-direct results and the null-sentinel validation finding.
+- Updated project status, README indexes, Week 10 plan and the Week 9 report README.
+
+**Found:** the local execution logs record 1,739,224 source-specific rows and 1,633,220 overall-direct rows. Both cover 2,295 targets and 21,268 disease IDs. Disease metadata unmatched rows: zero. The local validator rerun and live literature experiment remain open.
+
+**Changed vs plan:** no scientific scope change. Large Parquet files, shard downloads, abstracts and private annotation materials remain local.
+
+**Decisions:** none. Source-specific and official overall-direct scores remain separate; both are prioritisation signals, not causal probabilities.
+
+**Open / next:** rerun local Network 2 validation, build candidates, execute the four retrieval arms, complete blinded annotation and evaluate matched-budget outcomes.
+
+**For the owner to understand:** a reproducible code path and passing unit tests do not equal a completed scientific experiment. Actual retrieved publications and human evidence-direction labels are still required.
+
+---
+
 ## 2026-11-12 · Overall-direct Network 2 extraction completed; null-sentinel validation fix added
 **Where:** Windows workstation + GitHub feature branch · **Stage / project week:** Network 2 / Week 10
 

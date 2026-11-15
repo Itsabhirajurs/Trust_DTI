@@ -61,7 +61,7 @@ The filtered table is `data/processed/network2_direct_associations.parquet`; its
 
 The separate disease metadata table was downloaded and inspected: 45,896 rows and 18 columns. It includes `id`, `code`, `name`, `description`, database cross-references, parent/child/ancestor/descendant ontology relations, exact and related synonyms, therapeutic areas, and ontology metadata. The inspected schema and sample are saved as `opentargets_disease_schema.json` and `opentargets_disease_sample.json`.
 
-This completes the direct-by-datasource extraction gate only. The overall-direct disease score table and joint Network 2 validation must still run before candidate construction.
+The separate overall-direct table also completed in Week 10. The joint Network 2 validator must be rerun locally after the null-sentinel correction before candidate construction.
 
 ## Safe data model (target structure)
 
@@ -81,7 +81,7 @@ Open Targets 26.09 also publishes a separate `association_overall_direct` datase
 
 Open Targets describes the overall score as a harmonic sum of source-level association scores weighted by its datasource weights. It is between 0 and 1 and supports ranking, but the documentation explicitly cautions that it is a heuristic based on evidence availability—not a confidence score or causal proof. Under-studied diseases may have low scores despite potentially interesting targets. Use it only as a routing-priority signal and keep the source-specific dataset as separate provenance.
 
-The feature-branch builder is `scripts/week10/build_network2_overall_direct.py`; the joint quality gate is `scripts/week10/validate_network2.py`. Candidate generation must not proceed until both datasets pass the validation audit.
+The overall-direct builder is `scripts/week10/build_network2_overall_direct.py`; the joint quality gate is `scripts/week10/validate_network2.py`. Candidate generation must not proceed until both datasets pass the validation audit.
 
 ## What the score does and does not mean
 
@@ -100,3 +100,16 @@ Think of the ID bridge as a verified address book: Network 1 says “protein P36
 3. Confirm the release's overall-direct association dataset and disease metadata schema.
 4. Build the curated Network 2 table and retain unresolved protein IDs separately.
 5. Only then calibrate anchor-strength categories for the deterministic router.
+
+
+## Week 10 overall-direct extraction results
+
+The 14-shard `association_overall_direct` build processed 7,225,847 input rows and retained 1,633,220 rows for all 2,295 bridge targets and 21,268 disease IDs. Targets without edges: 0. Duplicate target-disease keys: 0. The disease metadata table contained 45,896 records; unmatched association rows after join: 0. The score range was 0.0-0.9138468742.
+
+Output: `data/processed/network2_overall_direct.parquet`. Local audit: `outputs/week10/network2_overall_direct_audit.json`.
+
+## Joint validation and null-sentinel note
+
+The first joint run passed 16 of 17 checks. The only failed check was `overall_aggregation_value_empty`. Inspection found `aggregationType=overall` and literal `None` strings in all 1,633,220 `aggregationValue` cells. This is a serialized missing value.
+
+The follow-up fix normalizes `None`, `null`, blank and `<NULL>` to Arrow nulls on rebuild and treats them as missing when validating existing files. CI reported 61 passed, 2 skipped and 1 deselected. The local data-backed validation rerun remains pending. See [Week 10 report](../../reports/week10/Week_10_Progress_Report.md).
