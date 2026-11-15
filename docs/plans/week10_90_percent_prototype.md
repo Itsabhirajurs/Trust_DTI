@@ -15,7 +15,7 @@ The 90% milestone means a reproducible engineering prototype with the following 
 
 ## Implementation and current execution status
 
-The Week 10 follow-up branch `fix/network2-aggregation-null` contains:
+The Week 10 follow-up branch `fix/network2-aggregation-null` was merged into `main` through PR #3. The merged implementation includes:
 
 - `src/network/router.py`
 - `src/retrieval/europe_pmc.py`
