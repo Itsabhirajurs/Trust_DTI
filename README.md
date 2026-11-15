@@ -2,15 +2,15 @@
 
 TrustDTI is an uncertainty-aware drug–protein interaction research prototype. It investigates whether calibrated DTI prediction uncertainty and curated protein–disease context can guide literature retrieval to improve evidence precision and counter-evidence recall compared with fixed retrieval under the same candidate set and budget.
 
-## Current state (11 Nov 2026)
+## Current state (15 Nov 2026)
 
 - **Network 1:** 1,905,586 labelled drug–protein pairs, 1,006,840 compounds and 2,312 proteins; four split definitions and prior data validation.
 - **Embedding pilot:** ChemBERTa 100 × 384 and ESM-2 20 × 320 sample outputs passed integrity checks. Full embeddings remain pending.
 - **Classical baseline:** Morgan fingerprints + protein-family one-hot logistic regression evaluated on random, drug-cold, target-cold and temporal pilot samples. See [baseline metrics](reports/model_baseline/). ROC-AUC: 0.8103 / 0.7785 / 0.8009 / 0.6117 respectively. Each run used 5k/1k/2k train/calibration/test caps; see JSON files for full details and caveats.
 - **Network 2 target bridge:** 2,295 high-confidence UniProt–Ensembl/Open Targets mappings; 17 accessions remain in the review queue. Open Targets 26.09 target-index coverage is 2,301/2,312 (99.52%).
-- **Network 2 associations:** direct-by-datasource extraction was tested on two shards (248,834 matched records) but the complete 14-shard output still needs a local rerun. A separate Open Targets overall-direct score dataset is identified for the disease anchor; neither full association table has yet passed the combined local validation gate.
-- **Prototype implementation branch:** `work/90-percent-prototype` adds the overall-direct builder, Network 2 validator, deterministic seven-policy uncertainty × disease router, Europe PMC retrieval with provenance, four matched-budget retrieval strategies, a human annotation worksheet and an evaluator. Pull-request CI and local data-backed execution are still required.
-- **Still pending:** full Network 2 extraction/join validation, end-to-end retrieval run, human evidence annotation, policy comparison and integrated demo results.
+- **Network 2 source-specific associations:** all 14 Open Targets 26.09 shards completed locally, yielding 1,739,224 target-matched datasource-level rows across all 2,295 mapped targets and 21,268 disease IDs; duplicate target–disease–source keys: 0. The separate overall-direct table is now extracted locally (1,633,220 rows); joint QA needs a local rerun after the stringified-null correction.
+- **Prototype implementation branch:** `fix/network2-aggregation-null` adds the overall-direct builder, Network 2 validator, deterministic seven-policy uncertainty × disease router, Europe PMC retrieval with provenance, four matched-budget retrieval strategies, a human annotation worksheet and an evaluator. Pull-request CI and local data-backed execution are still required.
+- **Still pending:** overall-direct extraction and disease join, combined Network 2 validation, live Europe PMC retrieval, human evidence annotation, matched-policy comparison and integrated demo results.
 
 **Do not interpret row-capped pilot metrics as full-partition estimates or empirical prediction-set coverage as a formal guarantee.** The project’s scientific research question has not yet been answered.
 
@@ -43,6 +43,8 @@ Then follow the next action in [`docs/STATUS.md`](docs/STATUS.md).
 | Baseline implementation and limitations | [docs/stages/baseline_before_fusion.md](docs/stages/baseline_before_fusion.md) |
 | Weekly reports and derived results | [reports/](reports/README.md) |
 | Week 9 milestone report | [reports/week09/](reports/week09/README.md) |
+| Week 10 milestone report | [reports/week10/](reports/week10/README.md) |
+| Week 10 technical guide | [docs/stages/week10.md](docs/stages/week10.md) |
 
 ## Quick start
 

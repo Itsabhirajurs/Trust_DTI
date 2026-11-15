@@ -4,6 +4,7 @@ import pytest
 from scripts.week10.build_candidate_set import (
     deduplicate_candidate_pairs,
     select_label_blind_predictions,
+    select_primary_named_disease_association,
 )
 
 
@@ -46,3 +47,37 @@ def test_candidate_deduplication_uses_renamed_uniprot_accession_key():
 def test_candidate_deduplication_rejects_old_or_missing_key():
     with pytest.raises(ValueError, match="deduplication keys"):
         deduplicate_candidate_pairs(pd.DataFrame([{"pik": "CMPD1", "accession": "P12345"}]))
+
+
+
+def test_primary_named_disease_anchor_skips_rows_without_joined_disease_name():
+    network = pd.DataFrame([
+        {
+            "uniprot_accession": "P1", "targetId": "ENSG1",
+            "diseaseId": "EFO_MISSING", "disease_name": None,
+            "associationScore": 0.99, "evidenceCount": 100,
+            "currentNovelty": 0.1,
+        },
+        {
+            "uniprot_accession": "P1", "targetId": "ENSG1",
+            "diseaseId": "EFO_NAMED", "disease_name": "Example disease",
+            "associationScore": 0.55, "evidenceCount": 10,
+            "currentNovelty": 0.2,
+        },
+    ])
+    result = select_primary_named_disease_association(network)
+    assert len(result) == 1
+    assert result.iloc[0]["diseaseId"] == "EFO_NAMED"
+
+
+def test_primary_named_disease_anchor_returns_empty_when_no_named_associations():
+    network = pd.DataFrame([
+        {
+            "uniprot_accession": "P1", "targetId": "ENSG1",
+            "diseaseId": "EFO_MISSING", "disease_name": None,
+            "associationScore": 0.99, "evidenceCount": 100,
+            "currentNovelty": 0.1,
+        }
+    ])
+    result = select_primary_named_disease_association(network)
+    assert result.empty

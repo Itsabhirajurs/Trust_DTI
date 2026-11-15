@@ -171,6 +171,8 @@ reports/                  all experimental outputs, manifests, and weekly submis
   week04_network1/        Course Week 4 report, form entries, figures
   week06_network1_validation/ Course Week 6 validation report and form entries
   week07_embedding_pilot/ Course Week 7 report, infographic, and pilot results
+  week09/                 Course Week 9 mapping report pack
+  week10/                 Course Week 10 Network 2 and retrieval prototype pack
   _build/                 figure and PDF rendering scripts
 data/MANIFEST.md          provenance of every raw file; data/raw and data/interim are gitignored
 notebooks/                01_chembl_first_look.ipynb, week07/

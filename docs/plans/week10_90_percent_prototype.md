@@ -13,9 +13,9 @@ The 90% milestone means a reproducible engineering prototype with the following 
 7. Compare fixed, uncertainty-only, disease-only and combined retrieval at the same per-candidate cap.
 8. Provide an annotation worksheet, evaluator, reproducible command path and limitations.
 
-## Current branch implementation
+## Implementation and current execution status
 
-The feature branch `work/90-percent-prototype` adds:
+The Week 10 follow-up branch `fix/network2-aggregation-null` contains:
 
 - `src/network/router.py`
 - `src/retrieval/europe_pmc.py`
@@ -26,6 +26,10 @@ The feature branch `work/90-percent-prototype` adds:
 - `scripts/week10/prepare_annotation_sheet.py`
 - `scripts/week10/evaluate_retrieval.py`
 - unit tests for routing, retrieval, provenance and matched-budget evaluation.
+
+## Local data gate and execution status
+
+Both Network 2 direct-association products have been extracted locally across all 14 shards and the disease metadata join completed. The first joint validator run found only the stringified `None` sentinel in overall `aggregationValue`. Code correction and regression tests pass GitHub Actions (61 passed, 2 skipped, 1 deselected); local data-backed validation must still be rerun.
 
 ## Owner-side data gate
 

@@ -1,12 +1,12 @@
-# TrustDTI Week 9 Submission Pack
+# TrustDTI Week 9 submission pack
 
-This folder is prepared for the Week 9 milestone submission. Copy `reports/week09/` into the root of the local TrustDTI repository.
+This folder contains the Week 9 record of UniProt-to-Ensembl/Open Targets target mapping and initial Network 2 preparation.
 
-Files:
-- `Week_09_Progress_Report.md` - repository-friendly detailed report
-- `Week_09_Progress_Report.docx` - editable report
-- `Week_09_Progress_Report.pdf` - rendered and visually checked report
-- `Week_09_Infographic.png` - visual weekly progress summary
-- `Week_09_Form_Details.txt` - form-ready copy/paste responses
+Files present in the repository:
+- `Week_09_Progress_Report.md` - historical Markdown report.
+- `Week_09_Progress_Report.docx` - editable report.
+- `Week_09_Infographic.png` - visual Week 9 summary.
 
-The report clearly records the incomplete full association extraction and the Windows file-lock error. Do not represent the 248,834 rows from the first two shards as the final Network 2 dataset.
+The Week 9 report is a historical snapshot. It correctly describes the earlier partial association extraction attempt as incomplete at that time. The full 14-shard association extractions were completed in Week 10 and are documented in [reports/week10/](../week10/README.md).
+
+Do not reinterpret the earlier partial extraction counts as the final Network 2 dataset.
