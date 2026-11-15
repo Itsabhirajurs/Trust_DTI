@@ -1,0 +1,49 @@
+{
+  "project": "TrustDTI",
+  "milestone": "Week 10",
+  "source_specific": {
+    "shards_processed": 14,
+    "input_rows": 7522466,
+    "retained_rows": 1739224,
+    "mapped_targets": 2295,
+    "disease_ids": 21268,
+    "duplicate_target_disease_source_keys": 0
+  },
+  "overall_direct": {
+    "shards_processed": 14,
+    "input_rows": 7225847,
+    "retained_rows": 1633220,
+    "mapped_targets": 2295,
+    "disease_ids": 21268,
+    "targets_without_edges": 0,
+    "duplicate_target_disease_keys": 0,
+    "disease_metadata_records": 45896,
+    "unmatched_rows": 0,
+    "score_min": 0,
+    "score_max": 0.9138468741995438
+  },
+  "validation": {
+    "first_run_passed": 16,
+    "total_checks": 17,
+    "issue": "aggregationValue literal None",
+    "fix": "normalize null-like sentinels",
+    "ci": "61 passed, 2 skipped, 1 deselected",
+    "local_rerun": "pending"
+  },
+  "retrieval": {
+    "implemented": true,
+    "candidate_generation": false,
+    "live_retrieval": false,
+    "human_annotation": false,
+    "matched_budget_evaluation": false,
+    "strategy_arms": [
+      "fixed",
+      "uncertainty_only",
+      "disease_only",
+      "combined"
+    ],
+    "pilot_candidates": 9,
+    "budget_per_candidate": 5
+  },
+  "interpretation": "Association scores are prioritisation signals, not causal probabilities; no retrieval improvement is claimed."
+}
