@@ -276,7 +276,7 @@ Python 3.12.6; pandas; PyArrow; Requests; Open Targets Platform 26.09; Europe PM
 
 ## 11. Next actions
 
-1. Pull the Week 10 branch and rerun `python scripts/week10/validate_network2.py` on the existing local Parquet outputs.
+1. Pull the latest `main` branch and rerun `python scripts/week10/validate_network2.py` on the existing local Parquet outputs.
 2. Confirm `all_critical_checks_passed: true`.
 3. Build the nine-candidate set.
 4. Run the four Europe PMC strategies at the same per-candidate budget.
