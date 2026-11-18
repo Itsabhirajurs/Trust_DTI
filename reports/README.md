@@ -22,3 +22,4 @@ This directory consolidates all experimental results, validation manifests, and 
 |---|---|---|
 | [`week09/`](week09/) | Course Week 9 | Open Targets identifier bridge and Network 2 preparation |
 | [`week10/`](week10/) | Course Week 10 | Full direct-association extraction, overall-direct anchor, QA correction and adaptive retrieval prototype |
+| [`week11/`](week11/) | Course Week 11 | Final local validation, fixed-candidate retrieval pilot, blinded annotation and matched-policy evaluation sprint |

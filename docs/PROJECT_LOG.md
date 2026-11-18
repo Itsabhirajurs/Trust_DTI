@@ -1,3 +1,26 @@
+## 2026-11-18 · Week 11 final completion sprint established
+**Where:** GitHub feature branch work/week11-final-completion · **Stage / project week:** Week 11 / final Network 2 + adaptive literature retrieval pilot
+
+**Done:**
+- Audited the merged Week 10 repository, local-data dependencies and outstanding empirical acceptance gates.
+- Established a weighted baseline of 70% complete and 30% remaining across Network 2 validation, live candidate/retrieval execution, human annotation and matched-policy evaluation. The weighting is a transparent project-management estimate, not a scientific-performance metric.
+- Added a Week 11 local execution runner that orchestrates pytest, corrected Network 2 validation, label-blind candidate generation, four matched-budget Europe PMC strategies, blinded annotation preparation and a separate evaluation gate.
+- Added tests for candidate-audit guards, retrieval metadata, matched candidate pool, duplicate and over-budget retrieval records, annotation status and complete human evidence labels.
+- Added Week 11 progress report, form entries, reproduction guide, final checklist, progress baseline JSON, SVG infographic and repository index updates.
+- Kept raw Parquet, retrieved abstracts, candidate outputs, annotation worksheets and private strategy mappings local/ignored.
+
+**Found:** the prior Week 10 extraction logs support 1,739,224 source-specific association rows and 1,633,220 overall-direct rows, both from 14 shards across 2,295 mapped targets. The corrected validator has not yet been rerun against the owner-local Parquet files. Candidate generation, live literature retrieval, manual annotation and measured policy comparison remain pending.
+
+**Changed vs plan:** this sprint narrows the final deliverable to a small, reproducible nine-candidate pilot rather than adding new modelling scope. The broader fusion-model and formal-calibration research remains outside the immediate pilot completion gate.
+
+**Decisions:** no fabricated scientific results. UNKNOWN remains separate from CONTRADICT; the strategy key stays private until blinded labels are frozen; pooled counter-evidence recall is limited to the retrieved candidate set.
+
+**Open / next:** execute python scripts/week11/run_week11_pipeline.py --phase prepare on the Windows research workstation, complete the generated annotation worksheet, then run the evaluation phase and update final reports with observed counts/metrics.
+
+**For the owner to understand:** code and CI establish that the workflow can be run; only the workstation's actual data validation, live retrieval and human evidence review can establish whether the pilot experiment was completed.
+
+---
+
 ## 2026-11-15 · Week 10 pack merged and repository entry points reconciled
 **Where:** GitHub repository `Itsabhirajurs/Trust_DTI`, branch `main` · **Stage / project week:** Week 10 / Network 2 and adaptive retrieval
 

@@ -33,3 +33,7 @@ outputs/week10/retrieval_policy_comparison.json
 outputs/week10/pubchem_title_cache.json
 outputs/week10/retrieval_strategy_manifest.csv
 outputs/week10/retrieval_strategy_key.csv
+
+# Week 11 local execution status and aggregate evaluation output
+outputs/week11/week11_execution_status.json
+outputs/week11/retrieval_policy_comparison.json

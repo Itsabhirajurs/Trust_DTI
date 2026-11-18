@@ -8,6 +8,7 @@ on:
       - "src/network/**"
       - "src/retrieval/**"
       - "scripts/week10/**"
+      - "scripts/week11/**"
       - "tests/**"
       - "requirements.in"
       - "requirements.txt"

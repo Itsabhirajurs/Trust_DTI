@@ -1,0 +1,60 @@
+{
+  "project": "TrustDTI",
+  "milestone": "Week 11 final completion sprint",
+  "as_of": "2026-11-18",
+  "estimate_type": "weighted project-management estimate; not scientific-performance measurement",
+  "progress_percent": 70,
+  "remaining_percent": 30,
+  "workstreams": [
+    {
+      "name": "Data foundation, Network 1 and classical baseline",
+      "weight": 20,
+      "completed": 20,
+      "remaining": 0,
+      "evidence": "Existing repository reports, validated Network 1 data and saved classical baseline pilot metrics."
+    },
+    {
+      "name": "Network 2 mapping and both 14-shard extractions",
+      "weight": 25,
+      "completed": 25,
+      "remaining": 0,
+      "evidence": "Week 10 local execution logs: 1,739,224 source-specific rows and 1,633,220 overall-direct rows."
+    },
+    {
+      "name": "Joint Network 2 data-backed validation",
+      "weight": 10,
+      "completed": 5,
+      "remaining": 5,
+      "evidence": "First run passed 16/17 checks; null-sentinel correction merged and covered by CI; corrected validator not yet rerun on local Parquet."
+    },
+    {
+      "name": "Router, Europe PMC client, four strategies, annotation/evaluator implementation",
+      "weight": 20,
+      "completed": 20,
+      "remaining": 0,
+      "evidence": "Implementation merged; unit tests pass in GitHub Actions."
+    },
+    {
+      "name": "Actual fixed-candidate and live retrieval run",
+      "weight": 10,
+      "completed": 0,
+      "remaining": 10,
+      "evidence": "No local candidate build or live Europe PMC run recorded yet."
+    },
+    {
+      "name": "Human evidence annotations",
+      "weight": 10,
+      "completed": 0,
+      "remaining": 10,
+      "evidence": "Blinded worksheet generator exists; human annotations are pending."
+    },
+    {
+      "name": "Matched-policy evaluation and final results",
+      "weight": 5,
+      "completed": 0,
+      "remaining": 5,
+      "evidence": "Evaluator exists; no measured four-arm comparison recorded."
+    }
+  ],
+  "interpretation": "70% refers to the defined engineering-plus-pilot workflow. It does not mean the broader scientific research programme, embedding/fusion modelling, formal calibration or external validation is complete."
+}

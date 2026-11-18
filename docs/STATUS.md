@@ -1,10 +1,10 @@
 # STATUS: where we are right now
 
-*Last updated: 2026-11-15. History goes in `PROJECT_LOG.md`.*
+*Last updated: 2026-11-18. History goes in `PROJECT_LOG.md`.*
 
 ## One-line state
 
-**Stages 1–2 and the classical baseline pilots are complete; the 2,295-target Open Targets bridge is validated; both direct Network 2 tables have been extracted locally across all 14 shards.** The first joint validation run passed 16/17 checks; the sole issue was a stringified `None` in overall `aggregationValue`. The builder/validator correction and regression tests are merged into `main` through PR #3. The merged main-branch GitHub Actions run passed; the full test log on the fix branch reported 61 passed, 2 skipped and 1 deselected. Local data-backed revalidation is still pending. Live literature retrieval, human annotation and matched-budget evaluation remain outstanding.
+**Stages 1–2 and the classical baseline pilots are complete; the 2,295-target Open Targets bridge is validated; both direct Network 2 tables have been extracted locally across all 14 shards.** The first joint validation run passed 16/17 checks; the sole issue was a stringified `None` in overall `aggregationValue`. The builder/validator correction and regression tests are merged into `main` through PR #3. The merged main-branch GitHub Actions run passed; the full test log on the fix branch reported 61 passed, 2 skipped and 1 deselected. Local data-backed revalidation is still pending. Week 11 is the final planned pilot sprint. Starting estimate: 70% of the weighted engineering-and-pilot workflow is complete; 30% remains. The Week 11 runner orchestrates the local gates but has not yet been executed against owner-local data in this environment.
 
 This status is about the engineering prototype. It is not a claim that the research question has been proven.
 
@@ -41,14 +41,14 @@ All four runs used train/calibration/test sample caps of 5,000 / 1,000 / 2,000. 
 
 **Interpretation limits:** this is a classical family-feature baseline, not the final ChemBERTa/ESM-2 fusion model. Metrics are based on row-capped samples. The prediction-set values are empirical diagnostics; no formal coverage guarantee is claimed under unverified exchangeability, pair dependence or distribution shift.
 
-## Current workstream and next actions
+## Current workstream and next actions — Week 11 final sprint
 
-1. Run `python scripts/week10/validate_network2.py` again. The validator now treats `None`, `null`, blank and `<NULL>` strings as missing aggregation values, and the extractor normalizes these sentinels to Arrow nulls on rebuild.
-2. Confirm the complete Network 2 audit passes, including mapping, aggregation type, release, curated provenance, duplicate keys, disease labels and score ranges.
-3. Only if the validation audit passes, run the label-blind candidate builder and the small four-arm Europe PMC retrieval pilot.
-4. Create the blinded annotation worksheet, annotate candidate–publication pairs as SUPPORT / CONTRADICT / UNKNOWN, and then evaluate all four policies using the private strategy manifest/key.
-5. Review retrieval failures and annotation coverage. Do not claim an improvement or exhaustive counter-evidence recall from the pooled retrieved set.
-6. Integrate the reproducible demo path and document actual measured results and remaining limitations.
+1. Pull the work/week11-final-completion branch, activate the existing .venv, and run python -m pytest -q.
+2. Execute python scripts/week11/run_week11_pipeline.py --phase prepare. It reruns the corrected Network 2 validator against the local Parquet data, then builds the fixed label-blind candidate set (up to nine), runs four Europe PMC strategies with a five-document cap per candidate, and prepares the blinded worksheet.
+3. Inspect outputs/week11/week11_execution_status.json, the Network 2 audit, candidate audit, retrieval metadata/failures, and annotation worksheet.
+4. Complete every unique candidate-publication annotation with SUPPORT / CONTRADICT / UNKNOWN, evidence category and rationale. Keep the strategy manifest/key private until annotations are frozen.
+5. Run python scripts/week11/run_week11_pipeline.py --phase evaluate and inspect the matched-policy metrics.
+6. Update the Week 11 report and form from actual evidence. Do not claim strategy improvement or exhaustive literature recall.
 
 ## Open decisions / limitations
 
@@ -73,9 +73,9 @@ All four runs used train/calibration/test sample caps of 5,000 / 1,000 / 2,000. 
 - Do not claim the adaptive retrieval policy improves precision or counter-evidence recall until a matched-budget experiment with reproducible annotations is run.
 - Do not commit raw, interim or processed Parquet datasets, local model binaries, caches or `.venv`.
 
-## Week 10 documentation package
+## Week 10 and Week 11 documentation packages
 
-The Week 10 submission materials are indexed in `reports/week10/README.md`. The technical teaching note is `docs/stages/week10.md`; script run order is `scripts/week10/README.md`.
+Week 10 technical and submission materials: reports/week10/README.md and docs/stages/week10.md. Week 11 final sprint instructions, progress baseline and report templates: reports/week11/README.md. The final local-run orchestrator is scripts/week11/run_week11_pipeline.py.
 
 ## Where things are
 

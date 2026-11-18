@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1100" viewBox="0 0 1600 1100" role="img" aria-labelledby="title desc">
+<title id="title">TrustDTI Week 11 final completion sprint</title>
+<desc id="desc">A 70 percent baseline completion estimate, with 30 percent remaining across local Network 2 validation, live retrieval, human annotation and matched-policy evaluation.</desc>
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#071a31"/><stop offset="1" stop-color="#103e58"/></linearGradient>
+  <style>
+    .eyebrow{font:700 16px Arial;fill:#58d9e8;letter-spacing:2px}
+    .title{font:700 46px Arial;fill:#f3faff}
+    .sub{font:20px Arial;fill:#b8d2e2}
+    .big{font:700 94px Arial;fill:#ffffff}
+    .head{font:700 24px Arial;fill:#f3faff}
+    .body{font:18px Arial;fill:#c0d7e4}
+    .small{font:15px Arial;fill:#9fc0d2}
+    .num{font:700 22px Arial;fill:#ffffff}
+  </style>
+</defs>
+<rect width="1600" height="1100" fill="url(#bg)"/>
+<text x="80" y="74" class="eyebrow">TRUSTDTI · WEEK 11 · FINAL COMPLETION SPRINT</text>
+<text x="80" y="142" class="title">FROM IMPLEMENTATION TO MEASURED EVIDENCE</text>
+<text x="80" y="183" class="sub">Starting baseline · 18 November 2026 · End-to-end engineering and pilot workflow</text>
+
+<rect x="80" y="230" width="1440" height="285" rx="28" fill="#0c2d48" stroke="#37708c" stroke-width="2"/>
+<text x="130" y="300" class="eyebrow">WEIGHTED PROTOTYPE COMPLETION</text>
+<text x="130" y="418" class="big">70%</text>
+<text x="440" y="367" class="head">Completed</text>
+<text x="440" y="408" class="body">Data foundation · Network 1 baseline · Network 2 extraction</text>
+<text x="440" y="440" class="body">Router · Europe PMC client · Four policy arms · Evaluator code</text>
+<rect x="130" y="465" width="1340" height="20" rx="10" fill="#234e69"/>
+<rect x="130" y="465" width="938" height="20" rx="10" fill="#20b88c"/>
+<text x="1130" y="365" class="head">30% remaining</text>
+<text x="1130" y="407" class="body">Empirical execution</text>
+<text x="1130" y="439" class="body">Human annotation + evaluation</text>
+
+<text x="80" y="590" class="eyebrow">FINAL FOUR GATES</text>
+<g>
+<rect x="80" y="630" width="700" height="155" rx="22" fill="#103753" stroke="#e6b45b" stroke-width="2"/>
+<text x="120" y="680" class="num">01 · 5%</text>
+<text x="120" y="721" class="head">Local Network 2 validation</text>
+<text x="120" y="755" class="body">Rerun corrected validator on original Parquet files</text>
+
+<rect x="820" y="630" width="700" height="155" rx="22" fill="#103753" stroke="#e6b45b" stroke-width="2"/>
+<text x="860" y="680" class="num">02 · 10%</text>
+<text x="860" y="721" class="head">Candidate set + live retrieval</text>
+<text x="860" y="755" class="body">Up to 9 candidates · 4 strategies · 5 docs/candidate</text>
+
+<rect x="80" y="820" width="700" height="155" rx="22" fill="#103753" stroke="#e6b45b" stroke-width="2"/>
+<text x="120" y="870" class="num">03 · 10%</text>
+<text x="120" y="911" class="head">Blinded human annotation</text>
+<text x="120" y="945" class="body">SUPPORT · CONTRADICT · UNKNOWN + rationale</text>
+
+<rect x="820" y="820" width="700" height="155" rx="22" fill="#103753" stroke="#e6b45b" stroke-width="2"/>
+<text x="860" y="870" class="num">04 · 5%</text>
+<text x="860" y="911" class="head">Matched-policy evaluation</text>
+<text x="860" y="945" class="body">Compare precision, coverage and pooled counter-evidence</text>
+</g>
+<text x="80" y="1035" class="small">A green CI run is not local data validation. A prepared worksheet is not completed annotation. No improvement claim until measured results support it.</text>
+</svg>
