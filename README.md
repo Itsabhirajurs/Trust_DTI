@@ -23,8 +23,8 @@ Working folder: `C:\Users\91701\code\Trust_DTI` (not the old OneDrive copy).
 
 ```powershell
 git fetch origin
-git switch work/week11-final-completion
-git pull --ff-only origin work/week11-final-completion
+git switch main
+git pull --ff-only origin main
 .venv\Scripts\Activate.ps1
 python -m pytest -q
 ```
