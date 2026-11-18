@@ -7,7 +7,8 @@ Use this checklist on the Windows research workstation. A box is complete only a
 - [ ] git fetch origin
 - [ ] git switch main
 - [ ] git pull --ff-only origin main
-- [ ] git switch work/week11-final-completion (or pull the merged Week 11 sprint branch when merged)
+- [ ] git switch main
+- [ ] git pull --ff-only origin main
 - [ ] Activate .venv and run python -m pytest -q
 - [ ] Confirm all required local inputs exist; do not commit them
 
