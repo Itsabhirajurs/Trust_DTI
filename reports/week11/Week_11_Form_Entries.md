@@ -32,14 +32,14 @@ A reproducible evidence-retrieval experiment requires more than a working API cl
 
 Repository: https://github.com/Itsabhirajurs/Trust_DTI
 
-Week 11 sprint branch: https://github.com/Itsabhirajurs/Trust_DTI/tree/work/week11-final-completion
+Week 11 sprint branch: https://github.com/Itsabhirajurs/Trust_DTI/tree/main
 
 ## Supporting Document / Demo Link
 
-Week 11 sprint pack: https://github.com/Itsabhirajurs/Trust_DTI/tree/work/week11-final-completion/reports/week11
+Week 11 sprint pack: https://github.com/Itsabhirajurs/Trust_DTI/tree/main/reports/week11
 
-Week 11 execution guide: https://github.com/Itsabhirajurs/Trust_DTI/blob/work/week11-final-completion/reports/week11/WEEK11_REPRODUCTION_GUIDE.md
+Week 11 execution guide: https://github.com/Itsabhirajurs/Trust_DTI/blob/main/reports/week11/WEEK11_REPRODUCTION_GUIDE.md
 
-Week 11 technical runner: https://github.com/Itsabhirajurs/Trust_DTI/blob/work/week11-final-completion/scripts/week11/run_week11_pipeline.py
+Week 11 technical runner: https://github.com/Itsabhirajurs/Trust_DTI/blob/main/scripts/week11/run_week11_pipeline.py
 
 Week 10 technical baseline: https://github.com/Itsabhirajurs/Trust_DTI/blob/main/reports/week10/Week_10_Progress_Report.md
