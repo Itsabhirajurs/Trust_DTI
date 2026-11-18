@@ -6,12 +6,12 @@ Repository: C:\Users\91701\code\Trust_DTI
 Python: 3.12.6  
 Environment: .venv
 
-Synchronise the Week 11 branch after it is merged into main, or switch to the feature branch while testing:
+Synchronise the merged Week 11 implementation from main:
 
 §§§powershell
 git fetch origin
-git switch work/week11-final-completion
-git pull --ff-only
+git switch main
+git pull --ff-only origin main
 .venv\Scripts\Activate.ps1
 python -m pytest -q
 §§§
