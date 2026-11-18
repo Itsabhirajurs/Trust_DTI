@@ -43,7 +43,7 @@ All four runs used train/calibration/test sample caps of 5,000 / 1,000 / 2,000. 
 
 ## Current workstream and next actions — Week 11 final sprint
 
-1. Pull the work/week11-final-completion branch, activate the existing .venv, and run python -m pytest -q.
+1. Pull the latest main branch, activate the existing .venv, and run python -m pytest -q.
 2. Execute python scripts/week11/run_week11_pipeline.py --phase prepare. It reruns the corrected Network 2 validator against the local Parquet data, then builds the fixed label-blind candidate set (up to nine), runs four Europe PMC strategies with a five-document cap per candidate, and prepares the blinded worksheet.
 3. Inspect outputs/week11/week11_execution_status.json, the Network 2 audit, candidate audit, retrieval metadata/failures, and annotation worksheet.
 4. Complete every unique candidate-publication annotation with SUPPORT / CONTRADICT / UNKNOWN, evidence category and rationale. Keep the strategy manifest/key private until annotations are frozen.
