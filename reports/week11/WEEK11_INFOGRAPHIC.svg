@@ -1,57 +1,91 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1100" viewBox="0 0 1600 1100" role="img" aria-labelledby="title desc">
-<title id="title">TrustDTI Week 11 final completion sprint</title>
-<desc id="desc">A 70 percent baseline completion estimate, with 30 percent remaining across local Network 2 validation, live retrieval, human annotation and matched-policy evaluation.</desc>
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1180" viewBox="0 0 1600 1180" role="img" aria-labelledby="title desc">
+<title id="title">TrustDTI Week 11 interim progress — 22 November 2026</title>
+<desc id="desc">An 80 percent weighted project-management progress estimate. Network 2 validation and nine-candidate generation are complete. Initial literature retrieval executed but quality is unresolved. Human annotation and matched-policy evaluation remain pending.</desc>
 <defs>
   <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#071a31"/><stop offset="1" stop-color="#103e58"/></linearGradient>
   <style>
     .eyebrow{font:700 16px Arial;fill:#58d9e8;letter-spacing:2px}
     .title{font:700 46px Arial;fill:#f3faff}
     .sub{font:20px Arial;fill:#b8d2e2}
-    .big{font:700 94px Arial;fill:#ffffff}
+    .big{font:700 108px Arial;fill:#ffffff}
     .head{font:700 24px Arial;fill:#f3faff}
     .body{font:18px Arial;fill:#c0d7e4}
     .small{font:15px Arial;fill:#9fc0d2}
     .num{font:700 22px Arial;fill:#ffffff}
+    .green{fill:#68e0b4}
+    .amber{fill:#f4c66f}
+    .red{fill:#f28a88}
   </style>
 </defs>
-<rect width="1600" height="1100" fill="url(#bg)"/>
-<text x="80" y="74" class="eyebrow">TRUSTDTI · WEEK 11 · FINAL COMPLETION SPRINT</text>
-<text x="80" y="142" class="title">FROM IMPLEMENTATION TO MEASURED EVIDENCE</text>
-<text x="80" y="183" class="sub">Starting baseline · 18 November 2026 · End-to-end engineering and pilot workflow</text>
+<rect width="1600" height="1180" fill="url(#bg)"/>
+<text x="80" y="72" class="eyebrow">TRUSTDTI · WEEK 11 · INTERIM EVIDENCE CHECKPOINT</text>
+<text x="80" y="140" class="title">FROM VALIDATED DATA TO LITERATURE EVIDENCE</text>
+<text x="80" y="181" class="sub">Reporting date · 22 November 2026 · Local execution evidence</text>
 
-<rect x="80" y="230" width="1440" height="285" rx="28" fill="#0c2d48" stroke="#37708c" stroke-width="2"/>
-<text x="130" y="300" class="eyebrow">WEIGHTED PROTOTYPE COMPLETION</text>
-<text x="130" y="418" class="big">70%</text>
-<text x="440" y="367" class="head">Completed</text>
-<text x="440" y="408" class="body">Data foundation · Network 1 baseline · Network 2 extraction</text>
-<text x="440" y="440" class="body">Router · Europe PMC client · Four policy arms · Evaluator code</text>
-<rect x="130" y="465" width="1340" height="20" rx="10" fill="#234e69"/>
-<rect x="130" y="465" width="938" height="20" rx="10" fill="#20b88c"/>
-<text x="1130" y="365" class="head">30% remaining</text>
-<text x="1130" y="407" class="body">Empirical execution</text>
-<text x="1130" y="439" class="body">Human annotation + evaluation</text>
+<rect x="80" y="225" width="1440" height="280" rx="28" fill="#0c2d48" stroke="#37708c" stroke-width="2"/>
+<text x="130" y="292" class="eyebrow">WEIGHTED PROJECT-MANAGEMENT COMPLETION</text>
+<text x="130" y="420" class="big">80%</text>
+<text x="465" y="350" class="head">Verified engineering foundation</text>
+<text x="465" y="392" class="body">Network 2 validation · 17/17 checks passed</text>
+<text x="465" y="425" class="body">9 label-blind candidates · 3 per prediction state</text>
+<text x="465" y="458" class="body">First four-arm retrieval executed · 15 policy records</text>
+<text x="1195" y="355" class="head">20% remaining</text>
+<text x="1195" y="397" class="body">Query quality</text>
+<text x="1195" y="427" class="body">Human labels</text>
+<text x="1195" y="457" class="body">Final evaluation</text>
+<rect x="130" y="470" width="1340" height="18" rx="9" fill="#234e69"/>
+<rect x="130" y="470" width="1072" height="18" rx="9" fill="#20b88c"/>
 
-<text x="80" y="590" class="eyebrow">FINAL FOUR GATES</text>
+<text x="80" y="575" class="eyebrow">MEASURED CHECKPOINTS</text>
 <g>
-<rect x="80" y="630" width="700" height="155" rx="22" fill="#103753" stroke="#e6b45b" stroke-width="2"/>
-<text x="120" y="680" class="num">01 · 5%</text>
-<text x="120" y="721" class="head">Local Network 2 validation</text>
-<text x="120" y="755" class="body">Rerun corrected validator on original Parquet files</text>
+  <rect x="80" y="610" width="340" height="155" rx="20" fill="#103753" stroke="#20b88c" stroke-width="2"/>
+  <text x="115" y="660" class="num green">70 passed</text>
+  <text x="115" y="700" class="head">Local tests</text>
+  <text x="115" y="735" class="body">1 deselected</text>
 
-<rect x="820" y="630" width="700" height="155" rx="22" fill="#103753" stroke="#e6b45b" stroke-width="2"/>
-<text x="860" y="680" class="num">02 · 10%</text>
-<text x="860" y="721" class="head">Candidate set + live retrieval</text>
-<text x="860" y="755" class="body">Up to 9 candidates · 4 strategies · 5 docs/candidate</text>
+  <rect x="450" y="610" width="340" height="155" rx="20" fill="#103753" stroke="#20b88c" stroke-width="2"/>
+  <text x="485" y="660" class="num green">17 / 17</text>
+  <text x="485" y="700" class="head">Network 2 checks</text>
+  <text x="485" y="735" class="body">Zero warnings</text>
 
-<rect x="80" y="820" width="700" height="155" rx="22" fill="#103753" stroke="#e6b45b" stroke-width="2"/>
-<text x="120" y="870" class="num">03 · 10%</text>
-<text x="120" y="911" class="head">Blinded human annotation</text>
-<text x="120" y="945" class="body">SUPPORT · CONTRADICT · UNKNOWN + rationale</text>
+  <rect x="820" y="610" width="340" height="155" rx="20" fill="#103753" stroke="#20b88c" stroke-width="2"/>
+  <text x="855" y="660" class="num green">9 candidates</text>
+  <text x="855" y="700" class="head">Fixed label-blind set</text>
+  <text x="855" y="735" class="body">3 in each prediction state</text>
 
-<rect x="820" y="820" width="700" height="155" rx="22" fill="#103753" stroke="#e6b45b" stroke-width="2"/>
-<text x="860" y="870" class="num">04 · 5%</text>
-<text x="860" y="911" class="head">Matched-policy evaluation</text>
-<text x="860" y="945" class="body">Compare precision, coverage and pooled counter-evidence</text>
+  <rect x="1190" y="610" width="330" height="155" rx="20" fill="#103753" stroke="#f4c66f" stroke-width="2"/>
+  <text x="1225" y="660" class="num amber">15 records</text>
+  <text x="1225" y="700" class="head">Initial retrieval</text>
+  <text x="1225" y="735" class="body">2 timeouts · quality open</text>
 </g>
-<text x="80" y="1035" class="small">A green CI run is not local data validation. A prepared worksheet is not completed annotation. No improvement claim until measured results support it.</text>
+
+<text x="80" y="835" class="eyebrow">FOUR-POLICY RETRIEVAL SNAPSHOT</text>
+<g>
+  <text x="100" y="885" class="body">Fixed</text>
+  <rect x="330" y="862" width="430" height="24" rx="12" fill="#234e69"/>
+  <rect x="330" y="862" width="161" height="24" rx="12" fill="#20b88c"/>
+  <text x="790" y="883" class="num">3</text>
+
+  <text x="100" y="930" class="body">Uncertainty only</text>
+  <rect x="330" y="907" width="430" height="24" rx="12" fill="#234e69"/>
+  <text x="790" y="928" class="num red">0</text>
+
+  <text x="100" y="975" class="body">Disease only</text>
+  <rect x="330" y="952" width="430" height="24" rx="12" fill="#234e69"/>
+  <rect x="330" y="952" width="430" height="24" rx="12" fill="#20b88c"/>
+  <text x="790" y="973" class="num">8</text>
+
+  <text x="100" y="1020" class="body">Combined</text>
+  <rect x="330" y="997" width="430" height="24" rx="12" fill="#234e69"/>
+  <rect x="330" y="997" width="215" height="24" rx="12" fill="#20b88c"/>
+  <text x="790" y="1018" class="num">4</text>
+
+  <rect x="900" y="855" width="620" height="185" rx="20" fill="#103753" stroke="#f4c66f" stroke-width="2"/>
+  <text x="940" y="900" class="head">Main finding</text>
+  <text x="940" y="940" class="body">All 15 returned records were disease-context.</text>
+  <text x="940" y="972" class="body">12/12 synonym-probe queries returned zero hits.</text>
+  <text x="940" y="1004" class="body">Human annotation and evaluation are still pending.</text>
+</g>
+
+<text x="80" y="1110" class="small">80% is a weighted project-management estimate, not model performance. No evidence of adaptive-policy benefit is claimed at this checkpoint.</text>
 </svg>
