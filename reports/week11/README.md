@@ -14,7 +14,8 @@ Week 11 moved the project from a planned local pilot to actual data-backed execu
 - [Execution evidence JSON](WEEK11_EXECUTION_EVIDENCE.json) — sanitised machine-readable aggregate results
 - [Final checklist](WEEK11_FINAL_CHECKLIST.md) — verified gates and remaining owner actions
 - [Reproduction guide](WEEK11_REPRODUCTION_GUIDE.md) — Windows PowerShell commands and data-safety rules
-- [Progress baseline JSON](WEEK11_PROGRESS_BASELINE.json) — explicit weighting behind the current 80% estimate
+- [Progress baseline JSON](WEEK11_PROGRESS_BASELINE.json) — preserves the original 70% starting estimate from 18 November
+- [Current progress snapshot](WEEK11_PROGRESS_SNAPSHOT.json) — current 80% evidence-backed estimate and interim metrics
 - [SVG infographic](WEEK11_INFOGRAPHIC.svg) — editable, scalable progress visual
 
 ## Current measured position
