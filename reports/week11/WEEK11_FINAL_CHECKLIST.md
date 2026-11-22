@@ -9,7 +9,7 @@ Use this checklist on the Windows research workstation. A gate is complete only 
 - [x] Verify Python 3.12.6 and the principal data-science packages.
 - [x] Run `python -m pytest -q`: 70 passed, 1 deselected.
 
-<badge>Gate 0 passed</badge>
+**Status: PASSED**
 
 ## Gate 1 — Network 2 data validation
 
@@ -20,7 +20,7 @@ Use this checklist on the Windows research workstation. A gate is complete only 
 - [x] Confirm zero mapping mismatches, duplicate keys, missing disease names, missing source IDs, out-of-range scores and non-empty overall aggregation values.
 - [x] Confirm zero warnings.
 
-<badge>Gate 1 passed — 17/17</badge>
+**Status: PASSED — 17/17 checks**
 
 ## Gate 2 — fixed candidate set
 
@@ -31,7 +31,7 @@ Use this checklist on the Windows research workstation. A gate is complete only 
 - [x] Record that all 9 candidates received STRONG anchor tier.
 - [x] Perform PubChem/ChEMBL identity follow-up; exact ChEMBL InChIKey matches found for 9/9.
 
-<badge>Gate 2 passed</badge>
+**Status: PASSED**
 
 ## Gate 3 — initial live literature retrieval
 
@@ -46,7 +46,7 @@ Use this checklist on the Windows research workstation. A gate is complete only 
 - [ ] Demonstrate useful coverage beyond disease-context-only results.
 - [ ] Inspect and resolve technical failures where possible.
 
-<badge color="warning">Gate 3 partial — retrieval-quality work remains</badge>
+**Status: PARTIAL — retrieval-quality work remains**
 
 ## Gate 4 — blinded human annotation
 
@@ -58,7 +58,7 @@ Use this checklist on the Windows research workstation. A gate is complete only 
 - [ ] Resolve ambiguity as UNKNOWN rather than guessing.
 - [ ] Freeze the worksheet before unblinding the strategy key.
 
-<badge color="warning">Gate 4 pending</badge>
+**Status: PENDING**
 
 ## Gate 5 — matched-policy evaluation
 
@@ -69,7 +69,7 @@ Use this checklist on the Windows research workstation. A gate is complete only 
 - [ ] Verify denominators for pooled candidate-set counter-evidence recall.
 - [ ] Do not describe candidate-set pooled recall as exhaustive literature recall.
 
-<badge color="warning">Gate 5 pending</badge>
+**Status: PENDING**
 
 ## Gate 6 — final report and submission
 
@@ -80,7 +80,7 @@ Use this checklist on the Windows research workstation. A gate is complete only 
 - [ ] Confirm final documentation and repository links.
 - [ ] Clearly disclose incomplete scientific work and limitations.
 
-<badge color="warning">Gate 6 interim documentation prepared; final close-out pending</badge>
+**Status: INTERIM DOCUMENTATION PREPARED; FINAL CLOSE-OUT PENDING**
 
 ## Completion rule
 
