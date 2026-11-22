@@ -1,0 +1,104 @@
+{
+  "project": "TrustDTI",
+  "milestone": "Week 11 interim evidence checkpoint",
+  "as_of": "2026-11-22",
+  "estimate_type": "weighted project-management estimate; not scientific-performance measurement",
+  "progress_percent": 80,
+  "remaining_percent": 20,
+  "workstreams": [
+    {
+      "name": "Data foundation, Network 1 and classical baseline",
+      "weight": 20,
+      "completed": 20,
+      "remaining": 0,
+      "evidence": "Existing Network 1 validation, saved split definitions and row-capped classical baseline metrics."
+    },
+    {
+      "name": "Network 2 mapping and both 14-shard extractions",
+      "weight": 25,
+      "completed": 25,
+      "remaining": 0,
+      "evidence": "Local extracted tables: 1,739,224 source-specific rows and 1,633,220 overall-direct rows across 2,295 mapped targets and 21,268 diseases."
+    },
+    {
+      "name": "Joint Network 2 data-backed validation",
+      "weight": 10,
+      "completed": 10,
+      "remaining": 0,
+      "evidence": "Local rerun on 2026-11-21: all 17 critical checks true, zero warnings, zero mapping mismatches, duplicate keys or invalid score values."
+    },
+    {
+      "name": "Router, Europe PMC client, four strategies, annotation/evaluator implementation",
+      "weight": 20,
+      "completed": 20,
+      "remaining": 0,
+      "evidence": "Merged implementation; local pytest run: 70 passed, 1 deselected."
+    },
+    {
+      "name": "Actual fixed-candidate and live retrieval run",
+      "weight": 10,
+      "completed": 5,
+      "remaining": 5,
+      "evidence": "Nine label-blind candidates generated and first live four-arm retrieval executed. Fifteen candidate-strategy-publication records returned with two timeouts, but all records were disease-context and coverage was low; query refinement and a defensible follow-up retrieval run remain."
+    },
+    {
+      "name": "Human evidence annotations",
+      "weight": 10,
+      "completed": 0,
+      "remaining": 10,
+      "evidence": "No human SUPPORT, CONTRADICT or UNKNOWN annotations completed; all 15 initial retrieval records remain UNANNOTATED."
+    },
+    {
+      "name": "Matched-policy evaluation and final results",
+      "weight": 5,
+      "completed": 0,
+      "remaining": 5,
+      "evidence": "Evaluator code exists, but no complete annotation set or measured four-arm comparison has been produced."
+    }
+  ],
+  "verified_interim_metrics": {
+    "local_pytest_passed": 70,
+    "local_pytest_deselected": 1,
+    "network2_validation_checks_passed": 17,
+    "network2_validation_checks_total": 17,
+    "network2_validation_warnings": 0,
+    "network2_bridge_rows": 2295,
+    "network2_source_specific_rows": 1739224,
+    "network2_overall_direct_rows": 1633220,
+    "network2_unique_disease_ids": 21268,
+    "candidate_count": 9,
+    "candidate_seed": 42,
+    "candidate_state_counts": {
+      "ACTIVE_ONLY": 3,
+      "INACTIVE_ONLY": 3,
+      "UNCERTAIN": 3
+    },
+    "candidate_anchor_tier_counts": {
+      "STRONG": 9
+    },
+    "retrieval_strategy_counts": {
+      "fixed": 3,
+      "uncertainty_only": 0,
+      "disease_only": 8,
+      "combined": 4
+    },
+    "retrieval_allocated_slots": {
+      "fixed": 45,
+      "uncertainty_only": 30,
+      "disease_only": 45,
+      "combined": 30
+    },
+    "retrieval_total_records": 15,
+    "retrieval_failures": 2,
+    "retrieval_unique_candidate_publication_pairs": 8,
+    "retrieval_records_missing_titles": 0,
+    "retrieval_records_missing_abstracts": 0,
+    "retrieval_records_missing_ids": 0,
+    "retrieval_records_unannotated": 15,
+    "chembl_exact_inchikey_matches": 9,
+    "chembl_candidates_checked": 9,
+    "europe_pmc_synonym_probe_queries": 12,
+    "europe_pmc_synonym_probe_zero_hit_queries": 12
+  },
+  "interpretation": "80% measures completion of the defined engineering-plus-pilot workflow. It does not mean the broader research programme is complete, retrieval policy effectiveness is established, human evidence labels are complete or the scientific hypothesis has been validated."
+}
