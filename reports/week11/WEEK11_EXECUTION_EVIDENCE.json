@@ -1,0 +1,136 @@
+{
+  "project": "TrustDTI",
+  "reporting_date": "2026-11-22",
+  "evidence_window": "2026-11-21 to 2026-11-22",
+  "evidence_type": "user-supplied local terminal outputs; aggregate summary only",
+  "environment": {
+    "python": "3.12.6",
+    "pandas": "3.0.6",
+    "pyarrow": "25.0.1",
+    "scikit_learn": "1.9.1",
+    "tests_passed": 70,
+    "tests_deselected": 1
+  },
+  "network2": {
+    "release": "26.09",
+    "critical_checks_passed": 17,
+    "critical_checks_total": 17,
+    "warnings": 0,
+    "bridge_rows": 2295,
+    "source_specific_rows": 1739224,
+    "overall_direct_rows": 1633220,
+    "unique_disease_ids": 21268,
+    "mapping_mismatches": 0,
+    "source_duplicate_keys": 0,
+    "overall_duplicate_target_disease_keys": 0,
+    "missing_source_ids": 0,
+    "missing_disease_names": 0,
+    "disease_name_coverage_fraction": 1.0,
+    "overall_nonempty_aggregation_values": 0,
+    "score_out_of_range_rows": 0
+  },
+  "candidate_set": {
+    "count": 9,
+    "seed": 42,
+    "label_blind": true,
+    "true_label_column_used": false,
+    "state_counts": {
+      "ACTIVE_ONLY": 3,
+      "INACTIVE_ONLY": 3,
+      "UNCERTAIN": 3
+    },
+    "anchor_tier_counts": {
+      "STRONG": 9
+    },
+    "pubchem_titles_resolved": 8,
+    "pubchem_titles_unresolved": 1
+  },
+  "compound_identity": {
+    "chembl_exact_inchikey_matches": 9,
+    "total_candidates": 9,
+    "preferred_names_returned": 0,
+    "molecule_synonyms_returned": 0
+  },
+  "initial_retrieval": {
+    "candidate_count": 9,
+    "strategies": [
+      "fixed",
+      "uncertainty_only",
+      "disease_only",
+      "combined"
+    ],
+    "budget_cap_per_candidate_strategy": 5,
+    "allocated_policy_slots": {
+      "fixed": 45,
+      "uncertainty_only": 30,
+      "disease_only": 45,
+      "combined": 30
+    },
+    "total_allocated_policy_slots": 150,
+    "candidate_strategy_publication_records": 15,
+    "unique_candidate_publication_pairs": 8,
+    "records_by_strategy": {
+      "fixed": 3,
+      "uncertainty_only": 0,
+      "disease_only": 8,
+      "combined": 4
+    },
+    "candidate_coverage_by_strategy": {
+      "fixed": 3,
+      "uncertainty_only": 0,
+      "disease_only": 3,
+      "combined": 2
+    },
+    "retrieval_failures": 2,
+    "failure_types": {
+      "ReadTimeout": 2
+    },
+    "records_missing_title": 0,
+    "records_missing_abstract": 0,
+    "records_missing_record_id": 0,
+    "records_unannotated": 15,
+    "records_by_returned_intent": {
+      "DISEASE_CONTEXT": 15,
+      "MECHANISTIC": 0,
+      "COUNTER": 0,
+      "GENERAL": 0
+    }
+  },
+  "query_diagnostic": {
+    "candidate_genes": [
+      "DRD2",
+      "PTH1R",
+      "IRAK4"
+    ],
+    "query_forms": [
+      "chemical_name",
+      "ChEMBL molecule ID"
+    ],
+    "synonym_settings": [
+      false,
+      true
+    ],
+    "queries_run": 12,
+    "queries_with_zero_hits": 12
+  },
+  "interpretation": {
+    "network2_gate": "passed",
+    "candidate_gate": "passed",
+    "initial_retrieval": "executed; retrieval quality unresolved",
+    "human_annotation": "not started",
+    "matched_policy_evaluation": "not run",
+    "scientific_claim": "No adaptive retrieval benefit or biological interaction conclusion is supported by this interim pilot."
+  },
+  "local_only_outputs_not_committed": [
+    "data/processed/network2_direct_associations.parquet",
+    "data/processed/network2_overall_direct.parquet",
+    "data/processed/week10_candidates.csv",
+    "outputs/week10/retrieval_records_initial.jsonl",
+    "outputs/week10/retrieval_failures_initial.json",
+    "outputs/week10/retrieval_run_metadata_initial.json",
+    "outputs/week10/pubchem_synonym_lookup.json",
+    "outputs/week10/chembl_synonym_enrichment_corrected.json",
+    "outputs/week10/retrieval_synonym_probe.json",
+    "annotation worksheet and private strategy manifest/key"
+  ]
+}

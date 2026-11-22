@@ -1,5 +1,37 @@
+## 2026-11-22 · Week 11 local Network 2 validation, candidate build and retrieval diagnostics
+
+**Where:** Windows research workstation `C:\Users\91701\code\Trust_DTI`; documentation checkpoint captured to GitHub branch `docs/week11-actual-progress` · **Stage / project week:** Week 11 / final Network 2 + adaptive literature retrieval pilot
+
+**Done:**
+- Updated local `main` to merged repository commit `712f4a2`; backed up local Week 9 and Week 10 outputs outside the repository.
+- Verified Python 3.12.6, pandas 3.0.6, PyArrow 25.0.1 and scikit-learn 1.9.1. Local pytest: 70 passed, 1 deselected.
+- Reran the corrected Network 2 validator against the local bridge and both association Parquet tables. All 17 critical checks passed; warnings 0.
+- Preserved the earlier failed audit and installed the passing rerun at the candidate builder's canonical audit path.
+- Generated nine label-blind candidates (seed 42; 3 ACTIVE_ONLY, 3 INACTIVE_ONLY, 3 UNCERTAIN); the observed DTI label column was not used; all nine anchors were STRONG.
+- Ran the first live four-policy Europe PMC retrieval with a five-document per-candidate cap. It returned 15 candidate–strategy–publication records across the four arms and recorded two 45-second ReadTimeout failures.
+- Audited routing allocations (150 policy slots after intentional STOP allocations), record metadata, candidate coverage and returned intents. All 15 records were disease-context-only and remained UNANNOTATED.
+- Performed PubChem/ChEMBL identity follow-up. Exact ChEMBL InChIKey matches were found for all nine candidates; queried ChEMBL preferred-name and synonym fields were empty.
+- Tested 12 Europe PMC chemical-name/ChEMBL-ID queries across DRD2, PTH1R and IRAK4 with synonym expansion off/on. All 12 returned zero hits.
+- Updated the Week 11 interim report, infographic, activity log, form entries, checklist, reproduction guide, aggregate evidence JSON and status snapshot.
+
+**Found:**
+- Network 2 local QA: 2,295 bridge rows; 1,739,224 source-specific rows; 1,633,220 overall-direct rows; 21,268 disease IDs; zero mapping mismatches, duplicate keys, missing source IDs or missing disease names; 100% disease-name coverage; all scores within [0, 1]; no non-empty overall `aggregationValue`; 17/17 critical checks true.
+- Initial strategy counts: fixed 3; uncertainty-only 0; disease-only 8; combined 4. Candidate coverage: 3, 0, 3 and 2 respectively. The 15 strategy records represent eight distinct candidate–publication pairs across the arms.
+- Two request failures were network read timeouts, not negative biological evidence.
+- No retrieved record was mechanistic, counter-evidence or general-intent. Query quality remains the main blocker before annotation.
+
+**Changed vs plan:** the live retrieval stage has been executed but is only partially complete because its coverage is low and returned evidence is restricted to disease context. The pilot remains at an interim 80% weighted project-management estimate (20% remains), with 5/10 points credited to candidate/live-retrieval execution, 0/10 to human annotation and 0/5 to final evaluation.
+
+**Decisions:** preserve the initial retrieval JSONL, failures and metadata as the baseline. Do not change candidate selection or policy weights to inflate results. ChEMBL ID match verifies chemical identity, not a drug–target interaction. Zero query hits do not imply no literature or inactive biology. Keep UNKNOWN distinct from CONTRADICT and keep strategy key/manifest private until annotation is frozen.
+
+**Open / next:** improve controlled query formulations; rerun the four arms into versioned outputs; prepare and manually complete blinded annotations; run the matched-budget evaluator; report measured metrics and denominators. Enter actual Week 11 development hours in the course form.
+
+**For the owner to understand:** the Network 2 foundation and fixed candidate set are now supported by local evidence. The first retrieval run shows that API connectivity alone is not enough—the search terms must reliably find compound–target evidence before human review and policy comparison can answer the research question.
+
+---
+
 ## 2026-11-18 · Week 11 final completion sprint established
-**Where:** GitHub feature branch work/week11-final-completion · **Stage / project week:** Week 11 / final Network 2 + adaptive literature retrieval pilot
+**Where:** GitHub feature branch `work/week11-final-completion` · **Stage / project week:** Week 11 / final Network 2 + adaptive literature retrieval pilot
 
 **Done:**
 - Audited the merged Week 10 repository, local-data dependencies and outstanding empirical acceptance gates.
@@ -20,278 +52,3 @@
 **For the owner to understand:** code and CI establish that the workflow can be run; only the workstation's actual data validation, live retrieval and human evidence review can establish whether the pilot experiment was completed.
 
 ---
-
-## 2026-11-15 · Week 10 pack merged and repository entry points reconciled
-**Where:** GitHub repository `Itsabhirajurs/Trust_DTI`, branch `main` · **Stage / project week:** Week 10 / Network 2 and adaptive retrieval
-
-**Done:**
-- Confirmed PR #3 (`fix/network2-aggregation-null`) was merged into `main` as merge commit `efa115a`.
-- Verified that `reports/week10/` contains the detailed Markdown report, scalable SVG infographic, form-ready entries, reproduction guide, source distribution, machine-readable extraction summary, references and local-artifact inventory.
-- Verified Week 10 implementation and tests under `scripts/week10/`, with related router/retrieval modules and unit tests in `src/` and `tests/`.
-- Verified the six Week 9 audit scripts are organized under `scripts/week09/`; the source-specific Network 2 extractor remains there for backward-compatible run instructions.
-- Corrected the root README and Week 10 README/reproduction guide: current state points to merged `main`, PowerShell/Git Bash activation commands are distinguished, and uncommitted DOCX/PDF/PNG exports are no longer claimed to exist.
-- Updated this status snapshot to distinguish merged CI success from owner-side data validation.
-
-**Found:** main-branch GitHub Actions run `43714015650` on merge commit `efa115a` completed successfully. The detailed test output from the null-sentinel fix run reported 61 passed, 2 skipped and 1 deselected. This CI run does not execute against the owner's local Parquet files.
-
-**Changed vs plan:** no scientific scope change. The report and infographic remain committed as Markdown and SVG source; optional DOCX/PDF/PNG exports are not stored in the repository.
-
-**Decisions:** preserve the two Open Targets direct-association products separately. Do not claim retrieval benefit before live matched-budget runs and blinded human annotations.
-
-**Open / next:** pull `main`; rerun the joint Network 2 validator on local Parquet files; only after it passes, build candidates, run the four Europe PMC arms, complete blinded annotation and evaluate the matched-budget results.
-
-**For the owner to understand:** a green CI run verifies the code tests; it does not validate local research data or prove the literature-retrieval hypothesis.
-
----
-
-## 2026-11-15 · Week 10 report pack and technical documentation
-**Where:** GitHub feature branch `fix/network2-aggregation-null` · **Stage / project week:** Week 10 / Network 2 and adaptive retrieval
-
-**Done:**
-- Added the Week 10 detailed report, infographic, form entries, reproduction guide, references, extraction summary, datasource distribution and local-artifact inventory under `reports/week10/`.
-- Added the Week 10 technical teaching note and indexed it in the stage catalogue.
-- Updated the Network 2 teaching note with overall-direct results and the null-sentinel validation finding.
-- Updated project status, README indexes, Week 10 plan and the Week 9 report README.
-
-**Found:** the local execution logs record 1,739,224 source-specific rows and 1,633,220 overall-direct rows. Both cover 2,295 targets and 21,268 disease IDs. Disease metadata unmatched rows: zero. The local validator rerun and live literature experiment remain open.
-
-**Changed vs plan:** no scientific scope change. Large Parquet files, shard downloads, abstracts and private annotation materials remain local.
-
-**Decisions:** none. Source-specific and official overall-direct scores remain separate; both are prioritisation signals, not causal probabilities.
-
-**Open / next:** rerun local Network 2 validation, build candidates, execute the four retrieval arms, complete blinded annotation and evaluate matched-budget outcomes.
-
-**For the owner to understand:** a reproducible code path and passing unit tests do not equal a completed scientific experiment. Actual retrieved publications and human evidence-direction labels are still required.
-
----
-
-## 2026-11-12 · Overall-direct Network 2 extraction completed; null-sentinel validation fix added
-**Where:** Windows workstation + GitHub feature branch · **Stage / project week:** Network 2 / Week 10
-
-**Done:**
-- Ran `python scripts/week10/build_network2_overall_direct.py` against Open Targets 26.09. All 14 `association_overall_direct` Parquet shards completed.
-- Built `data/processed/network2_overall_direct.parquet` and `outputs/week10/network2_overall_direct_audit.json`; disease metadata was joined from the Open Targets disease table.
-- Ran `python scripts/week10/validate_network2.py` against the source-specific and overall-direct tables.
-- Added a builder normalization for null-like aggregation values, validator support for serialized null sentinels, and regression tests for `None`, ` null `, blank and `<NULL>` values.
-
-**Found (from the submitted terminal output):**
-- 7,225,847 overall-direct input rows; 1,633,220 rows matched the 2,295-target bridge and were written.
-- All 2,295 mapped targets and 21,268 disease IDs were represented; disease metadata unmatched rows: 0.
-- The joint validation audit reported zero duplicate target–disease keys, zero mapping mismatches, zero missing disease names and all association scores within [0, 1].
-- The only failed check was `overall_aggregation_value_empty`: every row contained the literal string `None`, not an actual association aggregation value. The small inspection script confirmed this representation across the table.
-
-**Changed vs plan:** the first joint validation run did not pass because the extractor/validator had not accounted for this stringified null sentinel. The code now normalizes null-like values on rebuild and treats them as missing in validation; local rerun and pull-request CI remain pending.
-
-**Decisions:** no change to the biological network or association-score interpretation. The overall-direct score remains a prioritisation score, not a probability or causal proof.
-
-**Open / next:** re-run `python scripts/week10/validate_network2.py`; confirm all checks pass; then build the label-blind candidate set and run the small Europe PMC retrieval pilot.
-
-**For the owner to understand:** `aggregationType=overall` identifies the aggregated direct-association record. Its `aggregationValue` is absent; the string `None` is just how the upstream data serialized that absence. It must not be treated as another datasource or a biological value.
-
----
-
-## 2026-11-11 · Full 14-shard Network 2 source-specific extraction completed locally
-**Where:** Windows workstation, `C:\\Users\\91701\\code\\Trust_DTI` · **Stage / project week:** Network 2 / Week 10
-
-**Done:**
-- Ran `python scripts/week09/build_network2_direct_associations.py` on branch `work/90-percent-prototype`.
-- All 14 of 14 Open Targets 26.09 `association_by_datasource_direct` shards processed. The script reused the first two cached shards and downloaded/processed/cleaned the remaining 12.
-- Wrote `data/processed/network2_direct_associations.parquet`, source counts, download manifest and extraction audit under `outputs/week09_network2/`.
-- Downloaded and inspected the separate Open Targets disease metadata file (45,896 rows; 18 columns).
-
-**Found (from the submitted terminal log):**
-- 7,522,466 input rows; 1,739,224 rows matched and retained at datasource level.
-- All 2,295 high-confidence bridge targets represented; 21,268 distinct disease IDs.
-- 1,739,224 unique target–disease–source keys; zero duplicate key rows.
-- Top sources: Europe PMC 752,854; IMPC 680,209; GWAS Credible Sets 165,102; Clinical Precedence 56,902; Cancer Gene Census 33,961.
-- Disease metadata fields include IDs, codes, names, descriptions, database cross-references, ontology relations, synonyms, therapeutic areas and ontology metadata.
-
-**Changed vs plan:** the complete extraction succeeded on the first full rerun after the explicit PyArrow close-before-cleanup change. The Windows file-lock blocker is resolved for this run.
-
-**Still open:** build the separate `association_overall_direct` table; join disease labels to those edges; run the joint Network 2 validator; then build the fixed candidate set and run the four retrieval arms. The source-specific extraction alone is not yet a fully validated combined Network 2.
-
-**For the owner to understand:** the same target–disease pair can appear once per supporting data source. Those records preserve provenance; they are not interchangeable scores and must not be averaged by hand.
-
-## 2026-11-11 · 90% prototype implementation branch prepared
-**Where:** GitHub feature branch `work/90-percent-prototype` · **Stage / project week:** Network 2, routing and literature retrieval
-
-**Implemented on the feature branch (pending CI and local data execution):**
-- A separate Open Targets 26.09 `association_overall_direct` builder, kept distinct from `association_by_datasource_direct`; disease labels are joined from the disease metadata dataset.
-- Network 2 validation for UniProt↔Ensembl consistency, direct/source aggregation type, overall aggregation type, provenance, duplicate target–disease keys, disease-name coverage and score ranges.
-- A deterministic seven-policy router. The uncertainty-only arm does not allocate disease-context queries; the disease-only arm does not depend on the conformal state.
-- Europe PMC search client and retrieval runner with stable publication identifiers, query and timestamp provenance, API retries and explicit per-query failures. Every result begins UNANNOTATED.
-- Four matched per-candidate retrieval policies: fixed, uncertainty-only, disease-only and combined.
-- Human annotation worksheet and evaluator that retain UNKNOWN separately and clearly label the pooled counter-evidence recall denominator as within the retrieved candidate pool, not exhaustive literature recall.
-- Unit tests for router policies, strategy isolation, article provenance, query failures, evaluator safeguards and Network 2 table validation.
-
-**Research safeguards:** no LLM controls routing or assigns evidence direction; source-specific scores are not averaged into the official overall score; DTI observed labels are excluded from candidate selection; generated abstracts and annotations are ignored by Git.
-
-**Pending gates:** pull-request CI, full local 14-shard datasource extraction, overall-direct extraction and disease join, joint Network 2 validation, small live Europe PMC run, human annotations and actual matched-policy metrics. This entry records code added, not validated end-to-end results.
-
-## 2026-11-11 · Week 9 Network 2 mapping, baseline reconciliation and Parquet cleanup repair
-**Where:** GitHub repository + GitHub Actions; local Windows extraction is the next owner action · **Stage / project week:** baseline evaluation and Network 2 build
-**Done:**
-- Reconciled the current repository with committed baseline JSON files. Four resource-capped split runs are present (random, drug-cold, target-cold, temporal), correcting the stale README/STATUS statements that baseline metrics were pending.
-- Reviewed Week 9 Open Targets 26.09 work: 2,295 high-confidence UniProt-to-Ensembl/Open Targets target bridge rows from 2,312 Network 1 proteins; 17 unresolved accessions remain in a review queue.
-- Reviewed the direct-association extraction failure: 248,834 target-matched datasource-level rows were processed from the first two shards, but a Windows file lock prevented temporary-shard deletion and the full output was not published.
-- Added `src/network/parquet_io.py` to close a PyArrow Parquet reader before optional deletion, updated the extraction script to use it, and added two file-lifecycle regression tests.
-- GitHub Actions on commit `36d4161` passed **19 passed, 2 skipped, 1 deselected**.
-- Updated current status, project entry-point documentation and the Network 2 teaching note.
-**Found:**
-- Baseline ROC-AUC (row caps: 5k train / 1k calibration / 2k test): random 0.8103; drug-cold 0.7785; target-cold 0.8009; temporal 0.6117. The temporal gap and ECE deterioration are material limitations.
-- Target mapping coverage: 2,301/2,312 (99.52%) have at least one Open Targets target; 2,295 have a unique supported bridge. The IG_V_gene record is flagged, not hidden.
-**Changed vs plan:** the cleanup helper was split into its own module after CI showed that importing the downloader also required `requests`, which is not part of the fast CI dependency set. The test now verifies only the file lifecycle behavior.
-**Decisions:** no new biological scoring/threshold decision yet. Overall-direct association availability and disease anchor thresholds remain to be checked.
-**Commits:** `b7f1b91` initial cleanup helper/tests; `36d4161` isolated helper/test correction; both pushed to `main`.
-**Open / next:** pull latest main on Windows, rerun all 14 association shards and inspect disease schema; then validate network, router, evidence retrieval, matched-budget comparison and demo.
-**For the owner to understand:** an identifier bridge says which external target belongs to one of our proteins. It is not yet the disease network. The disease-association data must be filtered and validated separately, and a source-specific score must stay attached to its source.
-
----
-
-## 2026-10-28 · Repository reorganization and reports consolidation
-**Where:** Antigravity IDE (desktop) · **Stage / project week:** Repository hygiene & structure consolidation
-**Done:**
-- Consolidated all course submission packages (Weeks 2, 3, 4, 6, 7) directly into `reports/`.
-- Moved root-level pilot output folder `TrustDTI_Week07_Pilot_Results/` into `reports/week07_embedding_pilot/pilot_results/`.
-- Moved legacy planning document `CLAUDE_CODE_BRIEFING.md` into `docs/archive/` to keep the root directory clean and minimal.
-- Created `reports/README.md` documenting the unified reports hierarchy (`stage0`, `week2`, `week02_*` through `week07_*`).
-- Updated internal relative links in `README.md`, `docs/PROJECT_GUIDE.md`, `docs/STATUS.md`, `CLAUDE.md`, and report build scripts so no paths or links are broken.
-**Found:** Zero files deleted; zero substantive content changed. Clean root containing only standard project configuration and entry points.
-**Changed vs plan:** none; executed after owner confirmation on reorganization choices.
-**Decisions:** none (structural cleanup).
-**Open / next:** continue Stage 3 embedding scale-up planning and baseline model design.
-**For the owner to understand:** All reports and experimental outputs now live in a single unified `reports/` directory, while `docs/` is reserved for documentation and teaching guides.
-
----
-
-## 2026-10-28 · Week 8 sprint kickoff and classical DTI baseline scaffolding
-**Where:** GitHub repository + GitHub Actions · **Stage / project week:** Stage 3/4 bridge; Week 8 core-pipeline sprint
-**Done:**
-- Read the project instructions, current status, recent log, guide, and decision policy before changing code. The sealed-case rule remains untouched.
-- Added `docs/plans/week08_core_pipeline_sprint.md` with ordered work packages and measurable acceptance gates for the requested high-intensity sprint.
-- Added `src/model/evaluate_dti_baseline.py`: resource-capped logistic regression over RDKit Morgan fingerprints plus `family_l1` one-hot features, using existing random, drug-cold, target-cold, or temporal split assignments; reports standard classification metrics, Brier/ECE diagnostics, and split-conformal-style set statistics.
-- Added unit tests for deterministic stratified sampling, fingerprint output, split integrity guards, ECE, and prediction-set calculation. Added scikit-learn/scipy/joblib/threadpoolctl pins and a minimal cross-platform CI dependency file.
-- Added the baseline explanation note and GitHub Actions test workflow.
-**Found:** first CI attempt failed before tests because the full Windows-frozen dependency list tried compiling `pywinpty` on Linux. CI was changed to install `requirements-ci.txt`; run `40689615417` passed **17 tests**, with 2 data-dependent tests skipped and 1 slow test deselected.
-**Changed vs plan:** the implementation is a conventional reference baseline, not the final ChemBERTa/ESM-2 fusion head. The runner has not yet been run against the user's local Network 1 data, so no predictive metrics are claimed.
-**Decisions:** D-021 records the classical baseline as a provisional reference only.
-**Commits:** baseline runner `ce8d2ed`; baseline tests `504e254`; passing CI setup `d7e0db4`; sprint plan `b20f182`. Additional dependency/workflow updates followed.
-**Open / next:** sync the latest main branch to the local workstation; commit the seven previously validated Week 7 artifact files; run the random baseline locally; then proceed through the other split evaluations before Network 2 and the router.
-**For the owner to understand:** an embedding vector is not a binding prediction. The baseline is a reference measurement; its output scores and diagnostics still need to be generated from the actual dataset before they can support a scientific claim.
-
----
-
-## 2026-10-25 · Stage 3 smoke test: sequence retrieval and embeddings
-**Where:** Windows working copy + Google Colab + GitHub · **Stage / project week:** preliminary Stage 3 pilot / course report Week 7
-**Done:**
-- Audited 2,312 unique Network 1 protein accessions; all mapped to human target metadata and passed the preliminary UniProt-format check.
-- Retrieved 2,312 UniProt human protein sequences. The local summary showed zero unmatched accessions, all sequences passing the implemented amino-acid check, and all reported/actual lengths matching.
-- Tested pretrained embedding generation on Google Colab / NVIDIA Tesla T4: 100 compound SMILES with ChemBERTa-77M-MLM (100 × 384) and 20 protein sequences with ESM-2 8M UR50D (20 × 320). No pilot inputs were truncated; all embedding values were finite.
-- Verified local output shapes, identifier alignment, sequence alignment, and safe NumPy loading. Local tests: 9 passed, 1 deselected.
-- Added the Week 7 progress documentation, form entries, references, infographic, reproduction notebook, and sequence retrieval scripts.
-**Found:** Model load/inference times in the recorded pilot were 10.88 s / 1.39 s for ChemBERTa and 2.66 s / 0.54 s for ESM-2. These are small-sample pilot measurements, not full-dataset throughput estimates.
-**Changed vs plan:** the laptop GPU environment was not established; the small pilot therefore ran on Colab. The result does not complete full-scale embedding generation.
-**Decisions:** D-020 records the encoders/pooling as a provisional smoke-test configuration only.
-**Commits:** see the Week 7 repository update.
-**Open / next:** sync local NPZ and sample CSV artifacts into the repository; rerun the notebook after a clean runtime; then design and evaluate a labelled DTI baseline.
-**For the owner to understand:** an embedding is a numerical representation, not a binding prediction. Passing shape and finite-value checks proves that the encoding pipeline ran, not that the vectors improve DTI accuracy.
-
----
-
-# PROJECT LOG (the diary)
-
-Newest entry at the **top**. One entry per working session. Facts only: what was done, what was found, what changed versus the plan, what is open. Never rewrite an old entry; if something turns out wrong, correct it in a new entry and say which one.
-
-The older running log in `docs/archive/CLAUDE_CODE_BRIEFING.md` Part 8 stays as history. New entries go here.
-
-### Entry template (copy to the top)
-```
-## YYYY-MM-DD · short title
-**Where:** which tool/IDE · **Stage / project week:** …
-**Done:** …
-**Found:** … (numbers must come from a file or a query; name it)
-**Changed vs plan:** …
-**Decisions:** D-NNN … (or "none")
-**Commits:** `abc1234` message …
-**Open / next:** …
-**For the owner to understand:** one or two lines of the key idea learned today
-```
-
----
-
-## 2026-10-04 · Week 2 scope locked; Network 1 (Stage 2) built
-**Where:** Claude Code (desktop) · **Stage / project week:** Stage 2 / project Weeks 2–3
-**Done:**
-- Locked the Week 2 scope from evidence: `src/ingest/analyze_scope_week2.py` over all 8.3M rows → `reports/week2/`. Decisions D-011–D-019 in `DECISIONS.md` (endpoints, thresholds, inactive rule, compound identity, min-data, temporal cutoff, BindingDB, hygiene, splits).
-- Standardised 1,559,417 compounds with RDKit (`src/network/standardize_compounds.py`): 1 unparseable, 50,339 salts/mixtures stripped, 478,250 distinct scaffolds.
-- Built Network 1 (`src/network/build_network1.py` → `data/processed/network1_v1.parquet`): 1,905,586 labelled pairs (748,430 ACTIVE / 1,157,156 INACTIVE), 2,312 proteins, 1,006,840 compounds, 333,583 scaffold groups. Four splits (random, drug-cold, target-cold, temporal 2020) each with a calibration slice.
-- **Leakage check PASSED** (all train/test/calib overlaps 0; temporal calib ≤2019, test ≥2020). Manifest: `reports/week2/network1_v1_manifest.json`.
-- Prepared course report 4 (`docs/weekly_reports/week04_network1/`): PDF, 6 figures, form entries, references.
-**Found:**
-- Restricting labels to dose-response affinities (2.77M rows) nearly removes the PubChem distortion (median pChEMBL 6.85 → 6.91 without PubChem), so no per-family threshold correction was needed.
-- Abundant real negatives (1.16M measured-inactive pairs, 762k from "not active" comments) → PU fallback not needed (D-013).
-- 18,078 pairs have repeated measurements disagreeing by ≥1 log unit (flagged, not averaged away).
-**Changed vs plan:** none in substance. Chose Kaggle over Colab for the Stage 3 GPU batch (more generous free quota, persistent datasets).
-**Roadblocks (engineering):** first Network 1 build was OS-killed (OOM) — fixed by dropping the free-text column early, category dtypes, and vectorised joins instead of Python sets (2.3 GB → 1.6 GB). Also fixed a read-only-array shuffle and a non-serialisable NA manifest key.
-**Decisions:** D-011 to D-019.
-**Commits:** see this session's commit.
-**Open / next:** owner sign-off on D-011–D-019; Stage 3 embeddings on Kaggle; classical baselines.
-**For the owner to understand:** Network 1 is one clean row per drug–protein pair with a label and a leakage-safe split assignment. The labelling rule and the splits are what make every later result trustworthy.
-
-## 2026-10-03 · Memory system for AI assistants; Stage 2 groundwork
-**Where:** Claude Code (desktop) · **Stage / project week:** teaching Stage 2; calendar project Week 2
-**Done:**
-- Built the "resume from anywhere" system because the owner's IDE (Antigravity) sometimes loses conversation history: `AGENTS.md` (loaded automatically by Antigravity from the project root), `docs/STATUS.md`, this log, `docs/PROJECT_GUIDE.md`, `docs/stages/` teaching notes, copies of the two interactive pages in `docs/interactive/`, and a `README.md`.
-- Explained Stage 1 (Data) and Stage 2 (Network 1) in detail; saved as `docs/stages/stage01_data.md` and `stage02_network1.md`.
-- Ran a read-only probe of the real data to find what Network 1 construction must handle. Script `src/ingest/probe_stage2_issues.py`, output `reports/stage0/stage2_probe_output.txt`.
-**Found:** (full numbers in the probe output)
-- 28.0% of the 5,064,882 pairs have more than one record (max 1,934).
-- Of 1,347,583 pairs with an exact potency, 22.9% have repeats; among those, 23.1% disagree by at least 1 log unit and 8.2% by at least 2.
-- 53,559 InChIKey skeletons are shared by more than one ChEMBL compound ID (example: imatinib and a deuterated imatinib). If both land on different sides of a split, that is leakage.
-- In a fixed 40,000-compound sample, 3.2% of SMILES are multi-component (salts or mixtures) and none failed to parse in RDKit. Sample-based, not full-universe.
-**Changed vs plan:** none. Added open decision 6 (merge isotope/stereo variants) to `STATUS.md`.
-**Decisions:** none recorded yet. Decision 6 is pending Week 2.
-**Open / next:** Stage 3 explanation; owner review of Stage 0; teammate runs the pipeline; Week 2 decisions.
-**For the owner to understand:** Network 1 is just a clean table with one row per drug–protein pair. The hard part is deciding, before splitting, which records describe "the same thing".
-
-## 2026-09-28 → 2026-10-02 · Learning sessions (approximate dates)
-**Where:** Claude Code (desktop) · **Stage / project week:** between project Weeks 1 and 2
-**Done:**
-- The owner asked to understand the whole project before continuing. Explained, in chat: the idea and research question, the two networks, the offline/online architecture, the router, the evidence categories, the 12-week roadmap, the data acquisition story, the three-state label and censoring rules, and a file-by-file walkthrough of every script and test in `src/ingest/` and `tests/`.
-- Built and published two private interactive pages (claude.ai artifacts): **TrustDTI Explained** (concept and architecture, light theme) and **TrustDTI Pipeline** (all 13 stages with real numbers, dark theme). Sources now saved in `docs/interactive/`.
-- Fixed an error found while verifying the Pipeline page: the "all other families" bar was wrong (should be 9 classes, 297,110 pairs, 521 proteins).
-**Found:** nothing new in the data. Process lesson: the editor's file tool stores text literally, so JavaScript apostrophes were double-escaped; caught with a syntax check before publishing.
-**Changed vs plan:** project Week 2 has not started; the owner is learning first (see `STATUS.md`).
-**Commits:** none in this period.
-**Open / next:** continue stage by stage (Stage 1 and 2 done, Stage 3 next).
-**For the owner to understand:** the project's contribution is what happens after the prediction (calibrated confidence steering the evidence search), not the predictor itself.
-
-## 2026-09-27 · Week 1 completed to the gate; weekly reports prepared
-**Where:** Claude Code (desktop) · **Stage / project week:** Stage 1 (Data) / project Week 1, Days 1–5
-**Done:**
-- Resolved contradictions between the owner's documents (scope: kinome-only vs all human proteins → all; schedule: Briefing/Master Plan over the Working Protocol). Decisions D-001 to D-005.
-- Moved the working repo out of OneDrive to `C:\Users\91701\code\Trust_DTI`; wrote a curated, pinned environment.
-- Resumed the corrupt 265 MB ChEMBL download to the full 5,764,252,857 bytes; SHA-256 matched EBI's `checksums.txt`. Row count 24,527,044 matched the release notes. BindingDB 202609 MD5 matched.
-- Wrote and ran `chembl_extract.py`, `bindingdb_extract.py`, `profile_chembl.py`, `profile_overlap.py`, `profile_source_confounding.py`, `families.py`, `relations.py`; 10 tests.
-- Closed Day 1: imatinib check reproduced in the web client and in SQL (4,878 rows; 833 with pChEMBL; 1,335 censored, all without pChEMBL; example activity 884645, IC50 > 30,000 nM vs FLT3).
-- Wrote the Stage 0 report and prepared the course Week 2 and Week 3 reports.
-**Found:** (all in `docs/stage0_report.md` and `reports/stage0/`)
-- 8,299,186 rows, 5,738 proteins, 1,559,417 compounds, 5,064,882 pairs; the busiest 10% of proteins hold 88% of pairs.
-- ChEMBL and BindingDB copy each other: naive overlap 872,761 pairs vs 66,145 on independent records (~13×).
-- PubChem screening data shifts median pChEMBL by more than 1 log unit in 5 families.
-- `>>` and `<<` operators exist (70 rows); 40% of rows lack a year; ~1.04M pairs look measured-inactive.
-**Changed vs plan:** EBI publishes SHA-256, not MD5. Kinetic and %-inhibition endpoints need an explicit policy. A count in the report was corrected from 7 to 5 families.
-**Decisions:** D-001 to D-010.
-**Commits:** `2430958` setup + decision log · `c7b1483` BindingDB extract + relation parser · `6918de8` imatinib notebook close-out · `c6fd155` verified ChEMBL, schema notes, manifest · `215d7ed` extraction/profiling scripts + tests · `9df4a36` Stage 0 report + decision/running logs · `8ee1855` weekly reports · `16fe9b5` count correction.
-**Open / next:** owner review; teammate run; Week 2 decisions.
-**For the owner to understand:** profile the data before deciding any threshold, so decisions rest on evidence. Verify downloads with the publisher's checksum, never by file size.
-
-## 2026-09-22 · First ChEMBL download attempt (reconstructed from the Briefing log)
-**Where:** earlier setup, outside this log system · **Stage / project week:** Week 1 Day 1
-**Done:** direct FTP/HTTPS download failed repeatedly with `ConnectionRefusedError`; a `chembl_downloader` attempt left a 265 MB partial file. The ChEMBL web client was confirmed working (imatinib CHEMBL941, ABL1 CHEMBL1862).
-**Found:** `pchembl_value__isnull=False` silently drops censored rows (see 2026-09-27).
-**Open / next:** finish the download (done 2026-09-27).
-
-## 2026-09-21 · Project skeleton
-**Where:** GitHub · **Stage / project week:** Week 1 start
-**Done:** folder structure committed (`84c2b23`). A local-only commit `c3fa1f0` (a Jupyter-only `pip freeze`) was never pushed and was deliberately not carried over (D-004).

@@ -1,64 +1,54 @@
-# TrustDTI — Week 11 final completion sprint
+# TrustDTI — Week 11 progress and evidence pack
 
-Week 11 is the final planned sprint to turn the Week 10 Network 2 and adaptive-retrieval implementation into a data-backed, reproducible pilot. This folder records the starting position, execution gates, reproducibility steps and final reporting templates.
+**Reporting snapshot:** 22 November 2026  
+**Status:** Interim evidence-backed progress report; literature retrieval quality, human annotation and matched-policy evaluation remain open.
 
-## Starting point (18 November 2026)
-
-The weighted end-to-end prototype estimate is **70% complete; 30% remains**. This is a project-management estimate, not a model-performance or scientific-validity score.
-
-| Workstream | Weight | Starting completion |
-|---|---:|---:|
-| Data foundation, Network 1 and classical baseline | 20 | 20 |
-| Network 2 bridge and both 14-shard extractions | 25 | 25 |
-| Joint Network 2 data-backed validation | 10 | 5 |
-| Router, Europe PMC client, four strategies, annotation/evaluator code | 20 | 20 |
-| Actual fixed-candidate and live retrieval run | 10 | 0 |
-| Human evidence annotations | 10 | 0 |
-| Matched-policy evaluation and final results | 5 | 0 |
-| **Total** | **100** | **70** |
+Week 11 moved the project from a planned local pilot to actual data-backed execution. The corrected Network 2 validation passed all 17 checks; a fixed, label-blind nine-candidate set was generated; and the first live four-strategy Europe PMC run produced 15 candidate–strategy–publication records. Follow-up compound-identity and synonym-query diagnostics were completed. The first retrieval run has low coverage and only disease-context records, so it is not yet suitable for claiming a retrieval-policy benefit.
 
 ## Contents
 
-- *Week_11_Progress_Report.md* — Week 11 baseline and final-report structure
-- *Week_11_Form_Entries.md* — form-ready milestone entries
-- *WEEK11_FINAL_CHECKLIST.md* — acceptance gates and owner actions
-- *WEEK11_REPRODUCTION_GUIDE.md* — final local run commands
-- *WEEK11_PROGRESS_BASELINE.json* — explicit weighting behind the 70% estimate
-- *WEEK11_INFOGRAPHIC.svg* — sprint progress infographic
+- [Week 11 progress report](Week_11_Progress_Report.md) — detailed measured results, interpretation and limitations
+- [Week 11 form entries](Week_11_Form_Entries.md) — copy-ready course progress form responses
+- [Week 11 activity log](Week_11_Activity_Log.md) — dated sequence of work and decisions
+- [Retrieval diagnostics](WEEK11_RETRIEVAL_DIAGNOSTICS.md) — query coverage, failures, compound identity and synonym probe
+- [Execution evidence JSON](WEEK11_EXECUTION_EVIDENCE.json) — sanitised machine-readable aggregate results
+- [Final checklist](WEEK11_FINAL_CHECKLIST.md) — verified gates and remaining owner actions
+- [Reproduction guide](WEEK11_REPRODUCTION_GUIDE.md) — Windows PowerShell commands and data-safety rules
+- [Progress baseline JSON](WEEK11_PROGRESS_BASELINE.json) — explicit weighting behind the current 80% estimate
+- [SVG infographic](WEEK11_INFOGRAPHIC.svg) — editable, scalable progress visual
 
-## One-command preparation runner
+## Current measured position
 
-After synchronising main and activating the project environment:
+| Gate | Current evidence | Status |
+|---|---|---|
+| Local tests | 70 passed, 1 deselected | Passed |
+| Network 2 validation | 17/17 critical checks true; zero warnings | Passed |
+| Candidate set | 9 label-blind candidates; 3 in each prediction state | Passed |
+| Initial live retrieval | 15 records across the four arms; 2 timeouts | Executed; quality diagnosis open |
+| Compound identity | 9/9 exact ChEMBL InChIKey matches | Passed |
+| Europe PMC synonym probe | 12/12 diagnostic queries returned zero hits | Query approach unresolved |
+| Human annotation | No records manually labelled yet | Pending |
+| Matched-policy evaluation | Not run | Pending |
 
-```powershell
-python scripts/week11/run_week11_pipeline.py --phase prepare
-```
+The weighted project-management estimate is **80% complete** (20% remains). This is a planning estimate for the defined engineering-plus-pilot workflow, not a model-performance score or a claim that the scientific question has been answered.
 
-The runner executes the test suite, data-backed Network 2 validation, fixed label-blind candidate generation (up to nine candidates), four matched-budget Europe PMC retrieval strategies (five documents per candidate) and blinded annotation-sheet creation. It stops at the first failed gate and writes a local status file to outputs/week11/week11_execution_status.json.
+## Local-only artefacts
 
-After a human has completed every annotation row:
+The following are expected to remain on the research workstation and are not committed here: Parquet tables, candidate CSV, raw retrieval JSONL and abstracts, retrieval failures, PubChem/ChEMBL lookup outputs, annotation worksheet, private strategy manifest/key and any local execution status file. The committed JSON evidence snapshot contains only aggregate counts and validation summaries.
 
-```powershell
-python scripts/week11/run_week11_pipeline.py --phase evaluate
-```
+## Next steps
 
-The evaluator gate requires a valid SUPPORT / CONTRADICT / UNKNOWN label, evidence category and rationale on every row. It does not manufacture annotations.
+1. Diagnose and improve drug/target query construction without changing the frozen candidate set or the recorded initial experiment.
+2. Re-run the retrieval policies with a preserved, versioned run output; inspect whether mechanistic and counter-evidence queries return records.
+3. Prepare the blinded annotation sheet only after the retrieval set is accepted; keep the strategy manifest/key private.
+4. Manually annotate every unique candidate–publication pair using SUPPORT, CONTRADICT or UNKNOWN, an evidence category and a rationale.
+5. Run the matched-budget evaluator and update the report with actual metrics and denominators.
 
-To inspect local progress without rerunning the pipeline:
+## Scientific safeguards
 
-```powershell
-python scripts/week11/run_week11_pipeline.py --phase status
-```
-
-## Important boundaries
-
-The Parquet datasets, candidate table, retrieved abstracts, annotation worksheet and private strategy manifest/key remain on the workstation and are not committed. Never share the private strategy manifest/key before the blind annotations are frozen.
-
-A green CI test suite is not a substitute for local Parquet validation. A completed retrieval run is not a completed human evaluation. Counter-evidence recall is only relative to the pooled publications retrieved for the fixed pilot candidates, not the whole literature.
-
-## Related implementation
-
-- [Week 10 code](../../scripts/week10/README.md)
-- [Week 10 results and methods](../week10/README.md)
-- [Week 11 execution runner](../../scripts/week11/README.md)
-- [Week 11 final sprint plan](../../docs/plans/week11_final_completion.md)
+- An empty query result is not negative biological evidence.
+- A retrieval intent does not determine an article's evidence direction.
+- UNKNOWN is not CONTRADICT.
+- Open Targets association scores are prioritisation/association signals, not probabilities or causal proof.
+- Candidate–strategy records can repeat the same publication across policy arms; do not count those as independent publications.
+- Counter-evidence recall is restricted to the pooled publications retrieved for this fixed pilot candidate set, not the full literature corpus.
